@@ -2,7 +2,7 @@ attrs==22.1.0
 autopep8==2.0.0
 boto3==1.28.9
 iniconfig==1.1.1
-moto==4.1.14
+moto==4.1.13
 packaging==22.0
 pluggy==1.0.0
 pycodestyle==2.10.0
