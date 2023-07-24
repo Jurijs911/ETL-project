@@ -8,3 +8,5 @@ pluggy==1.0.0
 pycodestyle==2.10.0
 pytest==7.2.0
 tomli==2.0.1
+pg8000==1.29.8
+python-dotenv==1.0.0
