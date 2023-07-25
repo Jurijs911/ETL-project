@@ -6,7 +6,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def get_address_add():
+def get_address_add(search_interval=datetime.datetime.now() - datetime.timedelta(minutes=5)):
+    """
+    CONNECTION
+    """
     db_user = os.environ.get("DB_SOURCE_USER")
     db_database = os.environ.get("DB_SOURCE_NAME")
     db_host = os.environ.get("DB_SOURCE_HOST")
@@ -17,7 +20,7 @@ def get_address_add():
     )
 
     """
-    this determines the search interval (5 mins)
+    DETERMINE SEARCH INTERVAL
     """
 
     five_mins_ago = datetime.datetime.now() - datetime.timedelta(minutes=5)
@@ -25,11 +28,11 @@ def get_address_add():
 
     # query_str=f"datetime.datetime({dt_formatted})"
     print("time 5 mins ago:", five_mins_ago)
-
+    # search_interval = five_mins_ago
     """
-    this section queries the database to return only rows created in the last 5 minutes
+    QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
-    query = f"SELECT * FROM address WHERE created_at < '{five_mins_ago}';"
+    query = f"SELECT * FROM address WHERE created_at > '{search_interval}';"
     rows = conn.run(query)
     created_data = []
     for row in rows:
