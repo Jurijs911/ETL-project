@@ -30,46 +30,46 @@ def get_address():
         query_time = datetime.datetime.now() - datetime.timedelta(minutes = 5)
 
 
-        """
-        this section queries the database to return only rows created in the last 5 minutes
-        """
-        query_created = "SELECT * FROM address WHERE created_at > query_time"
-        rows_created = conn.run(query_created, (query_time,))
-        created_data = []
-        for row in rows_created:
-            item = {
-                "location_id": row[0],
-                "address_line_1": row[1],
-                "address_line_2": row[2],
-                "district": row[3],
-                "city": row[4],
-                "postal_code": row[5],
-                "country": row[6],
-                "phone": row[7]
-            }
-            created_data.append(item)
+        # """
+        # this section queries the database to return only rows created in the last 5 minutes
+        # """
+        # query_created = "SELECT * FROM address WHERE created_at > query_time"
+        # rows_created = conn.run(query_created, (query_time,))
+        # created_data = []
+        # for row in rows_created:
+        #     item = {
+        #         "location_id": row[0],
+        #         "address_line_1": row[1],
+        #         "address_line_2": row[2],
+        #         "district": row[3],
+        #         "city": row[4],
+        #         "postal_code": row[5],
+        #         "country": row[6],
+        #         "phone": row[7]
+        #     }
+        #     created_data.append(item)
 
-        """
-        this section returns rows which were updated in the last 5 minutes
-        """
+        # """
+        # this section returns rows which were updated in the last 5 minutes
+        # """
 
-        query_updated = "SELECT * FROM address WHERE last_updated > query_time"
-        rows_updated = conn.run(query_updated, (query_time,))
-        updated_data = []
-        for row in rows_updated:
-            item = {
-                "location_id": row[0],
-                "address_line_1": row[1],
-                "address_line_2": row[2],
-                "district": row[3],
-                "city": row[4],
-                "postal_code": row[5],
-                "country": row[6],
-                "phone": row[7]
-            }
-            updated_data.append(item)
+        # query_updated = "SELECT * FROM address WHERE last_updated > query_time"
+        # rows_updated = conn.run(query_updated, (query_time,))
+        # updated_data = []
+        # for row in rows_updated:
+        #     item = {
+        #         "location_id": row[0],
+        #         "address_line_1": row[1],
+        #         "address_line_2": row[2],
+        #         "district": row[3],
+        #         "city": row[4],
+        #         "postal_code": row[5],
+        #         "country": row[6],
+        #         "phone": row[7]
+        #     }
+        #     updated_data.append(item)
 
-        return created_data, updated_data
+        # return created_data, updated_data
     
     except pg8000.DatabaseError as db_error:
         print("Something went wrong:", db_error)
@@ -77,9 +77,9 @@ def get_address():
     finally:
         conn.close()
     
-        """
-         remove any duplicate rows from the updated list 
-        """
+        # """
+        #  remove any duplicate rows from the updated list 
+        # """
 
         #iterate over updated list if row in updated list is in created list, delete from from updated list
 
@@ -87,14 +87,14 @@ def get_address():
 
 
    
-"""
-parse created list to add csv function 
-"""
+# """
+# parse created list to add csv function 
+# """
 
 
 
-"""
-parse updated list to csv function
-"""
+# """
+# parse updated list to csv function
+# """
 
 print(get_address())

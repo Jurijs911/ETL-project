@@ -4,24 +4,16 @@ import pg8000.native
 import datetime
 import pytest
 
-# test that we are making a connection
-
-def test_connects_to_db():
-    try:
-        get_address()
-    except:
-        with pytest.raises(ConnectionError):
-            get_address()
 
 
-# @mock.patch('pg8000.native.Connection')
-# def test_get_address(mock_conn):
-#     # mock_cursor = mock_conn.return_value.cursor.return_value
-#     # mock_cursor.fetchall.return_value = [
-#     #     (1, '6826 Herzog Via', None, 'Avon', 'New Patienceburgh', '28441', 'Turkey', '1803 637401')]
-#     result = get_address().response[]
-#     assert result == [{'location_id': 1, 'address_line_1': '6826 Herzog Via', 'address_line_2': None, 'district': 'Avon', 'city': 'New Patienceburgh', 'postal_code': '28441', 'country': 'Turkey', 'phone': '1803 637401'}
-# ]
+@mock.patch('pg8000.native.Connection')
+def test_get_address(mock_conn):
+    mock_cursor = mock_conn.return_value.cursor.return_value
+    mock_cursor.fetchall.return_value = [
+        (1, '6826 Herzog Via', None, 'Avon', 'New Patienceburgh', '28441', 'Turkey', '1803 637401')]
+    result = get_address()
+    assert result == [{'location_id': 1, 'address_line_1': '6826 Herzog Via', 'address_line_2': None, 'district': 'Avon', 'city': 'New Patienceburgh', 'postal_code': '28441', 'country': 'Turkey', 'phone': '1803 637401'}
+]
 
 
 
