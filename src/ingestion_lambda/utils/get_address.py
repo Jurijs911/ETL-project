@@ -1,5 +1,8 @@
 import os
 import pg8000
+import pg8000.native
+from dotenv import load_dotenv
+load_dotenv()
 
 
 def get_address():
@@ -9,8 +12,9 @@ def get_address():
         db_host = os.environ.get("DB_SOURCE_HOST")
         db_port = os.environ.get("DB_SOURCE_PORT")
         db_password = os.environ.get("DB_SOURCE_PASSWORD")
-        conn = pg8000.connect(user=db_user, database=db_database, host=db_host, port=db_port, password=db_password)
-        query = "SELECT * FROM items"
+        conn = pg8000.native.Connection(user=db_user, database=db_database,
+                                        host=db_host, port=db_port, password=db_password)
+        query = "SELECT * FROM address"
         rows = conn.run(query)
         data = []
         for row in rows:
@@ -31,4 +35,5 @@ def get_address():
     finally:
         conn.close()
 
-get_address()
+
+print(get_address())
