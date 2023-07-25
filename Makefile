@@ -75,7 +75,7 @@ run-flake:
 
 ## Run the unit tests
 unit-test:
-	$(call execute_in_env, PYTHONPATH=${PYTHONPATH} pytest -vs)
+	$(call execute_in_env, PYTHONPATH=${PYTHONPATH} pytest -v)
 
 ## Run the coverage check
 check-coverage:

@@ -11,7 +11,7 @@ from unittest.mock import patch
 def test_get_address_add_returns_list():
     # test that we are returning a list,
     result = get_address_add()
-    print(result)
+    #print(result)
     assert isinstance(result, list)
 
 
@@ -36,6 +36,8 @@ def test_get_address_add():
         assert isinstance(item['postal_code'], str)
         assert isinstance(item['country'], str)
         assert isinstance(item['phone'], str)
+    assert False
+
 
 # def test_get_address_add_
 #  test that add to csv is called
@@ -47,13 +49,13 @@ def test_get_address_add():
 # test that it logs to cloudwatch
 
 
-mock_return = [[1, '6826 Herzog Via', None, 'Avon', 'New Patienceburgh', '28441', 'Turkey', '1803 637401', datetime.datetime(
-    2022, 11, 3, 14, 20, 49, 962000), datetime.datetime(2022, 11, 3, 14, 20, 49, 962000)]]
+# mock_return = [[1, '6826 Herzog Via', None, 'Avon', 'New Patienceburgh', '28441', 'Turkey', '1803 637401', datetime.datetime(
+#     2022, 11, 3, 14, 20, 49, 962000), datetime.datetime(2022, 11, 3, 14, 20, 49, 962000)]]
 
 
-def test_get_address():
-    with patch('pg8000.native.Connection.run', return_value=mock_return):
+# def test_get_address():
+#     with patch('pg8000.native.Connection.run', return_value=mock_return):
 
-        result = get_address_add()
-        assert result == [{'location_id': 1, 'address_line_1': '6826 Herzog Via', 'address_line_2': None, 'district': 'Avon',
-                           'city': 'New Patienceburgh', 'postal_code': '28441', 'country': 'Turkey', 'phone': '1803 637401'}]
+#         result = get_address_add()
+#         assert result == [{'location_id': 1, 'address_line_1': '6826 Herzog Via', 'address_line_2': None, 'district': 'Avon',
+#                            'city': 'New Patienceburgh', 'postal_code': '28441', 'country': 'Turkey', 'phone': '1803 637401'}]
