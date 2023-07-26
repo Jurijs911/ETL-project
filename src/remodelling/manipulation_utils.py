@@ -90,7 +90,7 @@ def format_dim_location(location_data):
         formatted_data.append(formatted_location)
     return formatted_data
 
-def format_dim_date(date_data):
+def format_dim_date(date_data): 
     """
     Manipulate date data to match the format of the dim_date table in the data warehouse.
     """
