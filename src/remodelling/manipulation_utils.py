@@ -1,5 +1,6 @@
 import os
 import pg8000.native
+from datetime import datetime
 
 """
 Receives data from csv_reader and manipulates it to match the final database schema
@@ -34,13 +35,18 @@ def format_fact_sales_order(sales_data):
     """
     formatted_data = []
     for sale in sales_data:
+        created_date = sale["created_at"].strftime("%Y-%m-%d")
+        created_time = sale["created_at"].strftime("%H:%M:%S:%f")
+        last_updated_date = sale["last_updated"].strftime("%Y-%m-%d")
+        last_updated_time = sale["last_updated"].strftime("%H:%M:%S:%f")
+
         formatted_sale = {
             "sales_record_id": sale["sales_record_id"],
             "sales_order_id": sale["sales_order_id"],
-            "created_date": sale["created_date"],
-            "created_time": sale["created_time"],
-            "last_updated_date": sale["last_updated_date"],
-            "last_updated_time": sale["last_updated_time"],
+            "created_date": created_date,
+            "created_time": created_time,
+            "last_updated_date": last_updated_date,
+            "last_updated_time": last_updated_time,
             "sales_staff_id": sale["sales_staff_id"],
             "counterparty_id": sale["counterparty_id"],
             "units_sold": sale["units_sold"],
@@ -53,6 +59,18 @@ def format_fact_sales_order(sales_data):
         }
         formatted_data.append(formatted_sale)
     return formatted_data
+
+format_fact_sales_order(1)
+
+# [1, '6826 Herzog Via', None, 'Avon', 'New Patienceburgh', '28441',
+#      'Turkey', '1803 637401', datetime.datetime(
+#          2023, 7, 25, 15, 20, 49, 962000),
+#      datetime.datetime(2023, 7, 25, 15, 20, 49, 962000)],
+#     [2, '1234 Calle Norte', None, 'North District', 'Madrid', '112250',
+#      'Spain', '0123 14567', datetime.datetime(
+#          2019, 11, 3, 14, 20, 49, 962000),
+#      datetime.datetime(
+#          2019, 11, 3, 14, 20, 49, 962000)]]
 
 def format_dim_staff(staff_data):
     """
@@ -108,6 +126,7 @@ def format_dim_date(date_data):
         }
         formatted_data.append(formatted_date)
     return formatted_data
+
 
 def format_dim_currency(currency_data):
     """
