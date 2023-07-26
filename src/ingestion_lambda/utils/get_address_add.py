@@ -41,9 +41,9 @@ def get_address_add():
             "city": row[4],
             "postal_code": row[5],
             "country": row[6],
-            "phone": row[7]
+            "phone": row[7],
+            "created_at": row[8],
+            "last_updated": row[9]
         }
         created_data.append(item)
-    print(query)
-    print(rows)
     return created_data
