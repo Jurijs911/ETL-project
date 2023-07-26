@@ -22,7 +22,7 @@ def get_address_add():
     """
     DETERMINE SEARCH INTERVAL
     """
-    search_interval = get_last_time()
+    search_interval = get_last_time('address')
 
     print("DEBUG time:", search_interval)
 
