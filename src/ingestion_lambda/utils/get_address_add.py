@@ -1,6 +1,5 @@
 import os
 import pg8000.native
-from datetime import datetime
 import datetime
 from dotenv import load_dotenv
 load_dotenv()
@@ -27,7 +26,7 @@ def get_address_add(search_interval=datetime.datetime.now() - datetime.timedelta
     # dt_formatted = five_mins_ago.strftime('%Y, %m, %d, %H, %M, %S, %f')
 
     # query_str=f"datetime.datetime({dt_formatted})"
-    print("time 5 mins ago:", five_mins_ago)
+    print("time:", search_interval)
     # search_interval = five_mins_ago
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
@@ -47,5 +46,6 @@ def get_address_add(search_interval=datetime.datetime.now() - datetime.timedelta
             "phone": row[7]
         }
         created_data.append(item)
+    print(query)
     print(rows)
     return created_data
