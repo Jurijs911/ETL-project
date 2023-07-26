@@ -2,6 +2,7 @@ from pg8000 import VARCHAR
 from requests import patch
 from src.ingestion_lambda.utils.get_address_add import get_address_add
 from unittest.mock import patch, Mock
+from unittest import mock
 import pg8000.native
 import datetime
 import pytest
@@ -22,7 +23,6 @@ import pytest
 # # dt_formatted = five_mins_ago.strftime('%Y, %m, %d, %H, %M, %S, %f')
 # mock_search_interval = datetime.datetime.strptime(
 #     '2020-07-25 15:20:49.962000', '%Y-%m-%d %H:%M:%S.%f')
-
 
 def test_get_address_add_returns_list():
     # test that we are returning a list,
@@ -55,50 +55,10 @@ def test_get_address_add_has_correct_value_types():
         assert isinstance(item['phone'], str)
 
 
-# def test_get_address_add_returns_only_results_within_created_by_interval():
-#     with patch('pg8000.native.Connection.run', return_value=mock_return):
-#         result = get_address_add(search_interval=mock_search_interval)
-#         print(result)
-#         assert result == [
-#             {'location_id': 1, 'address_line_1': '6826 Herzog Via',
-#              'address_line_2': None, 'district': 'Avon',
-#              'city': 'New Patienceburgh', 'postal_code': '28441',
-#              'country': 'Turkey', 'phone': '1803 637401'}]
-
-def test_get_address_add_returns_only_results_within_created_by_interval():
-    mock_data = [[1, '6826 Herzog Via', None, 'Avon', 'New Patienceburgh', '28441',
-                 'Turkey', '1803 637401', datetime.datetime(
-                     2023, 7, 25, 15, 20, 49, 962000),
-                  datetime.datetime(2023, 7, 25, 15, 20, 49, 962000)]]
-    #  [2, '1234 Calle Norte', None, 'North District', 'Madrid', '112250',
-    #  'Spain', '0123 14567', datetime.datetime(
-    #      2019, 11, 3, 14, 20, 49, 962000),
-    #   datetime.datetime(
-    #      2019, 11, 3, 14, 20, 49, 962000)]]
-
-    mock_conn = Mock()
-    mock_conn.run.return_value = mock_data
-
-    with patch('pg8000.native.Connection', return_value=mock_conn):
-
-        mock_search_interval = datetime.datetime(2020, 7, 25, 15, 20, 49)
-        result = get_address_add(mock_search_interval)
-
-        assert result == [{'location_id': 1,
-                           'address_line_1': '6826 Herzog Via',
-                           'address_line_2': None,
-                           'district': 'Avon',
-                           'city': 'New Patienceburgh',
-                           'postal_code': '28441',
-                           'country': 'Turkey',
-                           'phone': '1803 637401'}]
-
-
-# def test_get_address_add_
-#  test that add to csv is called
-
-# test that add to update csv is called
-
-# test that error handling when conn to db is not made
-
-# test that it logs to cloudwatch
+def test_get_address_calls_get_last_time():
+    #test that the SQL query calls get_last_time()
+    with patch('src.ingestion_lambda.utils.get_address_add.get_last_time') as mock_get_last_time:
+        mock_get_last_time.return_value = datetime.datetime.strptime(
+        '2020-07-25 15:20:49.962000', '%Y-%m-%d %H:%M:%S.%f')
+        get_address_add()
+        assert mock_get_last_time.call_count == 1

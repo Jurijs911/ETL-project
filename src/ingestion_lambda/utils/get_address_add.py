@@ -1,11 +1,12 @@
 import os
 import pg8000.native
-import datetime
+import datetime 
+from src.ingestion_lambda.utils.get_last_time import get_last_time
 from dotenv import load_dotenv
 load_dotenv()
 
 
-def get_address_add(search_interval=datetime.datetime.now() - datetime.timedelta(minutes=5)):
+def get_address_add():
     """
     CONNECTION
     """
@@ -21,13 +22,10 @@ def get_address_add(search_interval=datetime.datetime.now() - datetime.timedelta
     """
     DETERMINE SEARCH INTERVAL
     """
+    search_interval = get_last_time()
 
-    five_mins_ago = datetime.datetime.now() - datetime.timedelta(minutes=5)
-    # dt_formatted = five_mins_ago.strftime('%Y, %m, %d, %H, %M, %S, %f')
+    print("DEBUG time:", search_interval)
 
-    # query_str=f"datetime.datetime({dt_formatted})"
-    print("time:", search_interval)
-    # search_interval = five_mins_ago
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
