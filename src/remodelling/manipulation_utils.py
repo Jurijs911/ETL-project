@@ -1,5 +1,5 @@
 import os
-import pg8000.native
+
 from datetime import datetime
 
 """
@@ -60,7 +60,7 @@ def format_fact_sales_order(sales_data):
         formatted_data.append(formatted_sale)
     return formatted_data
 
-format_fact_sales_order(1)
+
 
 # [1, '6826 Herzog Via', None, 'Avon', 'New Patienceburgh', '28441',
 #      'Turkey', '1803 637401', datetime.datetime(
