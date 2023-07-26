@@ -24,7 +24,7 @@ def test_get_address_add_returns_correct_keys():
         # test that we have the correct keys
         expected_keys = {
             "location_id", "address_line_1", "address_line_2", "district", "city",
-            "postal_code", "country", "phone"}
+            "postal_code", "country", "phone", "created_at", "last_updated"}
         result = get_address_add()
         assert all(set(item.keys()) == expected_keys for item in result)
 
@@ -45,6 +45,8 @@ def test_get_address_add_has_correct_value_types():
             assert isinstance(item['postal_code'], str)
             assert isinstance(item['country'], str)
             assert isinstance(item['phone'], str)
+            assert isinstance(item['created_at'], datetime.date)
+            assert isinstance(item['last_updated'], datetime.date)
 
 
 def test_get_address_calls_get_last_time():
