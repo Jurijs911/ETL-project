@@ -1,12 +1,15 @@
 import os
 import pg8000.native
-from datetime import datetime
-import datetime
+import datetime 
+from src.ingestion_lambda.utils.get_last_time import get_last_time
 from dotenv import load_dotenv
 load_dotenv()
 
 
 def get_address_add():
+    """
+    CONNECTION
+    """
     db_user = os.environ.get("DB_SOURCE_USER")
     db_database = os.environ.get("DB_SOURCE_NAME")
     db_host = os.environ.get("DB_SOURCE_HOST")
@@ -17,35 +20,30 @@ def get_address_add():
     )
 
     """
-    this determines the search interval (5 mins)
+    DETERMINE SEARCH INTERVAL
     """
+    search_interval = get_last_time('address')
 
-
-    five_mins_ago = datetime.datetime.now()- datetime.timedelta(minutes=5)
-    dt_formatted = five_mins_ago.strftime('%Y,%m,%d,%H,%M,%S')
-
-
-    query_str=f"datetime.datetime({dt_formatted})"
-    print("time 5 mins ago:", five_mins_ago)
+    print("DEBUG time:", search_interval)
 
     """
-    this section queries the database to return only rows created in the last 5 minutes
+    QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
-    query = f"SELECT created_at FROM address;"
+    query = f"SELECT * FROM address WHERE created_at > '{search_interval}';"
     rows = conn.run(query)
     created_data = []
-    # for row in rows:
-    #     item = {
-    #         "location_id": row[0],
-    #         "address_line_1": row[1],
-    #         "address_line_2": row[2],
-    #         "district": row[3],
-    #         "city": row[4],
-    #         "postal_code": row[5],
-    #         "country": row[6],
-    #         "phone": row[7]
-    #     }
-    #     created_data.append(item)
-    print(rows)
+    for row in rows:
+        item = {
+            "location_id": row[0],
+            "address_line_1": row[1],
+            "address_line_2": row[2],
+            "district": row[3],
+            "city": row[4],
+            "postal_code": row[5],
+            "country": row[6],
+            "phone": row[7],
+            "created_at": row[8],
+            "last_updated": row[9]
+        }
+        created_data.append(item)
     return created_data
-
