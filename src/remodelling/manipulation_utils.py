@@ -41,7 +41,6 @@ def format_fact_sales_order(sales_data):
         last_updated_time = sale["last_updated"].strftime("%H:%M:%S:%f")
 
         formatted_sale = {
-            "sales_record_id": sale["sales_record_id"],
             "sales_order_id": sale["sales_order_id"],
             "created_date": created_date,
             "created_time": created_time,
@@ -114,15 +113,17 @@ def format_dim_date(date_data):
     """
     formatted_data = []
     for date_info in date_data:
+        date_id = date_info["date_id"]
+        date_obj = datetime.strptime(date_id, "%Y-%m-%d")
         formatted_date = {
-            "date_id": date_info["date_id"],
-            "year": date_info["year"],
-            "month": date_info["month"],
-            "day": date_info["day"],
-            "day_of_week": date_info["day_of_week"],
-            "day_name": date_info["day_name"],
-            "month_name": date_info["month_name"],
-            "quarter": date_info["quarter"],
+            "date_id": date_id,
+            "year": date_obj.year,
+            "month": date_obj.month,
+            "day": date_obj.day,
+            "day_of_week": date_obj.weekday(),
+            "day_name": date_obj.strftime("%A") ,
+            "month_name": date_obj.strftime("%B"),
+            "quarter": (date_obj.month - 1) // 3 + 1,
         }
         formatted_data.append(formatted_date)
     return formatted_data

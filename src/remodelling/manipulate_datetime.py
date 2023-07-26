@@ -8,8 +8,7 @@ formatted_time = test_data.strftime("%H:%M:%S:%f")
 
 
 
-print(formatted_date)
-print(formatted_time)
+
 
 
 
