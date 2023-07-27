@@ -21,6 +21,5 @@ resource "aws_cloudwatch_metric_alarm" "alert_errors" {
   threshold           = 1
   alarm_description   = "This alarm is triggered when ERROR appears"
   actions_enabled     = "true"
-  alarm_actions       = [aws_sns_topic.error_notification.arn] # add alarm arn from terminal/console
-
+  alarm_actions       = [aws_sns_topic.error_notification.arn]
 }
