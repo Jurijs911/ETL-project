@@ -60,13 +60,24 @@ resource "aws_s3_object" "created_at_date_transaction" {
   source = "data/created_at.txt"
 }
 
-resource "aws_s3_bucket_notification" "bucket_notification" {
-  bucket = aws_s3_bucket.data_bucket.id
+resource "aws_s3_bucket_notification" "ingestion_bucket_notification" {
+  bucket = aws_s3_bucket.ingestion_bucket.id
 
   lambda_function {
-    lambda_function_arn = aws_lambda_function.ingestion_bucket.arn
+    lambda_function_arn = aws_lambda_function.remodelling_lambda.arn
     events              = ["s3:ObjectCreated:*"]
   }
 
   depends_on = [aws_lambda_permission.allow_s3]
 }
+
+# resource "aws_s3_bucket_notification" "processed_bucket_notification" {
+#   bucket = aws_s3_bucket.processed_bucket.id
+
+#   lambda_function {
+#     lambda_function_arn = aws_lambda_function.loading_lambda.arn
+#     events              = ["s3:ObjectCreated:*"]
+#   }
+
+#   depends_on = [aws_lambda_permission.allow_s3]
+# }
