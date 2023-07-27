@@ -1,10 +1,10 @@
 name: ci/cd-aws
 env:
-  DB_SOURCE_USER: ${{ secrets.DB_SOURCE_USER }}
-  DB_SOURCE_HOST: ${{ secrets.DB_SOURCE_HOST }}
-  DB_SOURCE_NAME: ${{ secrets.DB_SOURCE_NAME }}
-  DB_SOURCE_PORT: ${{ secrets.DB_SOURCE_PORT }}
-  DB_SOURCE_PASSWORD: ${{ secrets.DB_SOURCE_PASSWORD }}
+  DB_SOURCE_USER: ${{ secrets.SOURCE_DB_USERNAME }}
+  DB_SOURCE_HOST: ${{ secrets.SOURCE_DB_HOST }}
+  DB_SOURCE_NAME: ${{ secrets.SOURCE_DB_NAME }}
+  DB_SOURCE_PORT: ${{ secrets.SOURCE_DB_PORT }}
+  DB_SOURCE_PASSWORD: ${{ secrets.SOURCE_DB_PASSWORD }}
 on:
   push:
     branches:
