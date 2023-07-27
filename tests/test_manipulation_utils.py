@@ -12,39 +12,40 @@ from datetime import datetime
 
 def test_format_fact_sales_order():
     sample_sales_data = [
-        {
-            "sales_order_id": 2,
-            "created_at": datetime(2023, 7, 25, 15, 20, 49, 962000),
-            "last_updated": datetime(2023, 7, 25, 15, 20, 49, 962000),
-            "sales_staff_id": 100,
-            "counterparty_id": 200,
-            "units_sold": 2000,
-            "unit_price": 20.65,
-            "currency_id": 5,
-            "design_id": 1,
-            "agreed_payment_date": "2023, 7, 30",
-            "agreed_delivery_date": "2023, 8, 12",
-            "agreed_delivery_location_id": 2,
-        },
+        [
+            "2",
+            datetime(2023, 7, 25, 15, 20, 49, 962000),
+            datetime(2023, 7, 25, 15, 20, 49, 962000),
+            "100",
+            "200",
+            "2000",
+            "5",
+            "20.65",
+            "1",
+            "2023, 7, 30",
+            "2023, 8, 12",
+            "2",
+        ],
     ]
 
     formatted_data = format_fact_sales_order(sample_sales_data)
+    print(formatted_data)
     expected_sales_data = [
         {
-            "sales_order_id": 2,
+            "sales_order_id": "2",
             "created_date": "2023-07-25",
             "created_time": "15:20:49:962000",
             "last_updated_date": "2023-07-25",
             "last_updated_time": "15:20:49:962000",
-            "sales_staff_id": 100,
-            "counterparty_id": 200,
-            "units_sold": 2000,
-            "unit_price": 20.65,
-            "currency_id": 5,
-            "design_id": 1,
-            "agreed_payment_date": "2023, 7, 30",
-            "agreed_delivery_date": "2023, 8, 12",
-            "agreed_delivery_location_id": 2,
+            "sales_staff_id": "200",
+            "counterparty_id": "2000",
+            "units_sold": "5",
+            "unit_price": "20.65",
+            "currency_id": "1",
+            "design_id": "100",
+            "agreed_payment_date": "2023, 8, 12",
+            "agreed_delivery_date": "2023, 7, 30",
+            "agreed_delivery_location_id": "2",
         },
     ]
     assert formatted_data == expected_sales_data
@@ -52,19 +53,19 @@ def test_format_fact_sales_order():
 
 def test_format_dim_design():
     sample_design_data = [
-        {
-            "design_id": 1,
-            "design_name": "design 1",
-            "file_location": "./design.jpg",
-            "file_name": "design.jpg",
-        },
+        [
+            "1",
+            "design 1",
+            "./design.jpg",
+            "design.jpg",
+        ],
     ]
 
     formatted_design = format_dim_design(sample_design_data)
 
     expected_design_data = [
         {
-            "design_id": 1,
+            "design_id": "1",
             "design_name": "design 1",
             "file_location": "./design.jpg",
             "file_name": "design.jpg",
@@ -76,21 +77,34 @@ def test_format_dim_design():
 
 def test_format_dim_staff():
     sample_staff_data = [
-        {
-            "staff_id": 1,
-            "first_name": "zenab",
-            "last_name": "haider",
-            "department_name": "coding",
-            "location": "manchester",
-            "email_address": "zenab@gmail.com",
-        },
+        [
+            "1",
+            "zenab",
+            "haider",
+            "1",
+            "zenab@gmail.com",
+            datetime(2023, 7, 25, 15, 20, 49, 962000),
+            datetime(2023, 7, 25, 15, 20, 49, 962000),
+        ],
+    ]
+    sample_department_data = [
+        [
+            "1",
+            "coding",
+            "manchester",
+            "zenab",
+            datetime(2023, 7, 25, 15, 20, 49, 962000),
+            datetime(2023, 7, 25, 15, 20, 49, 962000),
+        ],
     ]
 
-    formatted_staff = format_dim_staff(sample_staff_data)
+    formatted_staff = format_dim_staff(
+        sample_staff_data, sample_department_data
+    )
 
     expected_staff_data = [
         {
-            "staff_id": 1,
+            "staff_id": "1",
             "first_name": "zenab",
             "last_name": "haider",
             "department_name": "coding",
@@ -103,20 +117,22 @@ def test_format_dim_staff():
 
 
 def test_format_dim_location():
-    sample_dim_location = [
-        {
-            "location_id": 1,
-            "address_line_1": "123 apple street",
-            "address_line_2": "apple street",
-            "district": "bolton",
-            "city": "greater manchester",
-            "postal_code": "ABC 123",
-            "country": "England",
-            "phone": "123 456 789",
-        },
+    sample_address = [
+        [
+            1,
+            "123 apple street",
+            "apple street",
+            "bolton",
+            "greater manchester",
+            "ABC 123",
+            "England",
+            "123 456 789",
+            datetime(2023, 7, 25, 15, 20, 49, 962000),
+            datetime(2023, 7, 25, 15, 20, 49, 962000),
+        ],
     ]
 
-    formatted_location = format_dim_location(sample_dim_location)
+    formatted_location = format_dim_location(sample_address)
 
     expected_location_data = [
         {
@@ -135,11 +151,7 @@ def test_format_dim_location():
 
 
 def test_format_dim_date():
-    sample_date_data = [
-        {
-            "date_id": "2023-01-01",
-        },
-    ]
+    sample_date_data = "2023-01-01"
 
     formatted_date = format_dim_date(sample_date_data)
 
@@ -161,20 +173,21 @@ def test_format_dim_date():
 
 def test_format_dim_currency():
     sample_currency_data = [
-        {
-            "currency_id": 1,
-            "currency_code": "gbp",
-            "currency_name": "great british pounds",
-        },
+        [
+            "1",
+            "gbp",
+            datetime(2023, 7, 25, 15, 20, 49, 962000),
+            datetime(2023, 7, 25, 15, 20, 49, 962000),
+        ],
     ]
 
     formatted_currency = format_dim_currency(sample_currency_data)
 
     expected_currency_data = [
         {
-            "currency_id": 1,
+            "currency_id": "1",
             "currency_code": "gbp",
-            "currency_name": "great british pounds",
+            "currency_name": "British Pound",
         },
     ]
 
@@ -183,38 +196,47 @@ def test_format_dim_currency():
 
 def test_format_dim_counterparty():
     sample_counterparty_data = [
-        {
-            "counterparty_id": 1,
-            "counterparty_legal_name": "hello",
-            "counterparty_legal_address_line_1": "legal address",
-            "counterparty_legal_address_line2": "counterparty_legal\
-            _address_line2",
-            "counterparty_legal_district": "counterparty_legal_district",
-            "counterparty_legal_city": "counterparty_legal_city",
-            "counterparty_legal_postal_code": "counterparty_legal_postal_code",
-            "counterparty_legal_country": "counterparty_legal_country",
-            "counterparty_legal_phone_number": "counterparty_legal\
-            _phone_number",
-        },
+        [
+            "1",
+            "hello",
+            "1",
+            "commercial_contact",
+            "delivery_contact",
+            datetime(2023, 7, 25, 15, 20, 49, 962000),
+            datetime(2023, 7, 25, 15, 20, 49, 962000),
+        ],
+    ]
+
+    sample_address = [
+        [
+            "1",
+            "123 apple street",
+            "apple street",
+            "bolton",
+            "greater manchester",
+            "ABC 123",
+            "England",
+            "123 456 789",
+            datetime(2023, 7, 25, 15, 20, 49, 962000),
+            datetime(2023, 7, 25, 15, 20, 49, 962000),
+        ],
     ]
 
     formatted_counterparty_data = format_dim_counterparty(
-        sample_counterparty_data
+        sample_counterparty_data, sample_address
     )
 
     expected_counterparty_data = [
         {
-            "counterparty_id": 1,
+            "counterparty_id": "1",
             "counterparty_legal_name": "hello",
-            "counterparty_legal_address_line_1": "legal address",
-            "counterparty_legal_address_line2": "counterparty_legal\
-            _address_line2",
-            "counterparty_legal_district": "counterparty_legal_district",
-            "counterparty_legal_city": "counterparty_legal_city",
-            "counterparty_legal_postal_code": "counterparty_legal_postal_code",
-            "counterparty_legal_country": "counterparty_legal_country",
-            "counterparty_legal_phone_number": "counterparty_legal\
-            _phone_number",
+            "counterparty_legal_address_line_1": "123 apple street",
+            "counterparty_legal_address_line2": "apple street",
+            "counterparty_legal_district": "bolton",
+            "counterparty_legal_city": "greater manchester",
+            "counterparty_legal_postal_code": "ABC 123",
+            "counterparty_legal_country": "England",
+            "counterparty_legal_phone_number": "123 456 789",
         },
     ]
 
