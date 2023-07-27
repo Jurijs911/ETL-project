@@ -4,7 +4,7 @@ from unittest.mock import patch
 import datetime
 from decimal import Decimal
 
-ingestion_utils_path = 'src.ingestion_lambda.utils.'
+ingestion_utils_path = 'src.ingestion_lambda.'
 sales_order_get_last_time_path = 'get_sales_order_add.get_last_time'
 get_last_time_patch_path = ingestion_utils_path + \
     sales_order_get_last_time_path

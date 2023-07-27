@@ -4,7 +4,7 @@ from src.ingestion_lambda.get_purchase_order_add \
 from unittest.mock import patch
 import datetime
 
-ingestion_utils_path = 'src.ingestion_lambda.utils.'
+ingestion_utils_path = 'src.ingestion_lambda.'
 purchase_order_get_last_time_path = \
     'get_purchase_order_add.get_last_time'
 get_last_time_patch_path = ingestion_utils_path + \

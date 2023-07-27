@@ -3,7 +3,7 @@ from src.ingestion_lambda.get_counterparty_add \
 from unittest.mock import patch
 import datetime
 
-ingestion_utils_path = 'src.ingestion_lambda.utils.'
+ingestion_utils_path = 'src.ingestion_lambda.'
 counterparty_get_last_time_path = 'get_counterparty_add.get_last_time'
 get_last_time_patch_path = ingestion_utils_path + \
     counterparty_get_last_time_path

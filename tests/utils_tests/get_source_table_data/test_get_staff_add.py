@@ -2,7 +2,7 @@ from src.ingestion_lambda.get_staff_add import get_staff_add
 from unittest.mock import patch
 import datetime
 
-ingestion_utils_path = "src.ingestion_lambda.utils."
+ingestion_utils_path = "src.ingestion_lambda."
 staff_get_last_time_path = "get_staff_add.get_last_time"
 get_last_time_patch_path = ingestion_utils_path + staff_get_last_time_path
 

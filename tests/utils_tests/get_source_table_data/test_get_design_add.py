@@ -8,7 +8,7 @@ import pytest
 
 
 def test_get_design_add_returns_list():
-    with patch('src.ingestion_lambda.utils.get_design_add.get_last_time') as mock_get_last_time:
+    with patch('src.ingestion_lambda.get_design_add.get_last_time') as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             '2020-07-25 15:20:49.962000', '%Y-%m-%d %H:%M:%S.%f')
         # test that we are returning a list,
