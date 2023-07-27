@@ -1,7 +1,7 @@
 resource "aws_cloudwatch_log_metric_filter" "alert_error" {
   name           = "alert_error_metric_filter"
   pattern        = "ERROR"
-  log_group_name = "" # also needs to be added
+  log_group_name = "aws/lambda/${aws_lambda_function.ingestion_lambda.function_name}"
 
   metric_transformation {
     name      = "ErrorCount"
