@@ -33,7 +33,7 @@ def iterate_bucket_items(bucket):
                 yield item
 
 
-def read_ingestion_csv(bucket_name="kp-northcoder-ingestion-bucket"):
+def read_ingestion_csv(bucket_name="kp-northcoders-ingested-bucket"):
     s3_client = boto3.client("s3")
 
     ingested_data = {
