@@ -1,7 +1,8 @@
-from src.ingestion_lambda.utils.write_updated_time import write_updated_time
-from unittest import mock
+from src.ingestion_lambda.utils.write_updated_time \
+    import write_updated_time
 from moto import mock_s3
 import boto3
+
 
 @mock_s3
 def test_write_updated_time_returns_status_code_when_successfully_uploading():
