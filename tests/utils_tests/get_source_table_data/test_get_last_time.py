@@ -1,4 +1,4 @@
-from src.ingestion_lambda.utils.get_last_time import get_last_time
+from src.ingestion_lambda.get_last_time import get_last_time
 from moto import mock_s3
 import boto3
 

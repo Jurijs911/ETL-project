@@ -1,5 +1,5 @@
 from decimal import Decimal
-from src.ingestion_lambda.utils.get_design_add import get_design_add
+from src.ingestion_lambda.get_design_add import get_design_add
 from unittest.mock import patch, Mock
 from unittest import mock
 import pg8000.native

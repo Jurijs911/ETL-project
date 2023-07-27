@@ -1,4 +1,4 @@
-from src.ingestion_lambda.utils.get_counterparty_add \
+from src.ingestion_lambda.get_counterparty_add \
     import get_counterparty_add
 from unittest.mock import patch
 import datetime

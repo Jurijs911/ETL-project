@@ -1,4 +1,4 @@
-from src.ingestion_lambda.utils.get_sales_order_add \
+from src.ingestion_lambda.get_sales_order_add \
     import get_sales_order_add
 from unittest.mock import patch
 import datetime

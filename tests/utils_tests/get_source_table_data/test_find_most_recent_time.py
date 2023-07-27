@@ -1,4 +1,4 @@
-from src.ingestion_lambda.utils.find_most_recent_time \
+from src.ingestion_lambda.find_most_recent_time \
     import find_most_recent_time
 import datetime
 

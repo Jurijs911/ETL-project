@@ -1,6 +1,6 @@
 
 from decimal import Decimal
-from src.ingestion_lambda.utils.get_payment_add import get_payment_add
+from src.ingestion_lambda.get_payment_add import get_payment_add
 from unittest.mock import patch, Mock
 from unittest import mock
 import pg8000.native

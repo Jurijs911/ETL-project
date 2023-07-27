@@ -1,5 +1,5 @@
 from decimal import Decimal
-from src.ingestion_lambda.utils.get_purchase_order_add \
+from src.ingestion_lambda.get_purchase_order_add \
     import get_purchase_order_add
 from unittest.mock import patch
 import datetime

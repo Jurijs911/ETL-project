@@ -1,4 +1,4 @@
-from src.ingestion_lambda.utils.get_currency_add import get_currency_add
+from src.ingestion_lambda.get_currency_add import get_currency_add
 from unittest.mock import patch
 import datetime
 
