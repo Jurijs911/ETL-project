@@ -1,30 +1,29 @@
-from ast import Num
 from decimal import Decimal
-from unicodedata import numeric
-from requests import patch
-from src.ingestion_lambda.utils.get_purchase_order_add import get_purchase_order_add
-from unittest.mock import patch, Mock
-from unittest import mock
-import pg8000.native
+from src.ingestion_lambda.utils.get_purchase_order_add \
+    import get_purchase_order_add
+from unittest.mock import patch
 import datetime
-import pytest
+
+ingestion_utils_path = 'src.ingestion_lambda.utils.'
+purchase_order_get_last_time_path = \
+    'get_purchase_order_add.get_last_time'
+get_last_time_patch_path = ingestion_utils_path + \
+    purchase_order_get_last_time_path
 
 
 def test_get_purchase_order_add_returns_list():
-    with patch('src.ingestion_lambda.utils.get_purchase_order_add.get_last_time') as mock_get_last_time:
+    with patch(get_last_time_patch_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             '2020-07-25 15:20:49.962000', '%Y-%m-%d %H:%M:%S.%f')
-        # test that we are returning a list,
         result = get_purchase_order_add()
 
         assert isinstance(result, list)
 
 
 def test_get_purchase_order_add_returns_correct_keys():
-    with patch('src.ingestion_lambda.utils.get_purchase_order_add.get_last_time') as mock_get_last_time:
+    with patch(get_last_time_patch_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             '2020-07-25 15:20:49.962000', '%Y-%m-%d %H:%M:%S.%f')
-        # test that we have the correct keys
         expected_keys = {"purchase_order_id",
                          "created_at",
                          "last_updated",
@@ -43,10 +42,9 @@ def test_get_purchase_order_add_returns_correct_keys():
 
 
 def test_get_address_add_has_correct_value_types():
-    with patch('src.ingestion_lambda.utils.get_purchase_order_add.get_last_time') as mock_get_last_time:
+    with patch(get_last_time_patch_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             '2020-07-25 15:20:49.962000', '%Y-%m-%d %H:%M:%S.%f')
-    # test that each key has the correct type value
         result = get_purchase_order_add()
         for item in result:
             assert isinstance(item['purchase_order_id'], int)
@@ -64,8 +62,7 @@ def test_get_address_add_has_correct_value_types():
 
 
 def test_get_purchase_order_add_calls_get_last_time():
-    # test that the SQL query calls get_last_time()
-    with patch('src.ingestion_lambda.utils.get_purchase_order_add.get_last_time') as mock_get_last_time:
+    with patch(get_last_time_patch_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             '2020-07-25 15:20:49.962000', '%Y-%m-%d %H:%M:%S.%f')
         get_purchase_order_add()
