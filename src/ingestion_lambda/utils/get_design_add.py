@@ -24,15 +24,13 @@ def get_design_add():
     """
     search_interval = get_last_time('design')
 
-    print("DEBUG time:", search_interval)
-
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
     query = f"SELECT * FROM design WHERE created_at > '{search_interval}';"
     rows = conn.run(query)
     created_data = []
-    print(rows)
+
     for row in rows:
         item = {
             "design_id": row[0],
@@ -44,15 +42,3 @@ def get_design_add():
         }
         created_data.append(item)
     return created_data
-
-
-get_design_add()
-
-# Table design as D {
-#   design_id int [pk, increment, not null]
-#   created_at timestamp [not null, default: `current_timestamp`]
-#   last_updated timestamp [not null, default: `current_timestamp`]
-#   design_name varchar [not null]
-#   file_location varchar [not null, note: 'directory location']
-#   file_name varchar [not null, note: 'file name']
-# }

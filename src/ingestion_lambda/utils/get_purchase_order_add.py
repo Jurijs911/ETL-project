@@ -24,8 +24,6 @@ def get_purchase_order_add():
     """
     search_interval = get_last_time('purchase_order')
 
-    print("DEBUG time:", search_interval)
-
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
@@ -49,6 +47,3 @@ def get_purchase_order_add():
         }
         created_data.append(item)
     return created_data
-
-
-get_purchase_order_add()
