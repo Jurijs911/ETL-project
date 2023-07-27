@@ -1,8 +1,4 @@
-# Read S3 bucket for .txt file
-# return datetime
-
 from src.ingestion_lambda.utils.get_last_time import get_last_time
-from unittest import mock
 from moto import mock_s3
 import boto3
 
@@ -17,7 +13,7 @@ def test_get_last_time_returns_time_can_access_object_in_bucket():
     )
 
     s3_client.put_object(
-        Body = b'test_data',
+        Body=b'test_data',
         Bucket='kp-northcoder-ingestion-bucket',
         Key='test/created_at.txt'
     )
