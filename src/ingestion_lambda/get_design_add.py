@@ -1,6 +1,5 @@
 import os
 import pg8000.native
-import datetime
 from src.ingestion_lambda.get_last_time import get_last_time
 from dotenv import load_dotenv
 

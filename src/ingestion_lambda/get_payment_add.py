@@ -1,8 +1,8 @@
 import os
 import pg8000.native
-import datetime
 from src.ingestion_lambda.get_last_time import get_last_time
 from dotenv import load_dotenv
+
 load_dotenv()
 
 
@@ -16,13 +16,17 @@ def get_payment_add():
     db_port = os.environ.get("DB_SOURCE_PORT")
     db_password = os.environ.get("DB_SOURCE_PASSWORD")
     conn = pg8000.native.Connection(
-        user=db_user, database=db_database, host=db_host, port=db_port, password=db_password
+        user=db_user,
+        database=db_database,
+        host=db_host,
+        port=db_port,
+        password=db_password,
     )
 
     """
     DETERMINE SEARCH INTERVAL
     """
-    search_interval = get_last_time('payment')
+    search_interval = get_last_time("payment")
 
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
@@ -43,7 +47,7 @@ def get_payment_add():
             "paid": row[8],
             "payment_date": row[9],
             "company_ac_number": row[10],
-            "counterparty_ac_number": row[11]
+            "counterparty_ac_number": row[11],
         }
         created_data.append(item)
     return created_data

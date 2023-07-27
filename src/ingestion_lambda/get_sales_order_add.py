@@ -1,9 +1,10 @@
 import os
 import pg8000.native
-import datetime 
 from src.ingestion_lambda.get_last_time import get_last_time
 from dotenv import load_dotenv
+
 load_dotenv()
+
 
 def get_sales_order_add():
     """
@@ -15,20 +16,26 @@ def get_sales_order_add():
     db_port = os.environ.get("DB_SOURCE_PORT")
     db_password = os.environ.get("DB_SOURCE_PASSWORD")
     conn = pg8000.native.Connection(
-        user=db_user, database=db_database, host=db_host, port=db_port, password=db_password
+        user=db_user,
+        database=db_database,
+        host=db_host,
+        port=db_port,
+        password=db_password,
     )
 
     """
     DETERMINE SEARCH INTERVAL
     """
-    search_interval = get_last_time('sales_order')
+    search_interval = get_last_time("sales_order")
 
     print("DEBUG time:", search_interval)
 
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
-    query = f"SELECT * FROM sales_order WHERE created_at > '{search_interval}';"
+    query = (
+        f"SELECT * FROM sales_order WHERE created_at > '{search_interval}';"
+    )
     rows = conn.run(query)
     created_data = []
     for row in rows:
@@ -44,7 +51,7 @@ def get_sales_order_add():
             "currency_id": row[8],
             "agreed_delivery_date": row[9],
             "agreed_payment_date": row[10],
-            "agreed_delivery_location_id": row[11]
+            "agreed_delivery_location_id": row[11],
         }
         created_data.append(item)
     # print(created_data)
