@@ -29,9 +29,17 @@ resource "aws_lambda_permission" "allow_s3" {
   action         = "lambda:InvokeFunction"
   function_name  = aws_lambda_function.remodelling_lambda.function_name
   principal      = "s3.amazonaws.com"
-  source_arn     = aws_s3_bucket.processed_bucket.arn
+  source_arn     = aws_s3_bucket.ingestion_bucket.arn
   source_account = data.aws_caller_identity.current.account_id
 }
+
+# resource "aws_lambda_permission" "allow_s3" {
+#   action         = "lambda:InvokeFunction"
+#   function_name  = aws_lambda_function.loading_lambda.function_name
+#   principal      = "s3.amazonaws.com"
+#   source_arn     = aws_s3_bucket.processed_bucket.arn
+#   source_account = data.aws_caller_identity.current.account_id
+# }
 
 resource "null_resource" "install_dependencies" {
   provisioner "local-exec" {
