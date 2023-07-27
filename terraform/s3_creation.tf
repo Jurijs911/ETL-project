@@ -20,7 +20,7 @@ resource "aws_s3_object" "created_at_date_sales_order" {
 
 resource "aws_s3_object" "created_at_date_design" {
   bucket = aws_s3_bucket.ingestion_bucket.bucket
-  key    = "date_design/created_at.txt"
+  key    = "design/created_at.txt"
   source = "data/created_at.txt"
 }
 
