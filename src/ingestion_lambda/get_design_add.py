@@ -1,8 +1,9 @@
 import os
 import pg8000.native
 import datetime
-from src.ingestion_lambda.utils.get_last_time import get_last_time
+from src.ingestion_lambda.get_last_time import get_last_time
 from dotenv import load_dotenv
+
 load_dotenv()
 
 
@@ -16,13 +17,17 @@ def get_design_add():
     db_port = os.environ.get("DB_SOURCE_PORT")
     db_password = os.environ.get("DB_SOURCE_PASSWORD")
     conn = pg8000.native.Connection(
-        user=db_user, database=db_database, host=db_host, port=db_port, password=db_password
+        user=db_user,
+        database=db_database,
+        host=db_host,
+        port=db_port,
+        password=db_password,
     )
 
     """
     DETERMINE SEARCH INTERVAL
     """
-    search_interval = get_last_time('design')
+    search_interval = get_last_time("design")
 
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
@@ -38,7 +43,7 @@ def get_design_add():
             "design_name": row[2],
             "file_location": row[3],
             "file_name": row[4],
-            "last_updated": row[5]
+            "last_updated": row[5],
         }
         created_data.append(item)
     return created_data
