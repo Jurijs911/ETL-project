@@ -1,11 +1,11 @@
-# resource "aws_lambda_function" "ingestion_lambda" {
-#   filename         = data.archive_file.ingestion_lambda_code.output_path
-#   function_name    = "ingestion_lambda"
-#   role             = aws_iam_role.lambda_role.arn
-#   handler          = "reader.lambda_handler" # UPDATE
-#   source_code_hash = data.archive_file.lambda.output_base64sha256
-#   runtime          = "python3.9"
-# }
+resource "aws_lambda_function" "ingestion_lambda" {
+  filename         = data.archive_file.ingestion_lambda_code.output_path
+  function_name    = "ingestion_lambda"
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "ingestion.lambda_handler" # UPDATE
+  source_code_hash = data.archive_file.ingestion_lambda_code.output_base64sha256
+  runtime          = "python3.9"
+}
 
 resource "aws_lambda_function" "remodelling_lambda" {
   filename         = data.archive_file.remodelling_lambda_code.output_path

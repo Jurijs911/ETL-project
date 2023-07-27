@@ -2,12 +2,12 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
-# data "archive_file" "ingestion_lambda_code" {
-#   type        = "zip"
-#   output_path = "${path.module}/../ingestion.zip"
-#   source_dir  = "${path.module}/../src/ingestion"
-#   depends_on  = [null_resource.install_dependencies]
-# }
+data "archive_file" "ingestion_lambda_code" {
+  type        = "zip"
+  output_path = "${path.module}/../ingestion.zip"
+  source_dir  = "${path.module}/../src/ingestion_lambda"
+  depends_on  = [null_resource.install_dependencies]
+}
 
 data "archive_file" "remodelling_lambda_code" {
   type        = "zip"
