@@ -22,7 +22,7 @@ def test_get_payment_add_returns_list():
 
 def test_get_payment_add_returns_correct_keys():
     with patch(
-        "src.ingestion_lambda.utils.get_payment_add.get_last_time"
+        "src.ingestion_lambda.get_payment_add.get_last_time"
     ) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
@@ -48,7 +48,7 @@ def test_get_payment_add_returns_correct_keys():
 
 def test_get_payment_add_has_correct_value_types():
     with patch(
-        "src.ingestion_lambda.utils.get_payment_add.get_last_time"
+        "src.ingestion_lambda.get_payment_add.get_last_time"
     ) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
@@ -73,7 +73,7 @@ def test_get_payment_add_has_correct_value_types():
 def test_get_payment_add_calls_get_last_time():
     # test that the SQL query calls get_last_time()
     with patch(
-        "src.ingestion_lambda.utils.get_payment_add.get_last_time"
+        "src.ingestion_lambda.get_payment_add.get_last_time"
     ) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
