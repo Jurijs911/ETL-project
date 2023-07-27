@@ -1,2 +1,0 @@
-sales_order_id,created_date,created_time,last_updated_date,last_updated_time,sales_staff_id,counterparty_id,units_sold,unit_price,currency_id,design_id,agreed_payment_date,agreed_delivery_date,agreed_delivery_location_id
-2,2023-07-25,15:20:49:962000,2023-07-25,15:20:49:962000,100,200,2000,20.65,5,1,"2023, 7, 30","2023, 8, 12",2
