@@ -24,8 +24,6 @@ def get_payment_add():
     """
     search_interval = get_last_time('payment')
 
-    print("DEBUG time:", search_interval)
-
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
@@ -49,21 +47,3 @@ def get_payment_add():
         }
         created_data.append(item)
     return created_data
-
-
-get_payment_add()
-
-# Table payment as P {
-#   payment_id int [pk, increment, not null]
-#   created_at timestamp [not null, default: `current_timestamp`]
-#   last_updated timestamp [not null, default: `current_timestamp`]
-#   transaction_id int [not null, ref: - transaction.transaction_id]
-#   counterparty_id int [not null, ref: > C.counterparty_id]
-#   payment_amount numeric [not null, note: 'value 1 - 1000000']
-#   currency_id int [ref: > currency.currency_id, not null]
-#   payment_type_id int [not null, ref: > payment_type.payment_type_id]
-#   paid boolean [not null]
-#   payment_date varchar [not null, note: 'format is yyyy-mm-dd']
-#   company_ac_number int [not null, note: '8 digits']
-#   counterparty_ac_number int [not null, note: '8 digits']
-# }
