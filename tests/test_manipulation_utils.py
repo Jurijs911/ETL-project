@@ -29,7 +29,7 @@ def test_format_fact_sales_order():
     ]
 
     formatted_data = format_fact_sales_order(sample_sales_data)
-    print(formatted_data)
+
     expected_sales_data = [
         {
             "sales_order_id": "2",

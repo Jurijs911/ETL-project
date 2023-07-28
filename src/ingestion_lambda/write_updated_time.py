@@ -1,4 +1,6 @@
+import logging
 import boto3
+from botocore.exceptions import ClientError
 
 
 def write_updated_time(timestamp, table):
@@ -17,7 +19,7 @@ def write_updated_time(timestamp, table):
             Body=open("created_at.txt", "rb")
         )
 
-    # except ClientError as e:
-    #     logging.error(e)
-    #     return False
+    except ClientError as e:
+        logging.error(e)
+        return False
     return response

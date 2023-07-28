@@ -3,7 +3,7 @@ import boto3
 
 
 def upload_csv(data, table_name, bucket_name):
-    with open(f"{table_name}.csv", "w", newline="") as csvfile:
+    with open(f"{table_name}.csv", "a", newline="") as csvfile:
         fieldnames = data[0].keys()
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
