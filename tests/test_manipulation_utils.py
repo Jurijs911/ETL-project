@@ -6,73 +6,185 @@ from src.remodelling.manipulation_utils import (
     format_dim_date,
     format_dim_currency,
     format_dim_counterparty,
+    InputValidationError,
 )
 from datetime import datetime
+import pytest
 
 
-def test_format_fact_sales_order():
-    sample_sales_data = [
-        [
-            "2",
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-            "100",
-            "200",
-            "2000",
-            "5",
-            "20.65",
-            "1",
-            "2023, 7, 30",
-            "2023, 8, 12",
-            "2",
-        ],
-    ]
+class Test_Format_Fact_Sales_Order:
+    def test_formats_data_correctly(self):
+        sample_sales_data = [
+            [
+                "2",
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "100",
+                "200",
+                "2000",
+                "5",
+                "20.65",
+                "1",
+                "2023, 7, 30",
+                "2023, 8, 12",
+                "2",
+            ],
+        ]
 
-    formatted_data = format_fact_sales_order(sample_sales_data)
+        formatted_data = format_fact_sales_order(sample_sales_data)
 
-    expected_sales_data = [
-        {
-            "sales_order_id": "2",
-            "created_date": "2023-07-25",
-            "created_time": "15:20:49:962000",
-            "last_updated_date": "2023-07-25",
-            "last_updated_time": "15:20:49:962000",
-            "sales_staff_id": "200",
-            "counterparty_id": "2000",
-            "units_sold": "5",
-            "unit_price": "20.65",
-            "currency_id": "1",
-            "design_id": "100",
-            "agreed_payment_date": "2023, 8, 12",
-            "agreed_delivery_date": "2023, 7, 30",
-            "agreed_delivery_location_id": "2",
-        },
-    ]
-    assert formatted_data == expected_sales_data
+        expected_sales_data = [
+            {
+                "sales_order_id": "2",
+                "created_date": "2023-07-25",
+                "created_time": "15:20:49:962000",
+                "last_updated_date": "2023-07-25",
+                "last_updated_time": "15:20:49:962000",
+                "sales_staff_id": "200",
+                "counterparty_id": "2000",
+                "units_sold": "5",
+                "unit_price": "20.65",
+                "currency_id": "1",
+                "design_id": "100",
+                "agreed_payment_date": "2023, 8, 12",
+                "agreed_delivery_date": "2023, 7, 30",
+                "agreed_delivery_location_id": "2",
+            },
+        ]
+        assert formatted_data == expected_sales_data
+
+    def test_raises_exception_when_input_is_wrong_type(self):
+        sample_sales_data = [
+            [
+                "2",
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                True,
+                "200",
+                "2000",
+                "5",
+                "20.65",
+                "1",
+                "2023, 7, 30",
+                "2023, 8, 12",
+                "2",
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_fact_sales_order(sample_sales_data)
+
+    def test_raises_exception_when_input_has_id_that_cannot_convert_to_integer(
+        self,
+    ):
+        sample_sales_data = [
+            [
+                "2",
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "letters",
+                "200",
+                "2000",
+                "5",
+                "20.65",
+                "1",
+                "2023, 7, 30",
+                "2023, 8, 12",
+                "2",
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_fact_sales_order(sample_sales_data)
+
+    def test_raises_exception_when_input_is_wrong_length(
+        self,
+    ):
+        sample_sales_data = [
+            [
+                "2",
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023, 7, 30",
+                "2023, 8, 12",
+                "2",
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_fact_sales_order(sample_sales_data)
 
 
-def test_format_dim_design():
-    sample_design_data = [
-        [
-            "1",
-            "design 1",
-            "./design.jpg",
-            "design.jpg",
-        ],
-    ]
+class Test_Format_Dim_Design:
+    def test_formats_data_correctly(self):
+        sample_design_data = [
+            [
+                "1",
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "design 1",
+                "./design.jpg",
+                "design.jpg",
+            ],
+        ]
 
-    formatted_design = format_dim_design(sample_design_data)
+        formatted_design = format_dim_design(sample_design_data)
 
-    expected_design_data = [
-        {
-            "design_id": "1",
-            "design_name": "design 1",
-            "file_location": "./design.jpg",
-            "file_name": "design.jpg",
-        },
-    ]
+        expected_design_data = [
+            {
+                "design_id": "1",
+                "design_name": "design 1",
+                "file_location": "./design.jpg",
+                "file_name": "design.jpg",
+            },
+        ]
 
-    assert formatted_design == expected_design_data
+        assert formatted_design == expected_design_data
+
+    def test_raises_exception_when_input_is_wrong_type(self):
+        sample_design_data = [
+            [
+                "1",
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                None,
+                "./design.jpg",
+                "design.jpg",
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_fact_sales_order(sample_design_data)
+
+    def test_raises_exception_when_input_has_id_that_cannot_convert_to_integer(
+        self,
+    ):
+        sample_design_data = [
+            [
+                "letters",
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "design 1",
+                "./design.jpg",
+                "design.jpg",
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_fact_sales_order(sample_design_data)
+
+    def test_raises_exception_when_input_is_wrong_length(
+        self,
+    ):
+        sample_design_data = [
+            [
+                "letters",
+                "design.jpg",
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_fact_sales_order(sample_design_data)
 
 
 def test_format_dim_staff():
