@@ -114,6 +114,19 @@ def format_dim_staff(staff_data, department_data):
                 formatted_data.append(formatted_staff)
     return formatted_data
 
+def validate_dim_staff_data(staff_data, department_data):
+    for staff in staff_data:
+        if len(staff) != 5:
+            raise InputValidationError
+        for dep in department_data:
+            if dep[0] == staff[3]:
+                if not all(isinstance(item, str) for item in staff[1:]):
+                    raise InputValidationError
+                break
+        else:
+            raise InputValidationError
+
+
 
 def format_dim_location(location_data):
     """
@@ -134,6 +147,13 @@ def format_dim_location(location_data):
         }
         formatted_data.append(formatted_location)
     return formatted_data
+
+def validate_dim_location_data(location_data):
+    for location in location_data:
+        if len(location) != 8:
+            raise InputValidationError
+        if not all(isinstance(item, str) for item in location[1:]):
+            raise InputValidationError
 
 
 def format_dim_date(date_data):
@@ -156,6 +176,12 @@ def format_dim_date(date_data):
     formatted_data.append(formatted_date)
     return formatted_data
 
+def validate_dim_date_data(date_data):
+    try:
+        datetime.strptime(date_data, "%Y-%m-%d")
+    except ValueError:
+        raise InputValidationError
+
 
 def format_dim_currency(currency_data):
     """
@@ -171,6 +197,13 @@ def format_dim_currency(currency_data):
         }
         formatted_data.append(formatted_currency)
     return formatted_data
+
+def validate_dim_currency_data(currency_data):
+    for currency in currency_data:
+        if len(currency) != 2:
+            raise InputValidationError
+        if not isinstance(currency[1], str):
+            raise InputValidationError
 
 
 def format_dim_counterparty(counterparty_data, location_data):
@@ -195,3 +228,17 @@ def format_dim_counterparty(counterparty_data, location_data):
                 }
                 formatted_data.append(formatted_counterparty)
     return formatted_data
+
+def validate_dim_counterparty_data(counterparty_data, location_data):
+    for counterparty in counterparty_data:
+        if len(counterparty) != 3:
+            raise InputValidationError
+        if not isinstance(counterparty[1], str):
+            raise InputValidationError
+        for location in location_data:
+            if location[0] == counterparty[2]:
+                if not all(isinstance(item, str) for item in location[1:]):
+                    raise InputValidationError
+                break
+        else:
+            raise InputValidationError
