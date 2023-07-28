@@ -32,9 +32,10 @@ def get_purchase_order_add():
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
     query = (
-        f"SELECT * FROM purchase_order WHERE created_at > '{search_interval}';"
+        f"SELECT * FROM purchase_order WHERE created_at > :search_interval;"
     )
-    rows = conn.run(query)
+    params = {'search_interval': search_interval}
+    rows = conn.run(query, **params)
     created_data = []
     for row in rows:
         item = {

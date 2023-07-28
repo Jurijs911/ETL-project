@@ -28,13 +28,12 @@ def get_address_add():
     """
     search_interval = get_last_time("address")
 
-    print("DEBUG time:", search_interval)
-
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
-    query = f"SELECT * FROM address WHERE created_at > '{search_interval}';"
-    rows = conn.run(query)
+    query = f"SELECT * FROM address WHERE created_at > :search_interval;"
+    params = {'search_interval': search_interval}
+    rows = conn.run(query, **params)
     created_data = []
     for row in rows:
         item = {
@@ -50,4 +49,5 @@ def get_address_add():
             "last_updated": row[9],
         }
         created_data.append(item)
+
     return created_data
