@@ -6,7 +6,7 @@ from moto import mock_s3
 
 @mock_s3
 class Test_Remodelling_Filter:
-    def test_filters_data():
+    def test_filters_data(self):
         s3_client = boto3.client("s3", region_name="eu-west-2")
 
         s3_client.create_bucket(
@@ -82,7 +82,7 @@ class Test_Remodelling_Filter:
 
         assert result == expected
 
-    def test_does_not_filter_if_unnecessary():
+    def test_does_not_filter_if_unnecessary(self):
         s3_client = boto3.client("s3", region_name="eu-west-2")
 
         s3_client.create_bucket(
@@ -144,7 +144,7 @@ class Test_Remodelling_Filter:
 
         assert result == expected
 
-    def test_filters_all_data_if_no_new_data():
+    def test_filters_all_data_if_no_new_data(self):
         s3_client = boto3.client("s3", region_name="eu-west-2")
 
         s3_client.create_bucket(
