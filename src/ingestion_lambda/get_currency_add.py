@@ -28,13 +28,12 @@ def get_currency_add():
     """
     search_interval = get_last_time("currency")
 
-    print("DEBUG time:", search_interval)
-
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
-    query = f"SELECT * FROM currency WHERE created_at > '{search_interval}';"
-    rows = conn.run(query)
+    query = f"SELECT * FROM currency WHERE created_at > :search_interval;"
+    params = {'search_interval': search_interval}
+    rows = conn.run(query, **params)
     created_data = []
     for row in rows:
         item = {
@@ -44,5 +43,5 @@ def get_currency_add():
             "last_updated": row[3],
         }
         created_data.append(item)
-    # print(created_data)
+
     return created_data

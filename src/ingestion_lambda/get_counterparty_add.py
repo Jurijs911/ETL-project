@@ -28,15 +28,14 @@ def get_counterparty_add():
     """
     search_interval = get_last_time("counterparty")
 
-    print("DEBUG time:", search_interval)
-
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
     query = (
-        f"SELECT * FROM counterparty WHERE created_at > '{search_interval}';"
+        f"SELECT * FROM counterparty WHERE created_at > :search_interval;"
     )
-    rows = conn.run(query)
+    params = {'search_interval': search_interval}
+    rows = conn.run(query, **params)
     created_data = []
     for row in rows:
         item = {
@@ -49,5 +48,5 @@ def get_counterparty_add():
             "last_updated": row[6],
         }
         created_data.append(item)
-    # print(created_data)
+
     return created_data

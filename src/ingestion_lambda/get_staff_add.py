@@ -31,8 +31,9 @@ def get_staff_add():
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
-    query = f"SELECT * FROM staff WHERE created_at > '{search_interval}';"
-    rows = conn.run(query)
+    query = f"SELECT * FROM staff WHERE created_at > :search_interval;"
+    params = {'search_interval': search_interval}
+    rows = conn.run(query, **params)
     created_data = []
     for row in rows:
         item = {
