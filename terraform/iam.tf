@@ -50,6 +50,15 @@ data "aws_iam_policy_document" "cw_document" {
       "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/remodelling-lambda:*", "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/ingestion-lambda:*"
     ]
   }
+
+  statement {
+    actions = ["logs:PutLogEvents"]
+
+    resources = [
+      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/remodelling-lambda:*:log-stream:*",
+      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/ingestion-lambda:*:log-stream:*",
+    ]
+  }
 }
 
 
