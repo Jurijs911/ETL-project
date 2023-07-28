@@ -15,6 +15,10 @@ format_dim_counterparty
 """
 
 
+class InputValidationError(Exception):
+    pass
+
+
 def format_fact_sales_order(sales_data):
     """
     Manipulate sales data to match the format of the fact_sales_order
@@ -22,6 +26,19 @@ def format_fact_sales_order(sales_data):
     """
     formatted_data = []
     for sale in sales_data:
+        for index, column in enumerate(sale):
+            if index not in (1, 2) and not isinstance(column, str):
+                raise InputValidationError
+            elif index in (1, 2) and not isinstance(column, datetime):
+                raise InputValidationError
+            if index in (0, 3, 4, 5, 11):
+                try:
+                    int(column)
+                except ValueError:
+                    raise InputValidationError
+        if len(sale) != 12:
+            raise InputValidationError
+
         created_date = sale[1].strftime("%Y-%m-%d")
         created_time = sale[1].strftime("%H:%M:%S:%f")
         last_updated_date = sale[2].strftime("%Y-%m-%d")
@@ -54,11 +71,24 @@ def format_dim_design(design_data):
     """
     formatted_data = []
     for design in design_data:
+        for index, column in enumerate(design):
+            if index not in (1, 2) and not isinstance(column, str):
+                raise InputValidationError
+            elif index in (1, 2) and not isinstance(column, datetime):
+                raise InputValidationError
+            if index == 0:
+                try:
+                    int(column)
+                except ValueError:
+                    raise InputValidationError
+        if len(design) != 6:
+            raise InputValidationError
+
         formatted_design = {
             "design_id": design[0],
-            "design_name": design[1],
-            "file_location": design[2],
-            "file_name": design[3],
+            "design_name": design[3],
+            "file_location": design[4],
+            "file_name": design[5],
         }
         formatted_data.append(formatted_design)
     return formatted_data
