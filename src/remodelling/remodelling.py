@@ -68,5 +68,5 @@ def lambda_handler(event, context):
 
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
-        # log_to_cloudwatch(str(e), "/aws/lambda/remodelling-lambda", "lambda-log-stream")
+        log_to_cloudwatch(str(e), "/aws/lambda/remodelling-lambda", "lambda-log-stream")
         raise  # this triggers the CloudWatch alarm
