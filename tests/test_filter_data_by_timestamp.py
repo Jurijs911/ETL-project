@@ -1,12 +1,12 @@
 from src.remodelling.filter_data_by_timestamp import filter_data
-from datetime import datetime
+from src.remodelling.write_timestamp import write_timestamp
 import boto3
 from moto import mock_s3
 
 
 @mock_s3
 class Test_Remodelling_Filter:
-    def test_filters_data():
+    def test_filters_data(self):
         s3_client = boto3.client("s3", region_name="eu-west-2")
 
         s3_client.create_bucket(
@@ -16,25 +16,16 @@ class Test_Remodelling_Filter:
 
         s3_client.put_object(
             Bucket="kp-northcoders-ingestion-bucket",
-            Key="sales_order/created_at.txt",
+            Key="sales_order/last_processed.txt",
         )
 
-        most_recent = datetime(2020, 7, 25, 15, 20, 49, 962000)
-
-        with open("sales_order.txt", "w") as f:
-            f.write(most_recent.strftime("%Y-%m-%d-%H:%M:%S:%f"))
-
-        s3_client.upload_file(
-            "sales_order.txt",
-            "kp-northcoders-ingestion-bucket",
-            "sales_order/created_at.txt",
-        )
+        write_timestamp([["2020-06-12 15:20:49.962000"]], "sales_order")
 
         sample_data = [
             [
                 "2",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
                 "100",
                 "200",
                 "2000",
@@ -47,8 +38,8 @@ class Test_Remodelling_Filter:
             ],
             [
                 "2",
-                datetime(1999, 7, 25, 15, 20, 49, 962000),
-                datetime(1999, 7, 25, 15, 20, 49, 962000),
+                "1999-06-12 15:20:49.962000",
+                "1999-06-12 15:20:49.962000",
                 "100",
                 "200",
                 "2000",
@@ -64,8 +55,8 @@ class Test_Remodelling_Filter:
         expected = [
             [
                 "2",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
                 "100",
                 "200",
                 "2000",
@@ -82,7 +73,7 @@ class Test_Remodelling_Filter:
 
         assert result == expected
 
-    def test_does_not_filter_if_unnecessary():
+    def test_does_not_filter_if_unnecessary(self):
         s3_client = boto3.client("s3", region_name="eu-west-2")
 
         s3_client.create_bucket(
@@ -92,25 +83,16 @@ class Test_Remodelling_Filter:
 
         s3_client.put_object(
             Bucket="kp-northcoders-ingestion-bucket",
-            Key="sales_order/created_at.txt",
+            Key="sales_order/last_processed.txt",
         )
 
-        most_recent = datetime(2020, 7, 25, 15, 20, 49, 962000)
-
-        with open("sales_order.txt", "w") as f:
-            f.write(most_recent.strftime("%Y-%m-%d-%H:%M:%S:%f"))
-
-        s3_client.upload_file(
-            "sales_order.txt",
-            "kp-northcoders-ingestion-bucket",
-            "sales_order/created_at.txt",
-        )
+        write_timestamp([["2020-06-12 15:20:49.962000"]], "sales_order")
 
         sample_data = [
             [
                 "2",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
                 "100",
                 "200",
                 "2000",
@@ -126,8 +108,8 @@ class Test_Remodelling_Filter:
         expected = [
             [
                 "2",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
                 "100",
                 "200",
                 "2000",
@@ -144,7 +126,7 @@ class Test_Remodelling_Filter:
 
         assert result == expected
 
-    def test_filters_all_data_if_no_new_data():
+    def test_filters_all_data_if_no_new_data(self):
         s3_client = boto3.client("s3", region_name="eu-west-2")
 
         s3_client.create_bucket(
@@ -154,25 +136,16 @@ class Test_Remodelling_Filter:
 
         s3_client.put_object(
             Bucket="kp-northcoders-ingestion-bucket",
-            Key="sales_order/created_at.txt",
+            Key="sales_order/last_processed.txt",
         )
 
-        most_recent = datetime(2020, 7, 25, 15, 20, 49, 962000)
-
-        with open("sales_order.txt", "w") as f:
-            f.write(most_recent.strftime("%Y-%m-%d-%H:%M:%S:%f"))
-
-        s3_client.upload_file(
-            "sales_order.txt",
-            "kp-northcoders-ingestion-bucket",
-            "sales_order/created_at.txt",
-        )
+        write_timestamp([["2020-06-12 15:20:49.962000"]], "sales_order")
 
         sample_data = [
             [
                 "2",
-                datetime(1999, 7, 25, 15, 20, 49, 962000),
-                datetime(1999, 7, 25, 15, 20, 49, 962000),
+                "1999-06-12 15:20:49.962000",
+                "1999-06-12 15:20:49.962000",
                 "100",
                 "200",
                 "2000",
