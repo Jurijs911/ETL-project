@@ -192,6 +192,41 @@ def test_remodelling():
 
     write_timestamp([["2020-7-25 15:20:49.962000"]], "counterparty")
 
+    s3_client.put_object(
+        Bucket="kp-northcoders-processed-bucket",
+        Key="fact_sales_order.csv",
+    )
+
+    s3_client.put_object(
+        Bucket="kp-northcoders-processed-bucket",
+        Key="dim_design.csv",
+    )
+
+    s3_client.put_object(
+        Bucket="kp-northcoders-processed-bucket",
+        Key="dim_staff.csv",
+    )
+
+    s3_client.put_object(
+        Bucket="kp-northcoders-processed-bucket",
+        Key="dim_location.csv",
+    )
+
+    s3_client.put_object(
+        Bucket="kp-northcoders-processed-bucket",
+        Key="dim_currency.csv",
+    )
+
+    s3_client.put_object(
+        Bucket="kp-northcoders-processed-bucket",
+        Key="dim_date.csv",
+    )
+
+    s3_client.put_object(
+        Bucket="kp-northcoders-processed-bucket",
+        Key="dim_counterparty.csv",
+    )
+
     lambda_handler(None, None)
 
     processed_response = s3_client.list_objects_v2(

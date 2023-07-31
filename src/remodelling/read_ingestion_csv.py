@@ -62,6 +62,7 @@ def read_ingestion_csv(bucket_name="kp-northcoders-ingestion-bucket"):
             )
             records = csv.reader(response)
             next(records)
+            next(records)
             table_data = []
             for row in records:
                 table_data.append(row)
