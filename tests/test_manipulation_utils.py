@@ -8,7 +8,6 @@ from src.remodelling.manipulation_utils import (
     format_dim_counterparty,
     InputValidationError,
 )
-from datetime import datetime
 import pytest
 
 
@@ -17,8 +16,8 @@ class Test_Format_Fact_Sales_Order:
         sample_sales_data = [
             [
                 "2",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
                 "100",
                 "200",
                 "2000",
@@ -37,9 +36,9 @@ class Test_Format_Fact_Sales_Order:
             {
                 "sales_order_id": "2",
                 "created_date": "2023-07-25",
-                "created_time": "15:20:49:962000",
+                "created_time": "15:20:49.962000",
                 "last_updated_date": "2023-07-25",
-                "last_updated_time": "15:20:49:962000",
+                "last_updated_time": "15:20:49.962000",
                 "sales_staff_id": "200",
                 "counterparty_id": "2000",
                 "units_sold": "5",
@@ -57,8 +56,8 @@ class Test_Format_Fact_Sales_Order:
         sample_sales_data = [
             [
                 "2",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
                 True,
                 "200",
                 "2000",
@@ -80,8 +79,8 @@ class Test_Format_Fact_Sales_Order:
         sample_sales_data = [
             [
                 "2",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
                 "letters",
                 "200",
                 "2000",
@@ -103,8 +102,8 @@ class Test_Format_Fact_Sales_Order:
         sample_sales_data = [
             [
                 "2",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
                 "2023, 7, 30",
                 "2023, 8, 12",
                 "2",
@@ -120,8 +119,8 @@ class Test_Format_Dim_Design:
         sample_design_data = [
             [
                 "1",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
                 "design 1",
                 "./design.jpg",
                 "design.jpg",
@@ -145,8 +144,8 @@ class Test_Format_Dim_Design:
         sample_design_data = [
             [
                 "1",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
                 None,
                 "./design.jpg",
                 "design.jpg",
@@ -162,8 +161,8 @@ class Test_Format_Dim_Design:
         sample_design_data = [
             [
                 "letters",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
                 "design 1",
                 "./design.jpg",
                 "design.jpg",
@@ -195,8 +194,8 @@ def test_format_dim_staff():
             "haider",
             "1",
             "zenab@gmail.com",
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
+            "2023-06-12 15:20:49.962000",
+            "2023-06-12 15:20:49.962000",
         ],
     ]
     sample_department_data = [
@@ -205,8 +204,8 @@ def test_format_dim_staff():
             "coding",
             "manchester",
             "zenab",
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
+            "2023-06-12 15:20:49.962000",
+            "2023-06-12 15:20:49.962000",
         ],
     ]
 
@@ -231,7 +230,7 @@ def test_format_dim_staff():
 def test_format_dim_location():
     sample_address = [
         [
-            1,
+            "1",
             "123 apple street",
             "apple street",
             "bolton",
@@ -239,8 +238,8 @@ def test_format_dim_location():
             "ABC 123",
             "England",
             "123 456 789",
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
+            "2023-06-12 15:20:49.962000",
+            "2023-06-12 15:20:49.962000",
         ],
     ]
 
@@ -248,7 +247,7 @@ def test_format_dim_location():
 
     expected_location_data = [
         {
-            "location_id": 1,
+            "location_id": "1",
             "address_line_1": "123 apple street",
             "address_line_2": "apple street",
             "district": "bolton",
@@ -288,8 +287,8 @@ def test_format_dim_currency():
         [
             "1",
             "gbp",
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
+            "2023-06-12 15:20:49.962000",
+            "2023-06-12 15:20:49.962000",
         ],
     ]
 
@@ -314,8 +313,8 @@ def test_format_dim_counterparty():
             "1",
             "commercial_contact",
             "delivery_contact",
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
+            "2023-06-12 15:20:49.962000",
+            "2023-06-12 15:20:49.962000",
         ],
     ]
 
@@ -329,8 +328,8 @@ def test_format_dim_counterparty():
             "ABC 123",
             "England",
             "123 456 789",
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
+            "2023-06-12 15:20:49.962000",
+            "2023-06-12 15:20:49.962000",
         ],
     ]
 

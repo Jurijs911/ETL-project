@@ -1,12 +1,12 @@
 from src.remodelling.read_ingestion_csv import read_ingestion_csv
-from src.upload_csv import upload_csv
+from src.remodelling.upload_csv import upload_csv
 import os
 import boto3
 from moto import mock_s3
 
 
 @mock_s3
-class Test_read_ingested_csv:
+class Test_read_ingestion_csv:
     def test_reads_correct_data_for_one_table(self):
         s3_client = boto3.client("s3", region_name="eu-west-2")
         s3_client.create_bucket(
@@ -44,10 +44,6 @@ class Test_read_ingested_csv:
             "counterparty": [],
             "address": [],
             "department": [],
-            "purchase_order": [],
-            "payment_type": [],
-            "payment": [],
-            "transaction": [],
         }
 
         result = read_ingestion_csv("ingested-bucket")
@@ -117,10 +113,6 @@ class Test_read_ingested_csv:
             "counterparty": [],
             "address": [],
             "department": [],
-            "purchase_order": [],
-            "payment_type": [],
-            "payment": [],
-            "transaction": [],
         }
 
         result = read_ingestion_csv("ingested-bucket")
