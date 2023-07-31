@@ -1,7 +1,6 @@
 from src.remodelling.remodelling import lambda_handler
 from src.remodelling.upload_csv import upload_csv
 from src.remodelling.write_timestamp import write_timestamp
-from datetime import datetime
 from moto import mock_s3
 import boto3
 
@@ -28,14 +27,14 @@ def test_remodelling():
         {
             "currency_id": "1",
             "currency_code": "GBP",
-            "created_at": "2023-06-12",
-            "last_updated": "2023-06-12",
+            "created_at": "2023-06-12 15:20:49.962000",
+            "last_updated": "2023-06-12 15:20:49.962000",
         },
         {
             "currency_id": "2",
             "currency_code": "USD",
-            "created_at": "2022-12-12",
-            "last_updated": "2022-12-12",
+            "created_at": "2022-12-12 15:20:49.962000",
+            "last_updated": "2022-12-12 15:20:49.962000",
         },
     ]
 
@@ -48,8 +47,8 @@ def test_remodelling():
     sample_design_data = [
         {
             "design_id": "1",
-            "created_at": datetime(2023, 7, 25, 15, 20, 49, 962000),
-            "last_updated": datetime(2023, 7, 25, 15, 20, 49, 962000),
+            "created_at": "2023-7-25 15:20:49.962000",
+            "last_updated": "2023-7-25 15:20:49.962000",
             "design_name": "design 1",
             "file_location": "./design.jpg",
             "file_name": "design.jpg",
@@ -65,8 +64,8 @@ def test_remodelling():
     sample_sales_data = [
         {
             "sales_order_id": "2",
-            "created_at": datetime(2023, 7, 25, 15, 20, 49, 962000),
-            "last_updated": datetime(2023, 7, 25, 15, 20, 49, 962000),
+            "created_at": "2023-7-25 15:20:49.962000",
+            "last_updated": "2023-7-25 15:20:49.962000",
             "design_id": "100",
             "staff_id": "200",
             "counterparty_id": "2000",
@@ -94,8 +93,8 @@ def test_remodelling():
             "last_name": "haider",
             "department_id": "1",
             "email_address": "zenab@gmail.com",
-            "created_at": datetime(2023, 7, 25, 15, 20, 49, 962000),
-            "last_updated": datetime(2023, 7, 25, 15, 20, 49, 962000),
+            "created_at": "2023-7-25 15:20:49.962000",
+            "last_updated": "2023-7-25 15:20:49.962000",
         },
     ]
 
@@ -115,8 +114,8 @@ def test_remodelling():
             "postal_code": "ABC 123",
             "country": "England",
             "phone": "123 456 789",
-            "created_at": datetime(2023, 7, 25, 15, 20, 49, 962000),
-            "last_updated": datetime(2023, 7, 25, 15, 20, 49, 962000),
+            "created_at": "2023-7-25 15:20:49.962000",
+            "last_updated": "2023-7-25 15:20:49.962000",
         },
     ]
 
@@ -133,8 +132,8 @@ def test_remodelling():
             "legal_address_id": "1",
             "commercial_contact": "commercial_contact",
             "delivery_contact": "delivery_contact",
-            "created_at": datetime(2023, 7, 25, 15, 20, 49, 962000),
-            "last_updated": datetime(2023, 7, 25, 15, 20, 49, 962000),
+            "created_at": "2023-7-25 15:20:49.962000",
+            "last_updated": "2023-7-25 15:20:49.962000",
         },
     ]
 
@@ -149,63 +148,57 @@ def test_remodelling():
         Key="currency/last_processed.txt",
     )
 
-    write_timestamp([[datetime(2020, 7, 25, 15, 20, 49, 962000)]], "currency")
+    write_timestamp([["2020-7-25 15:20:49.962000"]], "currency")
 
     s3_client.put_object(
         Bucket="kp-northcoders-ingestion-bucket",
         Key="sales_order/last_processed.txt",
     )
 
-    write_timestamp(
-        [[datetime(2020, 7, 25, 15, 20, 49, 962000)]], "sales_order"
-    )
+    write_timestamp([["2020-7-25 15:20:49.962000"]], "sales_order")
 
     s3_client.put_object(
         Bucket="kp-northcoders-ingestion-bucket",
         Key="design/last_processed.txt",
     )
 
-    write_timestamp([[datetime(2020, 7, 25, 15, 20, 49, 962000)]], "design")
+    write_timestamp([["2020-7-25 15:20:49.962000"]], "design")
 
     s3_client.put_object(
         Bucket="kp-northcoders-ingestion-bucket",
         Key="staff/last_processed.txt",
     )
 
-    write_timestamp([[datetime(2020, 7, 25, 15, 20, 49, 962000)]], "staff")
+    write_timestamp([["2020-7-25 15:20:49.962000"]], "staff")
 
     s3_client.put_object(
         Bucket="kp-northcoders-ingestion-bucket",
         Key="department/last_processed.txt",
     )
 
-    write_timestamp(
-        [[datetime(2020, 7, 25, 15, 20, 49, 962000)]], "department"
-    )
+    write_timestamp([["2020-7-25 15:20:49.962000"]], "department")
 
     s3_client.put_object(
         Bucket="kp-northcoders-ingestion-bucket",
         Key="address/last_processed.txt",
     )
 
-    write_timestamp([[datetime(2020, 7, 25, 15, 20, 49, 962000)]], "address")
+    write_timestamp([["2020-7-25 15:20:49.962000"]], "address")
 
     s3_client.put_object(
         Bucket="kp-northcoders-ingestion-bucket",
         Key="counterparty/last_processed.txt",
     )
 
-    write_timestamp(
-        [[datetime(2020, 7, 25, 15, 20, 49, 962000)]], "counterparty"
-    )
+    write_timestamp([["2020-7-25 15:20:49.962000"]], "counterparty")
 
     lambda_handler(None, None)
 
-    response = s3_client.list_objects_v2(
+    processed_response = s3_client.list_objects_v2(
         Bucket="kp-northcoders-processed-bucket"
     )
 
-    for item in response["Contents"]:
+    for item in processed_response["Contents"]:
         assert item["Key"] in (
             "dim_counterparty.csv",
             "dim_currency.csv",
