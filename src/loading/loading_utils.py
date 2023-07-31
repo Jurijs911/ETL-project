@@ -33,6 +33,15 @@ def get_loaded_data(conn, table_name):
         loaded_data.append(row)
     return loaded_data
 
+
+
+def is_valid_email(email):
+    import re
+    pattern = r"[^@]+@[^@]+\.[^@]+"
+    return bool(re.match(pattern, email))
+
+
+
 def insert_into_dim_design(conn, design_data):
     """
     Insert data into the dim_design table
@@ -43,17 +52,12 @@ def insert_into_dim_design(conn, design_data):
 
     try:
         for design in design_data:
-            for index, column in enumerate(design):
-                if index not in (1, 2) and not isinstance(column, str):
+            if not isinstance(design[0], int):
+                raise InputValidationError
+            for index, column in enumerate(design[1:], start=1):
+                if not isinstance(column, str):
                     raise InputValidationError
-                elif index in (1, 2) and not isinstance(column, datetime):
-                    raise InputValidationError
-                if index == 0:
-                    try:
-                        int(column)
-                    except ValueError:
-                        raise InputValidationError
-            if len(design) != 6:
+            if len(design) != 4:
                 raise InputValidationError
 
             conn.run("INSERT INTO dim_design (design_id, design_name, file_location, file_name) VALUES (:(design_id), :(design_name), :(file_location), :(file_name))",
@@ -82,17 +86,12 @@ def insert_into_dim_currency(conn, currency_data):
 
     try:
         for currency in currency_data:
-            for index, column in enumerate(currency):
-                if index not in (2, 3) and not isinstance(column, str):
+            if not isinstance(currency[0], int):
+                raise InputValidationError
+            for index, column in enumerate(currency[1:], start=1):
+                if not isinstance(column, str):
                     raise InputValidationError
-                elif index in (2, 3) and not isinstance(column, datetime):
-                    raise InputValidationError
-                if index == 0:
-                    try:
-                        int(column)
-                    except ValueError:
-                        raise InputValidationError
-            if len(currency) != 4:
+            if len(currency) != 3:
                 raise InputValidationError
 
             conn.run("INSERT INTO dim_currency (currency_id, currency_code, currency_name) VALUES (:(currency_id), :(currency_code), :(currency_name))",
@@ -121,16 +120,17 @@ def insert_into_dim_staff(conn, staff_data):
 
     try:
         for staff in staff_data:
-            for index, column in enumerate(staff):
-                if index not in (5, 6) and not isinstance(column, str):
+            if not isinstance(staff[0], int):
+                raise InputValidationError
+            if not is_valid_email(staff[5]):
+                raise InputValidationError("Invalid email address format.")
+
+            for index, column in enumerate(staff[1:-1], start=1):
+                if not isinstance(column, str):
                     raise InputValidationError
-                elif index in (5, 6) and not isinstance(column, datetime):
-                    raise InputValidationError
-                if index == 0 or index == 3:
-                    try:
-                        int(column)
-                    except ValueError:
-                        raise InputValidationError
+
+            if len(staff) != 7:
+                raise InputValidationError
 
             conn.run("INSERT INTO dim_staff (staff_id, first_name, last_name, department_name, location, email_address) VALUES (:(staff_id), :(first_name), :(last_name), :(department_name), :(location), :(email_address))",
                      staff_id=staff[0], first_name=staff[1], last_name=staff[2], department_name=staff[3], location=staff[4], email_address=staff[5])
@@ -158,18 +158,16 @@ def insert_into_dim_location(conn, location_data):
     """
     try:
         for location in location_data:
-            for index, column in enumerate(location):
-                if index not in (8, 9) and not isinstance(column, str):
-                    raise InputValidationError
-                elif index in (8, 9) and not isinstance(column, datetime):
-                    raise InputValidationError
-                if index == 0:
-                    try:
-                        int(column)
-                    except ValueError:
-                        raise InputValidationError
-            if len(location) != 10:
+            if not isinstance(location[0], int):
                 raise InputValidationError
+
+            for index, column in enumerate(location[1:], start=1):
+                if not isinstance(column, str):
+                    raise InputValidationError
+
+            if len(location) != 8:
+                raise InputValidationError
+
             conn.run("INSERT INTO dim_location (location_id, address_line_1, address_line_2, district, city, postal_code, country, phone) VALUES (:(location_id), :(address_line_1, :(address_line_2), :(district), :(city), :(postal_code), :(country), :(phone))",
                     location_id=location[0], address_line_1=location[1], address_line_2=location[2], district=location[3], city=location[4], postal_code=location[5], country=location[6], phone=location[7])
 
@@ -196,12 +194,38 @@ def insert_into_dim_date(conn, date_data):
 
     try:
         for date in date_data:
+            if not isinstance(date["date_id"], str):
+                raise InputValidationError
+            try:
+                datetime.datetime.strptime(date["date_id"], "%Y-%m-%d")
+            except ValueError:
+                raise InputValidationError
+                
+            if not isinstance(date["year"], int):
+                raise InputValidationError
+            
+            if not isinstance(date["month"], int):
+                raise InputValidationError
+            
+            if not isinstance(date["day"], int):
+                raise InputValidationError
+            
+            if not isinstance(date["day_of_week"], int):
+                raise InputValidationError
+            
+            if not isinstance(date["day_name"], str):
+                raise InputValidationError
+            
+            if not isinstance(date["month_name"], str):
+                raise InputValidationError
+            
+            if not isinstance(date["quarter"], int):
+                raise InputValidationError
+
             conn.run("INSERT INTO dim_date (date_id, year, month, day, day_of_week, day_name, month_name, quarter) VALUES (:(date_id), :(year), :(month), :(day), :(day_of_week), :(day_name), :(month_name), :(quarter))",
-                     date_id=date[0], year=date[1], month=date[2], day=date[3], day_of_week=date[4], day_name=date[5], month_name=date[6], quarter=date[7])
+                     date_id=date["date_id"], year=date["year"], month=date["month"], day=date["day"], day_of_week=date["day_of_week"], day_name=date["day_name"], month_name=date["month_name"], quarter=date["quarter"])
 
         conn.close()
-
-        return get_loaded_data(conn, "dim_date")
 
     except InputValidationError as ive:
         conn.close()
@@ -210,6 +234,9 @@ def insert_into_dim_date(conn, date_data):
     except Exception as e:
         conn.close()
         raise
+
+    return get_loaded_data(conn, "dim_date")
+
 
 
 def insert_into_dim_counterparty(conn, counterparty_data):
@@ -222,21 +249,14 @@ def insert_into_dim_counterparty(conn, counterparty_data):
 
     try:
         for counterparty in counterparty_data:
-            for index, column in enumerate(counterparty):
-                if index not in (5, 6) and not isinstance(column, str):
+            if not isinstance(counterparty[0], int):
+                raise InputValidationError
+            
+            for index, column in enumerate(counterparty[1:]):
+                if not isinstance(column, str):
                     raise InputValidationError
-                elif index in (5, 6) and not isinstance(column, datetime):
-                    raise InputValidationError
-                if index not in (8, 9) and not isinstance(column, str):
-                    raise InputValidationError
-                elif index in (8, 9) and not isinstance(column, datetime):
-                    raise InputValidationError
-                if index == 0:
-                    try:
-                        int(column)
-                    except ValueError:
-                        raise InputValidationError
-            if len(counterparty) != 10:
+
+            if len(counterparty) != 9:
                 raise InputValidationError
 
             conn.run("INSERT INTO dim_counterparty (counterparty_id, counterparty_legal_name, counterparty_legal_address_line_1, counterparty_legal_address_line_2, counterparty_legal_district, counterparty_legal_city, counterparty_legal_postal_code, counterparty_legal_country, counterparty_legal_phone_number) VALUES (:(counterparty_id), :(counterparty_legal_name), :(counterparty_legal_address_line_1), :(counterparty_legal_address_line_2), :(counterparty_legal_district), :(counterparty_legal_city), :(counterparty_legal_postal_code), :(counterparty_legal_country), :(counterparty_legal_phone_number))",
@@ -264,26 +284,31 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
     """
 
     try:
-        for sale in fact_sales_order_data
-            for index, column in enumerate(sale):
-                if index not in (1, 2) and not isinstance(column, str):
+        for sale in fact_sales_order_data:
+            expected_data_types = [int, int, str, str, str, str, int, int, int, float, int, int, str, str, int]
+            for index, value in enumerate(sale):
+                if not isinstance(value, expected_data_types[index]):
                     raise InputValidationError
-                elif index in (1, 2) and not isinstance(column, datetime):
-                    raise InputValidationError
-                if index in (0, 3, 4, 5, 11):
-                    try:
-                        int(column)
-                    except ValueError:
-                        raise InputValidationError
-            if len(sale) != 12:
+            
+            try:
+                datetime.strptime(sale[2], "%Y-%m-%d")
+                datetime.strptime(sale[3], "%H:%M:%S:%f")
+                datetime.strptime(sale[4], "%Y-%m-%d")
+                datetime.strptime(sale[5], "%H:%M:%S:%f")
+                datetime.strptime(sale[12], "%Y-%m-%d")
+                datetime.strptime(sale[13], "%Y-%m-%d")
+            except ValueError:
                 raise InputValidationError
                 
-            conn.run("INSERT INTO fact_sales_order (sales_record_id, sales_order_id, created_date, created_time, last_updated_date, last_updated_time, sales_staff_id, counterparty_id, units_sold, unit_price, currency_id, design_id, agreed_payment_date, agreed_delivery_date, agreed_delivery_location_id) VALUES (:(sales_record_id), :(sales_order_id), :(created_date), :(created_time), :(last_updated_date), :(last_updated_time), :(sales_staff_id), :(counterparty_id), :(units_sold), :(unit_price), :(currency_id), :(design_id), :(agreed_payment_date), :(agreed_delivery_date), :(agreed_delivery_location_id))",
-                        sales_record_id=sale[0], sales_order_id=sale[1], created_date=sale[2], created_time=sale[3], last_updated_date=sale[4], last_updated_time=sale[5], sales_staff_id=sale[6], counterparty_id=sale[7], units_sold=sale[8], unit_price=sale[9], currency_id=sale[10], design_id=sale[11], agreed_payment_date=sale[12], agreed_delivery_date=sale[13], agreed_delivery_location_id=sale[14])
+            if len(sale) != 15:
+                raise InputValidationError
+
+            conn.run("INSERT INTO dim_fact_sales_order (sales_record_id, sales_order_id, created_date, created_time, last_updated_date, last_updated_time, sales_staff_id, counterparty_id, units_sold, unit_price, currency_id, design_id, agreed_payment_date, agreed_delivery_date, agreed_delivery_location_id) VALUES (:(sales_record_id), :(sales_order_id), :(created_date), :(created_time), :(last_updated_date), :(last_updated_time), :(sales_staff_id), :(counterparty_id), :(units_sold), :(unit_price), :(currency_id), :(design_id), :(agreed_payment_date), :(agreed_delivery_date), :(agreed_delivery_location_id))",
+                    sales_record_id=sale[0], sales_order_id=sale[1], created_date=sale[2], created_time=sale[3], last_updated_date=sale[4], last_updated_time=sale[5], sales_staff_id=sale[6], counterparty_id=sale[7], units_sold=sale[8], unit_price=sale[9], currency_id=sale[10], design_id=sale[11], agreed_payment_date=sale[12], agreed_delivery_date=sale[13], agreed_delivery_location_id=sale[14])
 
         conn.close()
 
-        return get_loaded_data(conn, "fact_sales_order")
+        return get_loaded_data(conn, "dim_fact_sales_order")
 
     except InputValidationError as ive:
         conn.close()
