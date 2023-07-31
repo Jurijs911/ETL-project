@@ -3,14 +3,17 @@ import boto3
 
 
 def upload_csv(data, table_name, bucket_name):
-    with open(f"{table_name}.csv", "a", newline="") as csvfile:
-        fieldnames = data[0].keys()
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    with open(f"{table_name}.csv", "w", newline="") as csvfile:
+        if len(data) > 0:
+            fieldnames = data[0].keys()
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
-        writer.writeheader()
+            writer.writeheader()
 
-        for row in data:
-            writer.writerow(row)
+            for row in data:
+                writer.writerow(row)
+        else:
+            pass
 
     s3_client = boto3.client("s3")
     s3_client.upload_file(
