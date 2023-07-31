@@ -222,6 +222,23 @@ def insert_into_dim_counterparty(conn, counterparty_data):
 
     try:
         for counterparty in counterparty_data:
+            for index, column in enumerate(counterparty):
+                if index not in (5, 6) and not isinstance(column, str):
+                    raise InputValidationError
+                elif index in (5, 6) and not isinstance(column, datetime):
+                    raise InputValidationError
+                if index not in (8, 9) and not isinstance(column, str):
+                    raise InputValidationError
+                elif index in (8, 9) and not isinstance(column, datetime):
+                    raise InputValidationError
+                if index == 0:
+                    try:
+                        int(column)
+                    except ValueError:
+                        raise InputValidationError
+            if len(counterparty) != 10:
+                raise InputValidationError
+
             conn.run("INSERT INTO dim_counterparty (counterparty_id, counterparty_legal_name, counterparty_legal_address_line_1, counterparty_legal_address_line_2, counterparty_legal_district, counterparty_legal_city, counterparty_legal_postal_code, counterparty_legal_country, counterparty_legal_phone_number) VALUES (:(counterparty_id), :(counterparty_legal_name), :(counterparty_legal_address_line_1), :(counterparty_legal_address_line_2), :(counterparty_legal_district), :(counterparty_legal_city), :(counterparty_legal_postal_code), :(counterparty_legal_country), :(counterparty_legal_phone_number))",
                      counterparty_id=counterparty[0], counterparty_legal_name=counterparty[1], counterparty_legal_address_line_1=counterparty[2], counterparty_legal_address_line_2=counterparty[3], counterparty_legal_district=counterparty[4], counterparty_legal_city=counterparty[5], counterparty_legal_postal_code=counterparty[6], counterparty_legal_country=counterparty[7], counterparty_legal_phone_number=counterparty[8])
 
@@ -247,9 +264,22 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
     """
 
     try:
-        for fact in fact_sales_order_data:
+        for sale in fact_sales_order_data
+            for index, column in enumerate(sale):
+                if index not in (1, 2) and not isinstance(column, str):
+                    raise InputValidationError
+                elif index in (1, 2) and not isinstance(column, datetime):
+                    raise InputValidationError
+                if index in (0, 3, 4, 5, 11):
+                    try:
+                        int(column)
+                    except ValueError:
+                        raise InputValidationError
+            if len(sale) != 12:
+                raise InputValidationError
+                
             conn.run("INSERT INTO fact_sales_order (sales_record_id, sales_order_id, created_date, created_time, last_updated_date, last_updated_time, sales_staff_id, counterparty_id, units_sold, unit_price, currency_id, design_id, agreed_payment_date, agreed_delivery_date, agreed_delivery_location_id) VALUES (:(sales_record_id), :(sales_order_id), :(created_date), :(created_time), :(last_updated_date), :(last_updated_time), :(sales_staff_id), :(counterparty_id), :(units_sold), :(unit_price), :(currency_id), :(design_id), :(agreed_payment_date), :(agreed_delivery_date), :(agreed_delivery_location_id))",
-                     sales_record_id=fact[0], sales_order_id=fact[1], created_date=fact[2], created_time=fact[3], last_updated_date=fact[4], last_updated_time=fact[5], sales_staff_id=fact[6], counterparty_id=fact[7], units_sold=fact[8], unit_price=fact[9], currency_id=fact[10], design_id=fact[11], agreed_payment_date=fact[12], agreed_delivery_date=fact[13], agreed_delivery_location_id=fact[14])
+                        sales_record_id=sale[0], sales_order_id=sale[1], created_date=sale[2], created_time=sale[3], last_updated_date=sale[4], last_updated_time=sale[5], sales_staff_id=sale[6], counterparty_id=sale[7], units_sold=sale[8], unit_price=sale[9], currency_id=sale[10], design_id=sale[11], agreed_payment_date=sale[12], agreed_delivery_date=sale[13], agreed_delivery_location_id=sale[14])
 
         conn.close()
 
