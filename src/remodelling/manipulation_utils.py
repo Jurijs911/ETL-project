@@ -4,14 +4,6 @@ import ccy
 """
 Receives data from csv_reader and manipulates it to match
 the final database schema
-
-format_fact_sales_order
-format_dim_staff
-format_dim_location
-format_dim_design
-format_dim_date
-format_dim_currency
-format_dim_counterparty
 """
 
 
@@ -106,7 +98,7 @@ def format_dim_staff(staff_data, department_data):
                 raise InputValidationError
             elif index in (5, 6) and not isinstance(column, datetime):
                 raise InputValidationError
-            if index == 0:
+            if index == 0 or index == 3:
                 try:
                     int(column)
                 except ValueError:
@@ -139,19 +131,6 @@ def format_dim_staff(staff_data, department_data):
                 }
                 formatted_data.append(formatted_staff)
     return formatted_data
-
-
-def validate_dim_staff_data(staff_data, department_data):
-    for staff in staff_data:
-        if len(staff) != 5:
-            raise InputValidationError
-        for dep in department_data:
-            if dep[0] == staff[3]:
-                if not all(isinstance(item, str) for item in staff[1:]):
-                    raise InputValidationError
-                break
-        else:
-            raise InputValidationError
 
 
 def format_dim_location(location_data):
@@ -188,14 +167,6 @@ def format_dim_location(location_data):
     return formatted_data
 
 
-def validate_dim_location_data(location_data):
-    for location in location_data:
-        if len(location) != 8:
-            raise InputValidationError
-        if not all(isinstance(item, str) for item in location[1:]):
-            raise InputValidationError
-
-
 def format_dim_date(date_data):
     """
     Manipulate date data to match the format of the dim_date
@@ -220,13 +191,6 @@ def format_dim_date(date_data):
         raise InputValidationError
 
 
-def validate_dim_date_data(date_data):
-    try:
-        datetime.strptime(date_data, "%Y-%m-%d")
-    except ValueError:
-        raise InputValidationError
-
-
 def format_dim_currency(currency_data):
     """
     Manipulate currency data to match the format of the dim_currency
@@ -246,22 +210,17 @@ def format_dim_currency(currency_data):
                     raise InputValidationError
         if len(currency) != 4:
             raise InputValidationError
+        try:
+            formatted_currency = {
+                "currency_id": currency[0],
+                "currency_code": currency[1],
+                "currency_name": ccy.currency(currency[1]).name,
+            }
+            formatted_data.append(formatted_currency)
+        except AttributeError:
+            raise InputValidationError
 
-        formatted_currency = {
-            "currency_id": currency[0],
-            "currency_code": currency[1],
-            "currency_name": ccy.currency(currency[1]).name,
-        }
-        formatted_data.append(formatted_currency)
     return formatted_data
-
-
-def validate_dim_currency_data(currency_data):
-    for currency in currency_data:
-        if len(currency) != 2:
-            raise InputValidationError
-        if not isinstance(currency[1], str):
-            raise InputValidationError
 
 
 def format_dim_counterparty(counterparty_data, location_data):
@@ -271,7 +230,33 @@ def format_dim_counterparty(counterparty_data, location_data):
     """
     formatted_data = []
     for counterparty in counterparty_data:
+        for index, column in enumerate(counterparty):
+            if index not in (5, 6) and not isinstance(column, str):
+                raise InputValidationError
+            elif index in (5, 6) and not isinstance(column, datetime):
+                raise InputValidationError
+            if index == 0 or index == 2:
+                try:
+                    int(column)
+                except ValueError:
+                    raise InputValidationError
+        if len(counterparty) != 7:
+            raise InputValidationError
+
         for location in location_data:
+            for index, column in enumerate(location):
+                if index not in (8, 9) and not isinstance(column, str):
+                    raise InputValidationError
+                elif index in (8, 9) and not isinstance(column, datetime):
+                    raise InputValidationError
+                if index == 0:
+                    try:
+                        int(column)
+                    except ValueError:
+                        raise InputValidationError
+            if len(location) != 10:
+                raise InputValidationError
+
             if location[0] == counterparty[2]:
                 formatted_counterparty = {
                     "counterparty_id": counterparty[0],
@@ -286,18 +271,3 @@ def format_dim_counterparty(counterparty_data, location_data):
                 }
                 formatted_data.append(formatted_counterparty)
     return formatted_data
-
-
-def validate_dim_counterparty_data(counterparty_data, location_data):
-    for counterparty in counterparty_data:
-        if len(counterparty) != 3:
-            raise InputValidationError
-        if not isinstance(counterparty[1], str):
-            raise InputValidationError
-        for location in location_data:
-            if location[0] == counterparty[2]:
-                if not all(isinstance(item, str) for item in location[1:]):
-                    raise InputValidationError
-                break
-        else:
-            raise InputValidationError

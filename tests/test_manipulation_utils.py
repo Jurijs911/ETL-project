@@ -7,11 +7,6 @@ from src.remodelling.manipulation_utils import (
     format_dim_currency,
     format_dim_counterparty,
     InputValidationError,
-    validate_dim_staff_data,
-    validate_dim_location_data,
-    validate_dim_date_data,
-    validate_dim_currency_data,
-    validate_dim_counterparty_data,
 )
 from datetime import datetime
 import pytest
@@ -313,36 +308,6 @@ class Test_Format_Dim_Staff:
             format_dim_staff(sample_staff_data, sample_department_data)
 
 
-def test_validate_dim_staff_data():
-    sample_staff_data = [
-        ["1", "zenab", "haider", "1", "zenab@gmail.com"],
-        ["2", "john", "doe", "2", "john.doe@gmail.com"],
-    ]
-    sample_department_data = [
-        ["1", "coding", "manchester", "zenab"],
-        ["2", "testing", "london", "john"],
-    ]
-
-    assert not validate_dim_staff_data(
-        sample_staff_data, sample_department_data
-    )
-
-    invalid_staff_data = [["1", "zenab", "haider", "1"]]
-    with pytest.raises(InputValidationError):
-        validate_dim_staff_data(invalid_staff_data, sample_department_data)
-
-    invalid_staff_data = [["1", "zenab", "haider", 1, "zenab@gmail.com"]]
-    with pytest.raises(InputValidationError):
-        validate_dim_staff_data(invalid_staff_data, sample_department_data)
-
-    invalid_staff_data = [
-        ["1", 1, "haider", "1", "zenab@gmail.com"],
-        ["2", "john", 2, "2", "john.doe@gmail.com"],
-    ]
-    with pytest.raises(InputValidationError):
-        validate_dim_staff_data(invalid_staff_data, sample_department_data)
-
-
 class Test_Format_Dim_Location:
     def test_format_dim_location(self):
         sample_address = [
@@ -435,52 +400,6 @@ class Test_Format_Dim_Location:
             format_dim_location(sample_address)
 
 
-def test_validate_dim_location_data():
-    sample_location_data = [
-        [
-            1,
-            "123 apple street",
-            "apple street",
-            "bolton",
-            "greater manchester",
-            "ABC 123",
-            "England",
-            "123 456 789",
-        ],
-    ]
-
-    assert not validate_dim_location_data(sample_location_data)
-
-    invalid_location_data = [
-        [
-            1,
-            "123 apple street",
-            "apple street",
-            "bolton",
-            "greater manchester",
-            "ABC 123",
-            "England",
-        ],
-    ]
-    with pytest.raises(InputValidationError):
-        validate_dim_location_data(invalid_location_data)
-
-    invalid_location_data = [
-        [
-            1,
-            "123 apple street",
-            123,
-            "bolton",
-            "greater manchester",
-            "ABC 123",
-            "England",
-            "123 456 789",
-        ],
-    ]
-    with pytest.raises(InputValidationError):
-        validate_dim_location_data(invalid_location_data)
-
-
 class test_format_dim_date:
     def test_format_dim_date(self):
         sample_date_data = "2023-01-01"
@@ -515,13 +434,6 @@ class test_format_dim_date:
 
         with pytest.raises(InputValidationError):
             format_dim_date(sample_date_data)
-
-
-def test_validate_dim_date_data():
-    assert not validate_dim_date_data("2023-01-01")
-
-    with pytest.raises(InputValidationError):
-        validate_dim_date_data("01-01-2023")
 
 
 class Test_Format_Dim_Currency:
@@ -593,7 +505,7 @@ class Test_Format_Dim_Currency:
     ):
         sample_currency_data = [
             [
-                "letters",
+                "1",
                 "xyz",
                 datetime(2023, 7, 25, 15, 20, 49, 962000),
                 datetime(2023, 7, 25, 15, 20, 49, 962000),
@@ -604,124 +516,144 @@ class Test_Format_Dim_Currency:
             format_dim_currency(sample_currency_data)
 
 
-def test_validate_dim_currency_data():
-    sample_currency_data = [
-        ["1", "gbp"],
-        ["2", "usd"],
-    ]
+class Test_Format_Dim_Counterparty:
+    def test_format_dim_counterparty(self):
+        sample_counterparty_data = [
+            [
+                "1",
+                "hello",
+                "1",
+                "commercial_contact",
+                "delivery_contact",
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+            ],
+        ]
 
-    assert not validate_dim_currency_data(sample_currency_data)
+        sample_address = [
+            [
+                "1",
+                "123 apple street",
+                "apple street",
+                "bolton",
+                "greater manchester",
+                "ABC 123",
+                "England",
+                "123 456 789",
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+            ],
+        ]
 
-    invalid_currency_data = [["gbp"]]
-    with pytest.raises(InputValidationError):
-        validate_dim_currency_data(invalid_currency_data)
-
-    invalid_currency_data = [["1", 123]]
-    with pytest.raises(InputValidationError):
-        validate_dim_currency_data(invalid_currency_data)
-
-
-def test_format_dim_counterparty():
-    sample_counterparty_data = [
-        [
-            "1",
-            "hello",
-            "1",
-            "commercial_contact",
-            "delivery_contact",
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-        ],
-    ]
-
-    sample_address = [
-        [
-            "1",
-            "123 apple street",
-            "apple street",
-            "bolton",
-            "greater manchester",
-            "ABC 123",
-            "England",
-            "123 456 789",
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-        ],
-    ]
-
-    formatted_counterparty_data = format_dim_counterparty(
-        sample_counterparty_data, sample_address
-    )
-
-    expected_counterparty_data = [
-        {
-            "counterparty_id": "1",
-            "counterparty_legal_name": "hello",
-            "counterparty_legal_address_line_1": "123 apple street",
-            "counterparty_legal_address_line2": "apple street",
-            "counterparty_legal_district": "bolton",
-            "counterparty_legal_city": "greater manchester",
-            "counterparty_legal_postal_code": "ABC 123",
-            "counterparty_legal_country": "England",
-            "counterparty_legal_phone_number": "123 456 789",
-        },
-    ]
-
-    assert formatted_counterparty_data == expected_counterparty_data
-
-
-def test_validate_dim_counterparty_data():
-    sample_counterparty_data = [
-        ["1", "hello", "1"],
-        ["2", "world", "2"],
-    ]
-    sample_location_data = [
-        [
-            "1",
-            "123 apple street",
-            "apple street",
-            "bolton",
-            "greater manchester",
-            "ABC 123",
-            "England",
-            "123 456 789",
-        ],
-        [
-            "2",
-            "456 orange street",
-            "orange street",
-            "manchester",
-            "greater manchester",
-            "XYZ 456",
-            "England",
-            "987 654 321",
-        ],
-    ]
-
-    assert not validate_dim_counterparty_data(
-        sample_counterparty_data, sample_location_data
-    )
-
-    invalid_counterparty_data = [["hello", "1"]]
-    with pytest.raises(InputValidationError):
-        validate_dim_counterparty_data(
-            invalid_counterparty_data, sample_location_data
+        formatted_counterparty_data = format_dim_counterparty(
+            sample_counterparty_data, sample_address
         )
 
-    invalid_counterparty_data = [["1", 123, "1"]]
-    with pytest.raises(InputValidationError):
-        validate_dim_counterparty_data(
-            invalid_counterparty_data, sample_location_data
-        )
+        expected_counterparty_data = [
+            {
+                "counterparty_id": "1",
+                "counterparty_legal_name": "hello",
+                "counterparty_legal_address_line_1": "123 apple street",
+                "counterparty_legal_address_line2": "apple street",
+                "counterparty_legal_district": "bolton",
+                "counterparty_legal_city": "greater manchester",
+                "counterparty_legal_postal_code": "ABC 123",
+                "counterparty_legal_country": "England",
+                "counterparty_legal_phone_number": "123 456 789",
+            },
+        ]
 
-    invalid_counterparty_data = [["1", "hello", 123]]
-    with pytest.raises(InputValidationError):
-        validate_dim_counterparty_data(
-            invalid_counterparty_data, sample_location_data
-        )
+        assert formatted_counterparty_data == expected_counterparty_data
 
-    invalid_counterparty_data = [["1", "hello", "3"]]
-    with pytest.raises(InputValidationError):
-        validate_dim_counterparty_data(
-            invalid_counterparty_data, sample_location_data
-        )
+    def test_raises_exception_when_input_is_wrong_type(self):
+        sample_counterparty_data = [
+            [
+                1,
+                "hello",
+                1,
+                "commercial_contact",
+                "delivery_contact",
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+            ],
+        ]
+
+        sample_address = [
+            [
+                "1",
+                "123 apple street",
+                "apple street",
+                "bolton",
+                "greater manchester",
+                "ABC 123",
+                "England",
+                "123 456 789",
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_dim_counterparty(sample_counterparty_data, sample_address)
+
+    def test_raises_exception_when_input_has_id_that_cannot_convert_to_integer(
+        self,
+    ):
+        sample_counterparty_data = [
+            [
+                "1",
+                "hello",
+                "1",
+                "commercial_contact",
+                "delivery_contact",
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+            ],
+        ]
+
+        sample_address = [
+            [
+                "letters",
+                "123 apple street",
+                "apple street",
+                "bolton",
+                "greater manchester",
+                "ABC 123",
+                "England",
+                "123 456 789",
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_dim_counterparty(sample_counterparty_data, sample_address)
+
+    def test_raises_exception_when_input_is_wrong_length(
+        self,
+    ):
+        sample_counterparty_data = [
+            [
+                "1",
+                "hello",
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+            ],
+        ]
+
+        sample_address = [
+            [
+                "1",
+                "123 apple street",
+                "apple street",
+                "bolton",
+                "greater manchester",
+                "ABC 123",
+                "England",
+                "123 456 789",
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                datetime(2023, 7, 25, 15, 20, 49, 962000),
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_dim_counterparty(sample_counterparty_data, sample_address)
