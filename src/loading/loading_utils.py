@@ -1,8 +1,12 @@
 import pg8000.native 
 import os
+import datetime
 from dotenv import load_dotenv
 
 load_dotenv()
+
+class InputValidationError(Exception):
+    pass
 
 def create_connection():
     DB_SOURCE_USER = os.getenv('DB_SOURCE_USER')
@@ -16,6 +20,18 @@ def create_connection():
     )
     return conn
 
+def get_loaded_data(conn, table_name):
+    """
+    Retrieve all data from the specified table after insertion.
+
+    :param conn: pg8000 connection 
+    :param table_name: Name of the table to retrieve data from.
+    :return: A list of rows containing the loaded data.
+    """
+    loaded_data = []
+    for row in conn.run(f"SELECT * FROM {table_name}"):
+        loaded_data.append(row)
+    return loaded_data
 
 def insert_into_dim_design(conn, design_data):
     """
@@ -25,17 +41,35 @@ def insert_into_dim_design(conn, design_data):
     :param design_data: list of lists containing data to be inserted
     """
 
-    for design in design_data:
-        conn.run("INSERT INTO dim_design (design_id, design_name, file_location, file_name) VALUES (:(design_id), :(design_name), :(file_location), :(file_name))",
-                 design_id=design[0], design_name=design[1], file_location=design[2], file_name=design[3])
+    try:
+        for design in design_data:
+            for index, column in enumerate(design):
+                if index not in (1, 2) and not isinstance(column, str):
+                    raise InputValidationError
+                elif index in (1, 2) and not isinstance(column, datetime):
+                    raise InputValidationError
+                if index == 0:
+                    try:
+                        int(column)
+                    except ValueError:
+                        raise InputValidationError
+            if len(design) != 6:
+                raise InputValidationError
 
-    loaded_data = []
-    for row in conn.run("SELECT * FROM dim_design"):
-        loaded_data.append(row)
+            conn.run("INSERT INTO dim_design (design_id, design_name, file_location, file_name) VALUES (:(design_id), :(design_name), :(file_location), :(file_name))",
+                     design_id=design[0], design_name=design[1], file_location=design[2], file_name=design[3])
 
-    conn.close()
+        conn.close()
 
-    return loaded_data
+        return get_loaded_data(conn, "dim_design")
+
+    except InputValidationError as ive:
+        conn.close()
+        raise
+
+    except Exception as e:
+        conn.close()
+        raise
 
 
 def insert_into_dim_currency(conn, currency_data):
@@ -46,17 +80,35 @@ def insert_into_dim_currency(conn, currency_data):
     :param currency_data: list of lists containing data to be inserted
     """
 
-    for currency in currency_data:
-        conn.run("INSERT INTO dim_currency (currency_id, currency_code, currency_name) VALUES (:(currency_id), :(currency_code), :(currency_name))",
-                 currency_id=currency[0], currency_code=currency[1], currency_name=currency[2])
+    try:
+        for currency in currency_data:
+            for index, column in enumerate(currency):
+                if index not in (2, 3) and not isinstance(column, str):
+                    raise InputValidationError
+                elif index in (2, 3) and not isinstance(column, datetime):
+                    raise InputValidationError
+                if index == 0:
+                    try:
+                        int(column)
+                    except ValueError:
+                        raise InputValidationError
+            if len(currency) != 4:
+                raise InputValidationError
 
-    loaded_data = []
-    for row in conn.run("SELECT * FROM currency_data"):
-        loaded_data.append(row)
+            conn.run("INSERT INTO dim_currency (currency_id, currency_code, currency_name) VALUES (:(currency_id), :(currency_code), :(currency_name))",
+                     currency_id=currency[0], currency_code=currency[1], currency_name=currency[2])
 
-    conn.close()
+        conn.close()
 
-    return loaded_data
+        return get_loaded_data(conn, "dim_currency")
+    
+    except InputValidationError as ive:
+        conn.close()
+        raise
+
+    except Exception as e:
+        conn.close()
+        raise
 
 
 def insert_into_dim_staff(conn, staff_data):
@@ -67,17 +119,34 @@ def insert_into_dim_staff(conn, staff_data):
     :param staff_data: list of lists containing data to be inserted
     """
 
-    for staff in staff_data:
-        conn.run("INSERT INTO dim_staff (staff_id, first_name, last_name, department_name, location, email_address) VALUES (:(staff_id), :(first_name), :(last_name), :(department_name), :(location), :(email_address))",
-                 staff_id=staff[0], first_name=staff[1], last_name=staff[2], department_name=staff[3], location=staff[4], email_address=staff[5])
+    try:
+        for staff in staff_data:
+            for index, column in enumerate(staff):
+                if index not in (5, 6) and not isinstance(column, str):
+                    raise InputValidationError
+                elif index in (5, 6) and not isinstance(column, datetime):
+                    raise InputValidationError
+                if index == 0 or index == 3:
+                    try:
+                        int(column)
+                    except ValueError:
+                        raise InputValidationError
 
-    loaded_data = []
-    for row in conn.run("SELECT * FROM staff_data"):
-        loaded_data.append(row)
+            conn.run("INSERT INTO dim_staff (staff_id, first_name, last_name, department_name, location, email_address) VALUES (:(staff_id), :(first_name), :(last_name), :(department_name), :(location), :(email_address))",
+                     staff_id=staff[0], first_name=staff[1], last_name=staff[2], department_name=staff[3], location=staff[4], email_address=staff[5])
 
-    conn.close()
+        conn.close()
 
-    return loaded_data
+        return get_loaded_data(conn, "dim_staff")
+    
+    except InputValidationError as ive:
+        conn.close()
+        raise
+
+    except Exception as e:
+        conn.close()
+        raise
+
 
 
 def insert_into_dim_location(conn, location_data):
@@ -87,18 +156,34 @@ def insert_into_dim_location(conn, location_data):
     :param conn: pg8000 connection 
     :param location_data: list of lists containing data to be inserted
     """
+    try:
+        for location in location_data:
+            for index, column in enumerate(location):
+                if index not in (8, 9) and not isinstance(column, str):
+                    raise InputValidationError
+                elif index in (8, 9) and not isinstance(column, datetime):
+                    raise InputValidationError
+                if index == 0:
+                    try:
+                        int(column)
+                    except ValueError:
+                        raise InputValidationError
+            if len(location) != 10:
+                raise InputValidationError
+            conn.run("INSERT INTO dim_location (location_id, address_line_1, address_line_2, district, city, postal_code, country, phone) VALUES (:(location_id), :(address_line_1, :(address_line_2), :(district), :(city), :(postal_code), :(country), :(phone))",
+                    location_id=location[0], address_line_1=location[1], address_line_2=location[2], district=location[3], city=location[4], postal_code=location[5], country=location[6], phone=location[7])
 
-    for location in location_data:
-        conn.run("INSERT INTO dim_location (location_id, address_line_1, address_line_2, district, city, postal_code, country, phone) VALUES (:(location_id), :(address_line_1, :(address_line_2), :(district), :(city), :(postal_code), :(country), :(phone))",
-                 location_id=location[0], address_line_1=location[1], address_line_2=location[2], district=location[3], city=location[4], postal_code=location[5], country=location[6], phone=location[7])
+        conn.close()
 
-    loaded_data = []
-    for row in conn.run("SELECT * FROM location_data"):
-        loaded_data.append(row)
+        return get_loaded_data(conn, "dim_location")
 
-    conn.close()
+    except InputValidationError as ive:
+        conn.close()
+        raise
 
-    return loaded_data
+    except Exception as e:
+        conn.close()
+        raise
 
 
 def insert_into_dim_date(conn, date_data):
@@ -109,17 +194,22 @@ def insert_into_dim_date(conn, date_data):
     :param date_data: list of lists containing data to be inserted
     """
 
-    for date in date_data:
-        conn.run("INSERT INTO dim_date (date_id, year, month, day, day_of_week, day_name, month_name, quarter) VALUES (:(date_id), :(year), :(month), :(day), :(day_of_week), :(day_name), :(month_name), :(quarter))",
-                 date_id=date[0], year=date[1], month=date[2], day=date[3], day_of_week=date[4], day_name=date[5], month_name=date[6], quarter=date[7])
+    try:
+        for date in date_data:
+            conn.run("INSERT INTO dim_date (date_id, year, month, day, day_of_week, day_name, month_name, quarter) VALUES (:(date_id), :(year), :(month), :(day), :(day_of_week), :(day_name), :(month_name), :(quarter))",
+                     date_id=date[0], year=date[1], month=date[2], day=date[3], day_of_week=date[4], day_name=date[5], month_name=date[6], quarter=date[7])
 
-    loaded_data = []
-    for row in conn.run("SELECT * FROM date_data"):
-        loaded_data.append(row)
+        conn.close()
 
-    conn.close()
+        return get_loaded_data(conn, "dim_date")
 
-    return loaded_data
+    except InputValidationError as ive:
+        conn.close()
+        raise
+
+    except Exception as e:
+        conn.close()
+        raise
 
 
 def insert_into_dim_counterparty(conn, counterparty_data):
@@ -130,17 +220,22 @@ def insert_into_dim_counterparty(conn, counterparty_data):
     :param counterparty_data: list of lists containing data to be inserted
     """
 
-    for counterparty in counterparty_data:
-        conn.run("INSERT INTO dim_counterparty (counterparty_id, counterparty_legal_name, counterparty_legal_address_line_1, counterparty_legal_address_line_2, counterparty_legal_district, counterparty_legal_city, counterparty_legal_postal_code, counterparty_legal_country, counterparty_legal_phone_number) VALUES (:(counterparty_id), :(counterparty_legal_name), :(counterparty_legal_address_line_1), :(counterparty_legal_address_line_2), :(counterparty_legal_district), :(counterparty_legal_city), :(counterparty_legal_postal_code), :(counterparty_legal_country), :(counterparty_legal_phone_number))",
-                 counterparty_id=counterparty[0], counterparty_legal_name=counterparty[1], counterparty_legal_address_line_1=counterparty[2], counterparty_legal_address_line_2=counterparty[3], counterparty_legal_district=counterparty[4], counterparty_legal_city=counterparty[5], counterparty_legal_postal_code=counterparty[6], counterparty_legal_country=counterparty[7], counterparty_legal_phone_number=counterparty[8])
+    try:
+        for counterparty in counterparty_data:
+            conn.run("INSERT INTO dim_counterparty (counterparty_id, counterparty_legal_name, counterparty_legal_address_line_1, counterparty_legal_address_line_2, counterparty_legal_district, counterparty_legal_city, counterparty_legal_postal_code, counterparty_legal_country, counterparty_legal_phone_number) VALUES (:(counterparty_id), :(counterparty_legal_name), :(counterparty_legal_address_line_1), :(counterparty_legal_address_line_2), :(counterparty_legal_district), :(counterparty_legal_city), :(counterparty_legal_postal_code), :(counterparty_legal_country), :(counterparty_legal_phone_number))",
+                     counterparty_id=counterparty[0], counterparty_legal_name=counterparty[1], counterparty_legal_address_line_1=counterparty[2], counterparty_legal_address_line_2=counterparty[3], counterparty_legal_district=counterparty[4], counterparty_legal_city=counterparty[5], counterparty_legal_postal_code=counterparty[6], counterparty_legal_country=counterparty[7], counterparty_legal_phone_number=counterparty[8])
 
-    loaded_data = []
-    for row in conn.run("SELECT * FROM counterparty_data"):
-        loaded_data.append(row)
+        conn.close()
 
-    conn.close()
+        return get_loaded_data(conn, "dim_counterparty")
 
-    return loaded_data
+    except InputValidationError as ive:
+        conn.close()
+        raise
+
+    except Exception as e:
+        conn.close()
+        raise
 
 
 def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
@@ -151,17 +246,22 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
     :param fact_sales_order_data: list of lists containing data to be inserted
     """
 
-    for fact in fact_sales_order_data:
-        conn.run("INSERT INTO fact_sales_order (sales_record_id, sales_order_id, created_date, created_time, last_updated_date, last_updated_time, sales_staff_id, counterparty_id, units_sold, unit_price, currency_id, design_id, agreed_payment_date, agreed_delivery_date, agreed_delivery_location_id) VALUES (:(sales_record_id), :(sales_order_id), :(created_date), :(created_time), :(last_updated_date), :(last_updated_time), :(sales_staff_id), :(counterparty_id), :(units_sold), :(unit_price), :(currency_id), :(design_id), :(agreed_payment_date), :(agreed_delivery_date), :(agreed_delivery_location_id))",
-                 sales_record_id=fact[0], sales_order_id=fact[1], created_date=fact[2], created_time=fact[3], last_updated_date=fact[4], last_updated_time=fact[5], sales_staff_id=fact[6], counterparty_id=fact[7], units_sold=fact[8], unit_price=fact[9], currency_id=fact[10], design_id=fact[11], agreed_payment_date=fact[12], agreed_delivery_date=fact[13], agreed_delivery_location_id=fact[14])
+    try:
+        for fact in fact_sales_order_data:
+            conn.run("INSERT INTO fact_sales_order (sales_record_id, sales_order_id, created_date, created_time, last_updated_date, last_updated_time, sales_staff_id, counterparty_id, units_sold, unit_price, currency_id, design_id, agreed_payment_date, agreed_delivery_date, agreed_delivery_location_id) VALUES (:(sales_record_id), :(sales_order_id), :(created_date), :(created_time), :(last_updated_date), :(last_updated_time), :(sales_staff_id), :(counterparty_id), :(units_sold), :(unit_price), :(currency_id), :(design_id), :(agreed_payment_date), :(agreed_delivery_date), :(agreed_delivery_location_id))",
+                     sales_record_id=fact[0], sales_order_id=fact[1], created_date=fact[2], created_time=fact[3], last_updated_date=fact[4], last_updated_time=fact[5], sales_staff_id=fact[6], counterparty_id=fact[7], units_sold=fact[8], unit_price=fact[9], currency_id=fact[10], design_id=fact[11], agreed_payment_date=fact[12], agreed_delivery_date=fact[13], agreed_delivery_location_id=fact[14])
 
-    loaded_data = []
-    for row in conn.run("SELECT * FROM fact_sales_order_data"):
-        loaded_data.append(row)
+        conn.close()
 
-    conn.close()
+        return get_loaded_data(conn, "fact_sales_order")
 
-    return loaded_data
+    except InputValidationError as ive:
+        conn.close()
+        raise
+
+    except Exception as e:
+        conn.close()
+        raise
 
 
 
