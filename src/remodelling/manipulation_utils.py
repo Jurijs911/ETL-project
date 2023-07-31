@@ -19,9 +19,7 @@ def format_fact_sales_order(sales_data):
     formatted_data = []
     for sale in sales_data:
         for index, column in enumerate(sale):
-            if index not in (1, 2) and not isinstance(column, str):
-                raise InputValidationError
-            elif index in (1, 2) and not isinstance(column, datetime):
+            if not isinstance(column, str):
                 raise InputValidationError
             if index in (0, 3, 4, 5, 11):
                 try:
@@ -31,10 +29,10 @@ def format_fact_sales_order(sales_data):
         if len(sale) != 12:
             raise InputValidationError
 
-        created_date = sale[1].strftime("%Y-%m-%d")
-        created_time = sale[1].strftime("%H:%M:%S:%f")
-        last_updated_date = sale[2].strftime("%Y-%m-%d")
-        last_updated_time = sale[2].strftime("%H:%M:%S:%f")
+        created_date = sale[1].split(" ")[0]
+        created_time = sale[1].split(" ")[1]
+        last_updated_date = sale[2].split(" ")[0]
+        last_updated_time = sale[2].split(" ")[1]
 
         formatted_sale = {
             "sales_order_id": sale[0],
@@ -64,9 +62,7 @@ def format_dim_design(design_data):
     formatted_data = []
     for design in design_data:
         for index, column in enumerate(design):
-            if index not in (1, 2) and not isinstance(column, str):
-                raise InputValidationError
-            elif index in (1, 2) and not isinstance(column, datetime):
+            if not isinstance(column, str):
                 raise InputValidationError
             if index == 0:
                 try:
@@ -94,11 +90,9 @@ def format_dim_staff(staff_data, department_data):
     formatted_data = []
     for staff in staff_data:
         for index, column in enumerate(staff):
-            if index not in (5, 6) and not isinstance(column, str):
+            if not isinstance(column, str):
                 raise InputValidationError
-            elif index in (5, 6) and not isinstance(column, datetime):
-                raise InputValidationError
-            if index == 0 or index == 3:
+            if index == 0:
                 try:
                     int(column)
                 except ValueError:
@@ -108,9 +102,7 @@ def format_dim_staff(staff_data, department_data):
 
         for dep in department_data:
             for index, column in enumerate(dep):
-                if index not in (4, 5) and not isinstance(column, str):
-                    raise InputValidationError
-                elif index in (4, 5) and not isinstance(column, datetime):
+                if not isinstance(column, str):
                     raise InputValidationError
                 if index == 0:
                     try:
@@ -133,6 +125,19 @@ def format_dim_staff(staff_data, department_data):
     return formatted_data
 
 
+def validate_dim_staff_data(staff_data, department_data):
+    for staff in staff_data:
+        if len(staff) != 5:
+            raise InputValidationError
+        for dep in department_data:
+            if dep[0] == staff[3]:
+                if not all(isinstance(item, str) for item in staff[1:]):
+                    raise InputValidationError
+                break
+        else:
+            raise InputValidationError
+
+
 def format_dim_location(location_data):
     """
     Manipulate location data to match the format of the dim_location
@@ -141,9 +146,7 @@ def format_dim_location(location_data):
     formatted_data = []
     for location in location_data:
         for index, column in enumerate(location):
-            if index not in (8, 9) and not isinstance(column, str):
-                raise InputValidationError
-            elif index in (8, 9) and not isinstance(column, datetime):
+            if not isinstance(column, str):
                 raise InputValidationError
             if index == 0:
                 try:
@@ -165,6 +168,14 @@ def format_dim_location(location_data):
         }
         formatted_data.append(formatted_location)
     return formatted_data
+
+
+def validate_dim_location_data(location_data):
+    for location in location_data:
+        if len(location) != 8:
+            raise InputValidationError
+        if not all(isinstance(item, str) for item in location[1:]):
+            raise InputValidationError
 
 
 def format_dim_date(date_data):
@@ -199,9 +210,7 @@ def format_dim_currency(currency_data):
     formatted_data = []
     for currency in currency_data:
         for index, column in enumerate(currency):
-            if index not in (2, 3) and not isinstance(column, str):
-                raise InputValidationError
-            elif index in (2, 3) and not isinstance(column, datetime):
+            if not isinstance(column, str):
                 raise InputValidationError
             if index == 0:
                 try:
@@ -223,6 +232,14 @@ def format_dim_currency(currency_data):
     return formatted_data
 
 
+def validate_dim_currency_data(currency_data):
+    for currency in currency_data:
+        if len(currency) != 2:
+            raise InputValidationError
+        if not isinstance(currency[1], str):
+            raise InputValidationError
+
+
 def format_dim_counterparty(counterparty_data, location_data):
     """
     Manipulate counterparty data to match the format of the
@@ -231,11 +248,9 @@ def format_dim_counterparty(counterparty_data, location_data):
     formatted_data = []
     for counterparty in counterparty_data:
         for index, column in enumerate(counterparty):
-            if index not in (5, 6) and not isinstance(column, str):
+            if not isinstance(column, str):
                 raise InputValidationError
-            elif index in (5, 6) and not isinstance(column, datetime):
-                raise InputValidationError
-            if index == 0 or index == 2:
+            if index == 0:
                 try:
                     int(column)
                 except ValueError:
@@ -271,3 +286,18 @@ def format_dim_counterparty(counterparty_data, location_data):
                 }
                 formatted_data.append(formatted_counterparty)
     return formatted_data
+
+
+def validate_dim_counterparty_data(counterparty_data, location_data):
+    for counterparty in counterparty_data:
+        if len(counterparty) != 3:
+            raise InputValidationError
+        if not isinstance(counterparty[1], str):
+            raise InputValidationError
+        for location in location_data:
+            if location[0] == counterparty[2]:
+                if not all(isinstance(item, str) for item in location[1:]):
+                    raise InputValidationError
+                break
+        else:
+            raise InputValidationError

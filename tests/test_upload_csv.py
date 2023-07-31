@@ -1,52 +1,10 @@
-import csv
-import os
-from src.upload_csv import upload_csv
+from src.remodelling.upload_csv import upload_csv
 import boto3
 from moto import mock_s3
 
 
 @mock_s3
 class Test_add_csv:
-    def test_creates_csv_file_with_correct_data(self):
-        conn = boto3.client("s3", region_name="eu-west-2")
-
-        conn.create_bucket(
-            Bucket="test_bucket",
-            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
-        )
-
-        test_data = [
-            {
-                "currency_id": "1",
-                "currency_code": "GBP",
-                "created_at": "2023-06-12",
-                "last_updated": "2023-06-12",
-            },
-            {
-                "currency_id": "2",
-                "currency_code": "USD",
-                "created_at": "2022-12-12",
-                "last_updated": "2022-12-12",
-            },
-        ]
-
-        conn.put_object(Bucket="test_bucket", Key="currency.csv")
-
-        upload_csv(test_data, "currency", "test_bucket")
-
-        with open("currency.csv", newline="") as csvfile:
-            reader = csv.DictReader(csvfile)
-            for row in reader:
-                assert [
-                    "currency_id",
-                    "currency_code",
-                    "created_at",
-                    "last_updated",
-                ] == list(row.keys())
-
-        if os.path.exists("currency.csv"):
-            os.remove("currency.csv")
-
     def test_uploads_csv_to_object_in_bucket(self):
         conn = boto3.client("s3", region_name="eu-west-2")
 
@@ -85,9 +43,6 @@ class Test_add_csv:
 
         assert "1,GBP,2023-06-12,2023-06-12" in response
         assert "2,USD,2022-12-12,2022-12-12" in response
-
-        if os.path.exists("currency.csv"):
-            os.remove("currency.csv")
 
     def test_does_not_overwite_previous_csv_file(self):
         conn = boto3.client("s3", region_name="eu-west-2")
@@ -146,6 +101,3 @@ class Test_add_csv:
         assert "2,USD,2022-12-12,2022-12-12" in response
         assert "3,EUR,2023-08-03,2023-08-03" in response
         assert "4,CAD,2022-05-10,2022-05-10" in response
-
-        if os.path.exists("currency.csv"):
-            os.remove("currency.csv")

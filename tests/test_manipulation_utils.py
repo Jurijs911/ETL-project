@@ -8,7 +8,6 @@ from src.remodelling.manipulation_utils import (
     format_dim_counterparty,
     InputValidationError,
 )
-from datetime import datetime
 import pytest
 
 
@@ -17,6 +16,8 @@ class Test_Format_Fact_Sales_Order:
         sample_sales_data = [
             [
                 "2",
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
                 "2023-07-25 15:20:49.962000",
                 "2023-07-25 15:20:49.962000",
                 "100",
@@ -39,7 +40,7 @@ class Test_Format_Fact_Sales_Order:
                 "created_date": "2023-07-25",
                 "created_time": "15:20:49.962000",
                 "last_updated_date": "2023-07-25",
-                "last_updated_time": "15:20:49:962000",
+                "last_updated_time": "15:20:49.962000",
                 "sales_staff_id": "200",
                 "counterparty_id": "2000",
                 "units_sold": "5",
@@ -80,8 +81,8 @@ class Test_Format_Fact_Sales_Order:
         sample_sales_data = [
             [
                 "2",
-                "2023-07-25 15:20:49.962000",
-                "2023-07-25 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
                 "letters",
                 "200",
                 "2000",
@@ -103,8 +104,8 @@ class Test_Format_Fact_Sales_Order:
         sample_sales_data = [
             [
                 "2",
-                "2023-07-25 15:20:49.962000",
-                "2023-07-25 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
                 "2023, 7, 30",
                 "2023, 8, 12",
                 "2",
@@ -120,8 +121,8 @@ class Test_Format_Dim_Design:
         sample_design_data = [
             [
                 "1",
-                "2023-07-25 15:20:49.962000",
-                "2023-07-25 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
                 "design 1",
                 "./design.jpg",
                 "design.jpg",
@@ -145,8 +146,8 @@ class Test_Format_Dim_Design:
         sample_design_data = [
             [
                 "1",
-                "2023-07-25 15:20:49.962000",
-                "2023-07-25 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
                 None,
                 "./design.jpg",
                 "design.jpg",
@@ -162,8 +163,8 @@ class Test_Format_Dim_Design:
         sample_design_data = [
             [
                 "letters",
-                "2023-07-25 15:20:49.962000",
-                "2023-07-25 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
                 "design 1",
                 "./design.jpg",
                 "design.jpg",
@@ -196,8 +197,8 @@ class Test_Format_Dim_Staff:
                 "haider",
                 "1",
                 "zenab@gmail.com",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
             ],
         ]
         sample_department_data = [
@@ -206,8 +207,8 @@ class Test_Format_Dim_Staff:
                 "coding",
                 "manchester",
                 "zenab",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
             ],
         ]
 
@@ -231,13 +232,13 @@ class Test_Format_Dim_Staff:
     def test_raises_exception_when_input_is_wrong_type(self):
         sample_staff_data = [
             [
-                1,
+                "1",
                 "zenab",
                 "haider",
-                1,
+                "1",
                 "zenab@gmail.com",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
             ],
         ]
         sample_department_data = [
@@ -246,8 +247,8 @@ class Test_Format_Dim_Staff:
                 "coding",
                 "manchester",
                 "zenab",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
             ],
         ]
 
@@ -264,8 +265,8 @@ class Test_Format_Dim_Staff:
                 "haider",
                 "letters",
                 "zenab@gmail.com",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
             ],
         ]
         sample_department_data = [
@@ -274,8 +275,8 @@ class Test_Format_Dim_Staff:
                 "coding",
                 "manchester",
                 "zenab",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
             ],
         ]
 
@@ -289,8 +290,8 @@ class Test_Format_Dim_Staff:
             [
                 "1",
                 "zenab",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
             ],
         ]
         sample_department_data = [
@@ -299,8 +300,8 @@ class Test_Format_Dim_Staff:
                 "coding",
                 "manchester",
                 "zenab",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
             ],
         ]
 
@@ -400,7 +401,7 @@ class Test_Format_Dim_Location:
             format_dim_location(sample_address)
 
 
-class test_format_dim_date:
+class Test_Format_Dim_Date:
     def test_format_dim_date(self):
         sample_date_data = "2023-01-01"
 
@@ -422,7 +423,7 @@ class test_format_dim_date:
         assert formatted_date == expected_date_data
 
     def test_raises_exception_when_input_is_wrong_type(self):
-        sample_date_data = datetime.now()
+        sample_date_data = 1
 
         with pytest.raises(InputValidationError):
             format_dim_date(sample_date_data)
@@ -442,8 +443,8 @@ class Test_Format_Dim_Currency:
             [
                 "1",
                 "gbp",
-                "2023-07-25 15:20:49.962000",
-                "2023-07-25 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
             ],
         ]
 
