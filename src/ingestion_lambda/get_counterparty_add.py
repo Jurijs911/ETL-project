@@ -6,22 +6,45 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def get_counterparty_add():
+class MissingRequiredEnvironmentVariables (Exception):
+    """
+        Is produced when attempts to connect to DB
+        with variables which do not exist
+    """
+
+    def __init__(self, db_user, db_database, db_host, db_port, db_password):
+        self.user = db_user,
+        self.database = db_database,
+        self.host = db_host,
+        self.port = db_port,
+        self.password = db_password
+
+
+def get_counterparty_add(
+        db_user=os.environ.get("DB_SOURCE_USER"),
+        db_schema='',
+        db_database=os.environ.get("DB_SOURCE_NAME"),
+        db_host=os.environ.get("DB_SOURCE_HOST"),
+        db_port=os.environ.get("DB_SOURCE_PORT"),
+        db_password=os.environ.get("DB_SOURCE_PASSWORD")):
+
     """
     CONNECTION
     """
-    db_user = os.environ.get("DB_SOURCE_USER")
-    db_database = os.environ.get("DB_SOURCE_NAME")
-    db_host = os.environ.get("DB_SOURCE_HOST")
-    db_port = os.environ.get("DB_SOURCE_PORT")
-    db_password = os.environ.get("DB_SOURCE_PASSWORD")
-    conn = pg8000.native.Connection(
-        user=db_user,
-        database=db_database,
-        host=db_host,
-        port=db_port,
-        password=db_password,
-    )
+    if not all([db_user, db_database, db_host, db_port, db_password]):
+        raise MissingRequiredEnvironmentVariables(
+            db_user, db_database, db_host, db_port, db_password)
+
+    try:
+        conn = pg8000.native.Connection(
+            user=db_user,
+            database=db_database,
+            host=db_host,
+            port=db_port,
+            password=db_password,
+        )
+    except pg8000.exceptions.DatabaseError as e:
+        raise Exception("Database error")
 
     """
     DETERMINE SEARCH INTERVAL
@@ -31,11 +54,13 @@ def get_counterparty_add():
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
+    target_table = db_schema + 'counterparty'
     query = (
-        f"SELECT * FROM counterparty WHERE created_at > :search_interval;"
-    )
+        f'SELECT * FROM {target_table} WHERE created_at > :search_interval;')
     params = {'search_interval': search_interval}
     rows = conn.run(query, **params)
+    # #if rows = {}:
+    # log....
     created_data = []
     for row in rows:
         item = {
