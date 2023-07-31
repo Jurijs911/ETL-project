@@ -21,7 +21,6 @@ def test_get_address_add_returns_list_with_correct_keys():
         )
 
         result = get_address_add(db_user=os.environ.get("test_user"),
-                                 db_schema='"kp-test-source".',
                                  db_database=os.environ.get("test_database"),
                                  db_host=os.environ.get('test_host'),
                                  db_port=os.environ.get("test_port"),
@@ -49,7 +48,6 @@ def test_get_address_add_has_correct_value_types():
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
         result = get_address_add(db_user=os.environ.get("test_user"),
-                                 db_schema='"kp-test-source".',
                                  db_database=os.environ.get("test_database"),
                                  db_host=os.environ.get('test_host'),
                                  db_port=os.environ.get("test_port"),
@@ -78,7 +76,6 @@ def test_get_address_calls_get_last_time():
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
         get_address_add(db_user=os.environ.get("test_user"),
-                        db_schema='"kp-test-source".',
                         db_database=os.environ.get("test_database"),
                         db_host=os.environ.get('test_host'),
                         db_port=os.environ.get("test_port"),
@@ -92,7 +89,6 @@ def test_database_error():
             "Database error")
         with pytest.raises(Exception, match="Database error"):
             get_address_add(db_user=os.environ.get("test_user"),
-                            db_schema='"kp-test-source".',
                             db_database=os.environ.get("test_database"),
                             db_host=os.environ.get('test_host'),
                             db_port=os.environ.get("test_port"),
@@ -103,7 +99,6 @@ def test_missing_environment_variables():
     with patch('os.environ', {}):
         with pytest.raises(MissingRequiredEnvironmentVariables):
             get_address_add(db_user=os.environ.get("test_user"),
-                            db_schema='"kp-test-source".',
                             db_database=os.environ.get("test_database"),
                             db_host=os.environ.get('test_host'),
                             db_port=os.environ.get("test_port"),
@@ -116,7 +111,6 @@ def test_correct_data_returned_by_query():
             "2023-07-29 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
         result = get_address_add(db_user=os.environ.get("test_user"),
-                                 db_schema='"kp-test-source".',
                                  db_database=os.environ.get("test_database"),
                                  db_host=os.environ.get('test_host'),
                                  db_port=os.environ.get("test_port"),
