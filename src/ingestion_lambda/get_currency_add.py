@@ -22,7 +22,6 @@ class MissingRequiredEnvironmentVariables (Exception):
 
 def get_currency_add(
         db_user=os.environ.get("DB_SOURCE_USER"),
-        db_schema='',
         db_database=os.environ.get("DB_SOURCE_NAME"),
         db_host=os.environ.get("DB_SOURCE_HOST"),
         db_port=os.environ.get("DB_SOURCE_PORT"),
@@ -42,7 +41,7 @@ def get_currency_add(
             port=db_port,
             password=db_password,
         )
-    except pg8000.exceptions.DatabaseError as e:
+    except pg8000.exceptions.DatabaseError:
         raise Exception("Database error")
 
     """
@@ -53,13 +52,16 @@ def get_currency_add(
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
-    target_table = db_schema + 'currency'
-    query = (
-        f'SELECT * FROM {target_table} WHERE created_at > :search_interval;')
+    #
+    # Set schema search order
+    conn.run('SET search_path TO "kp-test-source", public;')
+
+    #
+    # Query table
+    query = 'SELECT * FROM currency WHERE created_at > :search_interval;'
     params = {'search_interval': search_interval}
     rows = conn.run(query, **params)
-    # #if rows = {}:
-    # log....
+
     created_data = []
     for row in rows:
         item = {
