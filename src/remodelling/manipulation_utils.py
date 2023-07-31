@@ -4,14 +4,6 @@ import ccy
 """
 Receives data from csv_reader and manipulates it to match
 the final database schema
-
-format_fact_sales_order
-format_dim_staff
-format_dim_location
-format_dim_design
-format_dim_date
-format_dim_currency
-format_dim_counterparty
 """
 
 
@@ -210,13 +202,6 @@ def format_dim_date(date_data):
         raise InputValidationError
 
 
-def validate_dim_date_data(date_data):
-    try:
-        datetime.strptime(date_data, "%Y-%m-%d")
-    except ValueError:
-        raise InputValidationError
-
-
 def format_dim_currency(currency_data):
     """
     Manipulate currency data to match the format of the dim_currency
@@ -274,6 +259,19 @@ def format_dim_counterparty(counterparty_data, location_data):
             raise InputValidationError
 
         for location in location_data:
+            for index, column in enumerate(location):
+                if index not in (8, 9) and not isinstance(column, str):
+                    raise InputValidationError
+                elif index in (8, 9) and not isinstance(column, datetime):
+                    raise InputValidationError
+                if index == 0:
+                    try:
+                        int(column)
+                    except ValueError:
+                        raise InputValidationError
+            if len(location) != 10:
+                raise InputValidationError
+
             if location[0] == counterparty[2]:
                 formatted_counterparty = {
                     "counterparty_id": counterparty[0],
