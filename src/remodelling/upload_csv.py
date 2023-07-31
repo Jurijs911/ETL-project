@@ -1,5 +1,6 @@
 import csv
 import boto3
+import os
 
 
 def upload_csv(data, table_name, bucket_name):
@@ -19,3 +20,5 @@ def upload_csv(data, table_name, bucket_name):
     s3_client.upload_file(
         f"{table_name}.csv", bucket_name, f"{table_name}.csv"
     )
+
+    os.remove(f"{table_name}.csv")
