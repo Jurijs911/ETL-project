@@ -4,7 +4,23 @@ import os
 
 
 def upload_csv(data, table_name, bucket_name):
+    s3_client = boto3.client("s3")
+
+    downloaded_csv = (
+        s3_client.get_object(Bucket=bucket_name, Key=f"{table_name}.csv")[
+            "Body"
+        ]
+        .read()
+        .decode("utf-8")
+        .split("\r\n")
+    )
+
     with open(f"{table_name}.csv", "w", newline="") as csvfile:
+        writer = csv.writer(csvfile)
+        for row in downloaded_csv:
+            writer.writerow([row])
+
+    with open(f"{table_name}.csv", "a", newline="") as csvfile:
         if len(data) > 0:
             fieldnames = data[0].keys()
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -16,7 +32,6 @@ def upload_csv(data, table_name, bucket_name):
         else:
             pass
 
-    s3_client = boto3.client("s3")
     s3_client.upload_file(
         f"{table_name}.csv", bucket_name, f"{table_name}.csv"
     )
