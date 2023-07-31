@@ -30,20 +30,30 @@ def get_counterparty_add(
     """
     CONNECTION
     """
-    if not all([db_user, db_database, db_host, db_port, db_password]):
-        raise MissingRequiredEnvironmentVariables(
-            db_user, db_database, db_host, db_port, db_password)
+    #
+    # ADD BACK IN AFTER GITHUB ISSUE RESOLVED
+    #  if not all([db_user, db_database, db_host, db_port, db_password]):
+    #     raise MissingRequiredEnvironmentVariables(
+    #         db_user, db_database, db_host, db_port, db_password)
 
-    try:
-        conn = pg8000.native.Connection(
+    # try:
+    #     conn = pg8000.native.Connection(
+    #         user=db_user,
+    #         database=db_database,
+    #         host=db_host,
+    #         port=db_port,
+    #         password=db_password,
+    #     )
+    # except pg8000.exceptions.DatabaseError:
+    #     raise Exception("Database error")
+
+    conn = pg8000.native.Connection(
             user=db_user,
             database=db_database,
             host=db_host,
             port=db_port,
             password=db_password,
         )
-    except pg8000.exceptions.DatabaseError:
-        raise Exception("Database error")
 
     """
     DETERMINE SEARCH INTERVAL
