@@ -24,8 +24,7 @@ def test_get_counterparty_add_returns_list_with_correct_keys():
 
         result = get_counterparty_add(
             db_user=os.environ.get("test_user"),
-            db_schema='"kp-test-source".', db_database=os.environ.get(
-                "test_database"),
+            db_database=os.environ.get("test_database"),
             db_host=os.environ.get('test_host'),
             db_port=os.environ.get("test_port"),
             db_password=os.environ.get("test_password"))
@@ -45,7 +44,7 @@ def test_get_counterparty_add_has_correct_value_types():
             '2020-07-25 15:20:49.962000', '%Y-%m-%d %H:%M:%S.%f')
         result = get_counterparty_add(
             db_user=os.environ.get("test_user"),
-            db_schema='"kp-test-source".', db_database=os.environ.get(
+            db_database=os.environ.get(
                 "test_database"),
             db_host=os.environ.get('test_host'),
             db_port=os.environ.get("test_port"),
@@ -66,7 +65,7 @@ def test_get_counterparty_add_calls_get_last_time():
             '2020-07-25 15:20:49.962000', '%Y-%m-%d %H:%M:%S.%f')
         get_counterparty_add(
             db_user=os.environ.get("test_user"),
-            db_schema='"kp-test-source".', db_database=os.environ.get(
+            db_database=os.environ.get(
                 "test_database"),
             db_host=os.environ.get('test_host'),
             db_port=os.environ.get("test_port"),
@@ -81,7 +80,6 @@ def test_database_error():
         with pytest.raises(Exception, match="Database error"):
             get_counterparty_add(
                 db_user=os.environ.get("test_user"),
-                db_schema='"kp-test-source".',
                 db_database=os.environ.get("test_database"),
                 db_host=os.environ.get('test_host'),
                 db_port=os.environ.get("test_port"),
@@ -93,7 +91,6 @@ def test_missing_environment_variables():
         with pytest.raises(MissingRequiredEnvironmentVariables):
             get_counterparty_add(
                 db_user=os.environ.get("test_user"),
-                db_schema='"kp-test-source".',
                 db_database=os.environ.get("test_database"),
                 db_host=os.environ.get('test_host'),
                 db_port=os.environ.get("test_port"),
@@ -107,7 +104,6 @@ def test_correct_data_returned_by_query():
         )
         result = get_counterparty_add(
             db_user=os.environ.get("test_user"),
-            db_schema='"kp-test-source".',
             db_database=os.environ.get("test_database"),
             db_host=os.environ.get('test_host'),
             db_port=os.environ.get("test_port"),
