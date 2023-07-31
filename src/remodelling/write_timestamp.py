@@ -1,5 +1,6 @@
 from datetime import datetime
 import boto3
+import os
 
 
 def write_timestamp(data, table_name):
@@ -25,3 +26,5 @@ def write_timestamp(data, table_name):
         "kp-northcoders-ingestion-bucket",
         f"{table_name}/last_processed.txt",
     )
+
+    os.remove("last_processed.txt")
