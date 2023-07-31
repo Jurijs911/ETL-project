@@ -33,7 +33,7 @@ def iterate_bucket_items(bucket):
                 yield item
 
 
-def read_ingestion_csv(bucket_name="kp-northcoders-ingested-bucket"):
+def read_ingestion_csv(bucket_name="kp-northcoders-ingestion-bucket"):
     s3_client = boto3.client("s3")
 
     ingested_data = {
@@ -44,23 +44,26 @@ def read_ingestion_csv(bucket_name="kp-northcoders-ingested-bucket"):
         "counterparty": [],
         "address": [],
         "department": [],
-        "purchase_order": [],
-        "payment_type": [],
-        "payment": [],
-        "transaction": [],
+        # "purchase_order": [],
+        # "payment_type": [],
+        # "payment": [],
+        # "transaction": [],
     }
 
     for item in iterate_bucket_items(bucket=bucket_name):
-        response = (
-            s3_client.get_object(Bucket=bucket_name, Key=item["Key"])["Body"]
-            .read()
-            .decode("utf-8")
-            .splitlines()
-        )
-        records = csv.reader(response)
-        next(records)
-        table_data = []
-        for row in records:
-            table_data.append(row)
-        ingested_data[item["Key"].split(".")[0]] = table_data
+        if "last_processed" not in item["Key"]:
+            response = (
+                s3_client.get_object(Bucket=bucket_name, Key=item["Key"])[
+                    "Body"
+                ]
+                .read()
+                .decode("utf-8")
+                .splitlines()
+            )
+            records = csv.reader(response)
+            next(records)
+            table_data = []
+            for row in records:
+                table_data.append(row)
+            ingested_data[item["Key"].split(".")[0]] = table_data
     return ingested_data
