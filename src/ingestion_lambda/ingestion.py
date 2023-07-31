@@ -2,7 +2,7 @@ import logging
 import boto3
 import time
 from src.ingestion_lambda.get_address_add import get_address_add
-from src.upload_csv import upload_csv
+from src.remodelling.upload_csv import upload_csv
 from src.ingestion_lambda.find_most_recent_time import find_most_recent_time
 from src.ingestion_lambda.write_updated_time import write_updated_time
 from src.ingestion_lambda.get_counterparty_add import get_counterparty_add
@@ -14,22 +14,21 @@ from src.ingestion_lambda.get_purchase_order_add import get_purchase_order_add
 from src.ingestion_lambda.get_sales_order_add import get_sales_order_add
 from src.ingestion_lambda.get_staff_add import get_staff_add
 
-logging.basicConfig(level=logging.INFO) 
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 cloudwatch_logs = boto3.client("logs")
+
 
 def log_to_cloudwatch(message, log_group_name, log_stream_name):
     cloudwatch_logs.put_log_events(
         logGroupName=log_group_name,
         logStreamName=log_stream_name,
         logEvents=[
-            {
-                'timestamp': int(round(time.time() * 1000)),
-                'message': message
-            },
-        ]
+            {"timestamp": int(round(time.time() * 1000)), "message": message},
+        ],
     )
+
 
 def lambda_handler(event, context):
     try:
@@ -37,7 +36,9 @@ def lambda_handler(event, context):
 
         if len(address_data) > 0:
             updated_timestamp = find_most_recent_time(address_data)
-            upload_csv(address_data, "address", "kp-northcoder-ingestion-bucket")
+            upload_csv(
+                address_data, "address", "kp-northcoder-ingestion-bucket"
+            )
             write_updated_time(updated_timestamp, "address")
 
         counterparty_data = get_counterparty_add()
@@ -45,7 +46,9 @@ def lambda_handler(event, context):
         if len(counterparty_data) > 0:
             updated_timestamp = find_most_recent_time(counterparty_data)
             upload_csv(
-                counterparty_data, "counterparty", "kp-northcoder-ingestion-bucket"
+                counterparty_data,
+                "counterparty",
+                "kp-northcoder-ingestion-bucket",
             )
             write_updated_time(updated_timestamp, "counterparty")
 
@@ -53,7 +56,9 @@ def lambda_handler(event, context):
 
         if len(currency_data) > 0:
             updated_timestamp = find_most_recent_time(currency_data)
-            upload_csv(currency_data, "currency", "kp-northcoder-ingestion-bucket")
+            upload_csv(
+                currency_data, "currency", "kp-northcoder-ingestion-bucket"
+            )
             write_updated_time(updated_timestamp, "currency")
 
         department_data = get_department_add()
@@ -76,7 +81,9 @@ def lambda_handler(event, context):
 
         if len(payment_data) > 0:
             updated_timestamp = find_most_recent_time(payment_data)
-            upload_csv(payment_data, "payment", "kp-northcoder-ingestion-bucket")
+            upload_csv(
+                payment_data, "payment", "kp-northcoder-ingestion-bucket"
+            )
             write_updated_time(updated_timestamp, "payment")
 
         purchase_order_data = get_purchase_order_add()
@@ -95,7 +102,9 @@ def lambda_handler(event, context):
         if len(sales_order_data) > 0:
             updated_timestamp = find_most_recent_time(sales_order_data)
             upload_csv(
-                sales_order_data, "sales_order", "kp-northcoder-ingestion-bucket"
+                sales_order_data,
+                "sales_order",
+                "kp-northcoder-ingestion-bucket",
             )
             write_updated_time(updated_timestamp, "sales_order")
 
@@ -108,7 +117,7 @@ def lambda_handler(event, context):
 
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
-        log_to_cloudwatch(str(e), "/aws/lambda/remodelling-lambda", "lambda-log-stream")
+        log_to_cloudwatch(
+            str(e), "/aws/lambda/remodelling-lambda", "lambda-log-stream"
+        )
         raise  # this triggers the CloudWatch alarm
-
-        
