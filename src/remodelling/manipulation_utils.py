@@ -101,7 +101,33 @@ def format_dim_staff(staff_data, department_data):
     """
     formatted_data = []
     for staff in staff_data:
+        for index, column in enumerate(staff):
+            if index not in (5, 6) and not isinstance(column, str):
+                raise InputValidationError
+            elif index in (5, 6) and not isinstance(column, datetime):
+                raise InputValidationError
+            if index == 0:
+                try:
+                    int(column)
+                except ValueError:
+                    raise InputValidationError
+        if len(staff) != 7:
+            raise InputValidationError
+
         for dep in department_data:
+            for index, column in enumerate(dep):
+                if index not in (4, 5) and not isinstance(column, str):
+                    raise InputValidationError
+                elif index in (4, 5) and not isinstance(column, datetime):
+                    raise InputValidationError
+                if index == 0:
+                    try:
+                        int(column)
+                    except ValueError:
+                        raise InputValidationError
+            if len(dep) != 6:
+                raise InputValidationError
+
             if dep[0] == staff[3]:
                 formatted_staff = {
                     "staff_id": staff[0],
@@ -113,6 +139,7 @@ def format_dim_staff(staff_data, department_data):
                 }
                 formatted_data.append(formatted_staff)
     return formatted_data
+
 
 def validate_dim_staff_data(staff_data, department_data):
     for staff in staff_data:
@@ -127,7 +154,6 @@ def validate_dim_staff_data(staff_data, department_data):
             raise InputValidationError
 
 
-
 def format_dim_location(location_data):
     """
     Manipulate location data to match the format of the dim_location
@@ -135,6 +161,19 @@ def format_dim_location(location_data):
     """
     formatted_data = []
     for location in location_data:
+        for index, column in enumerate(location):
+            if index not in (8, 9) and not isinstance(column, str):
+                raise InputValidationError
+            elif index in (8, 9) and not isinstance(column, datetime):
+                raise InputValidationError
+            if index == 0:
+                try:
+                    int(column)
+                except ValueError:
+                    raise InputValidationError
+        if len(location) != 10:
+            raise InputValidationError
+
         formatted_location = {
             "location_id": location[0],
             "address_line_1": location[1],
@@ -147,6 +186,7 @@ def format_dim_location(location_data):
         }
         formatted_data.append(formatted_location)
     return formatted_data
+
 
 def validate_dim_location_data(location_data):
     for location in location_data:
@@ -161,20 +201,24 @@ def format_dim_date(date_data):
     Manipulate date data to match the format of the dim_date
     table in the data warehouse.
     """
-    formatted_data = []
-    date_obj = datetime.strptime(date_data, "%Y-%m-%d")
-    formatted_date = {
-        "date_id": date_data,
-        "year": date_obj.year,
-        "month": date_obj.month,
-        "day": date_obj.day,
-        "day_of_week": date_obj.weekday(),
-        "day_name": date_obj.strftime("%A"),
-        "month_name": date_obj.strftime("%B"),
-        "quarter": (date_obj.month - 1) // 3 + 1,
-    }
-    formatted_data.append(formatted_date)
-    return formatted_data
+    try:
+        formatted_data = []
+        date_obj = datetime.strptime(date_data, "%Y-%m-%d")
+        formatted_date = {
+            "date_id": date_data,
+            "year": date_obj.year,
+            "month": date_obj.month,
+            "day": date_obj.day,
+            "day_of_week": date_obj.weekday(),
+            "day_name": date_obj.strftime("%A"),
+            "month_name": date_obj.strftime("%B"),
+            "quarter": (date_obj.month - 1) // 3 + 1,
+        }
+        formatted_data.append(formatted_date)
+        return formatted_data
+    except ValueError:
+        raise InputValidationError
+
 
 def validate_dim_date_data(date_data):
     try:
@@ -190,6 +234,19 @@ def format_dim_currency(currency_data):
     """
     formatted_data = []
     for currency in currency_data:
+        for index, column in enumerate(currency):
+            if index not in (2, 3) and not isinstance(column, str):
+                raise InputValidationError
+            elif index in (2, 3) and not isinstance(column, datetime):
+                raise InputValidationError
+            if index == 0:
+                try:
+                    int(column)
+                except ValueError:
+                    raise InputValidationError
+        if len(currency) != 4:
+            raise InputValidationError
+
         formatted_currency = {
             "currency_id": currency[0],
             "currency_code": currency[1],
@@ -197,6 +254,7 @@ def format_dim_currency(currency_data):
         }
         formatted_data.append(formatted_currency)
     return formatted_data
+
 
 def validate_dim_currency_data(currency_data):
     for currency in currency_data:
@@ -228,6 +286,7 @@ def format_dim_counterparty(counterparty_data, location_data):
                 }
                 formatted_data.append(formatted_counterparty)
     return formatted_data
+
 
 def validate_dim_counterparty_data(counterparty_data, location_data):
     for counterparty in counterparty_data:
