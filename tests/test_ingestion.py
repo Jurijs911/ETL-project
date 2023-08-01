@@ -70,12 +70,12 @@ def test_lambda_handler_calls_get_address_add():
         lambda_handler(
             {},
             {},
-            test_user,
-            test_database,
-            test_host,
-            test_port,
-            test_password,
-        )
+            db_user=test_user,
+            db_database=test_database,
+            db_host=test_host,
+            db_port=test_port,
+            db_password=test_password,
+        )   
 
         s3_client = boto3.client("s3")
 
