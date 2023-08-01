@@ -58,3 +58,9 @@ def lambda_handler(event, context):
         log_to_cloudwatch(str(e), "/aws/lambda/loading-lambda", "lambda-log-stream")
         raise  # this triggers the CloudWatch alarm 
 
+    # except Exception as e:
+    #     import traceback
+    #     traceback.print_exc()
+    #     logger.error(f"An error occurred: {str(e)}")
+    #     log_to_cloudwatch(str(e), "/aws/lambda/loading-lambda", "lambda-log-stream")
+    #     raise  # this triggers the CloudWatch alarm 

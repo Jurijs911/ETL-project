@@ -51,6 +51,7 @@ def insert_into_dim_design(conn, design_data):
     """
 
     try:
+        conn.run("SET search_path TO 'project_team_2';")
         for design in design_data:
             if not isinstance(design[0], int):
                 raise InputValidationError
@@ -59,13 +60,12 @@ def insert_into_dim_design(conn, design_data):
                     raise InputValidationError
             if len(design) != 4:
                 raise InputValidationError
-
-            conn.run('SET search_path TO "project_team_2", public;')
-
-            conn.run("INSERT INTO dim_design (design_id, design_name, file_location, file_name) VALUES (design_id, design_name, file_location, file_name)",
+            print("In the try block")
+            conn.run("INSERT INTO dim_design(design_id, design_name, file_location, file_name) VALUES (:design_id, :design_name, :file_location, :file_name)",
                      design_id=design[0], design_name=design[1], file_location=design[2], file_name=design[3])
 
-        print("inserted data")
+        print("Inserted data")
+        #conn.commit()  # Commit the changes to the database
         conn.close()
 
         return get_loaded_data(conn, "dim_design")
@@ -77,6 +77,7 @@ def insert_into_dim_design(conn, design_data):
     except Exception as e:
         conn.close()
         raise
+
 
 
 def insert_into_dim_currency(conn, currency_data):
@@ -97,7 +98,7 @@ def insert_into_dim_currency(conn, currency_data):
             if len(currency) != 3:
                 raise InputValidationError
 
-            conn.run("INSERT INTO dim_currency (currency_id, currency_code, currency_name) VALUES (:(currency_id), :(currency_code), :(currency_name))",
+            conn.run("INSERT INTO dim_currency (currency_id, currency_code, currency_name) VALUES (:currency_id, :currency_code, :currency_name)",
                      currency_id=currency[0], currency_code=currency[1], currency_name=currency[2])
 
         conn.close()
@@ -135,7 +136,7 @@ def insert_into_dim_staff(conn, staff_data):
             if len(staff) != 7:
                 raise InputValidationError
 
-            conn.run("INSERT INTO dim_staff (staff_id, first_name, last_name, department_name, location, email_address) VALUES (:(staff_id), :(first_name), :(last_name), :(department_name), :(location), :(email_address))",
+            conn.run("INSERT INTO dim_staff (staff_id, first_name, last_name, department_name, location, email_address) VALUES (:staff_id, :first_name, :last_name, :department_name, :location, :email_address)",
                      staff_id=staff[0], first_name=staff[1], last_name=staff[2], department_name=staff[3], location=staff[4], email_address=staff[5])
 
         conn.close()
@@ -171,7 +172,7 @@ def insert_into_dim_location(conn, location_data):
             if len(location) != 8:
                 raise InputValidationError
 
-            conn.run("INSERT INTO dim_location (location_id, address_line_1, address_line_2, district, city, postal_code, country, phone) VALUES (:(location_id), :(address_line_1, :(address_line_2), :(district), :(city), :(postal_code), :(country), :(phone))",
+            conn.run("INSERT INTO dim_location (location_id, address_line_1, address_line_2, district, city, postal_code, country, phone) VALUES (:location_id, :address_line_1, :address_line_2, :district, :city, :postal_code, :country, :phone)",
                     location_id=location[0], address_line_1=location[1], address_line_2=location[2], district=location[3], city=location[4], postal_code=location[5], country=location[6], phone=location[7])
 
         conn.close()
@@ -200,7 +201,7 @@ def insert_into_dim_date(conn, date_data):
             if not isinstance(date[0], str):
                 raise InputValidationError
             try:
-                datetime.datetime.strptime(date[0], "%Y-%m-%d")
+                datetime.strptime(date[0], "%Y-%m-%d")
             except ValueError:
                 raise InputValidationError
                 
@@ -225,7 +226,7 @@ def insert_into_dim_date(conn, date_data):
             if not isinstance(date[7], int):
                 raise InputValidationError
 
-            conn.run("INSERT INTO dim_date (date_id, year, month, day, day_of_week, day_name, month_name, quarter) VALUES (:(date_id), :(year), :(month), :(day), :(day_of_week), :(day_name), :(month_name), :(quarter))",
+            conn.run("INSERT INTO dim_date (date_id, year, month, day, day_of_week, day_name, month_name, quarter) VALUES (:date_id, :year, :month, :day, :day_of_week, :day_name, :month_name, :quarter)",
                      date_id=date["date_id"], year=date["year"], month=date["month"], day=date["day"], day_of_week=date["day_of_week"], day_name=date["day_name"], month_name=date["month_name"], quarter=date["quarter"])
 
         conn.close()
@@ -262,7 +263,7 @@ def insert_into_dim_counterparty(conn, counterparty_data):
             if len(counterparty) != 9:
                 raise InputValidationError
 
-            conn.run("INSERT INTO dim_counterparty (counterparty_id, counterparty_legal_name, counterparty_legal_address_line_1, counterparty_legal_address_line_2, counterparty_legal_district, counterparty_legal_city, counterparty_legal_postal_code, counterparty_legal_country, counterparty_legal_phone_number) VALUES (:(counterparty_id), :(counterparty_legal_name), :(counterparty_legal_address_line_1), :(counterparty_legal_address_line_2), :(counterparty_legal_district), :(counterparty_legal_city), :(counterparty_legal_postal_code), :(counterparty_legal_country), :(counterparty_legal_phone_number))",
+            conn.run("INSERT INTO dim_counterparty (counterparty_id, counterparty_legal_name, counterparty_legal_address_line_1, counterparty_legal_address_line_2, counterparty_legal_district, counterparty_legal_city, counterparty_legal_postal_code, counterparty_legal_country, counterparty_legal_phone_number) VALUES (:counterparty_id, :counterparty_legal_name, :counterparty_legal_address_line_1, :counterparty_legal_address_line_2, :counterparty_legal_district, :counterparty_legal_city, :counterparty_legal_postal_code, :counterparty_legal_country, :counterparty_legal_phone_number)",
                      counterparty_id=counterparty[0], counterparty_legal_name=counterparty[1], counterparty_legal_address_line_1=counterparty[2], counterparty_legal_address_line_2=counterparty[3], counterparty_legal_district=counterparty[4], counterparty_legal_city=counterparty[5], counterparty_legal_postal_code=counterparty[6], counterparty_legal_country=counterparty[7], counterparty_legal_phone_number=counterparty[8])
 
         conn.close()
@@ -306,7 +307,7 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
             if len(sale) != 15:
                 raise InputValidationError
 
-            conn.run("INSERT INTO dim_fact_sales_order (sales_record_id, sales_order_id, created_date, created_time, last_updated_date, last_updated_time, sales_staff_id, counterparty_id, units_sold, unit_price, currency_id, design_id, agreed_payment_date, agreed_delivery_date, agreed_delivery_location_id) VALUES (:(sales_record_id), :(sales_order_id), :(created_date), :(created_time), :(last_updated_date), :(last_updated_time), :(sales_staff_id), :(counterparty_id), :(units_sold), :(unit_price), :(currency_id), :(design_id), :(agreed_payment_date), :(agreed_delivery_date), :(agreed_delivery_location_id))",
+            conn.run("INSERT INTO dim_fact_sales_order (sales_record_id, sales_order_id, created_date, created_time, last_updated_date, last_updated_time, sales_staff_id, counterparty_id, units_sold, unit_price, currency_id, design_id, agreed_payment_date, agreed_delivery_date, agreed_delivery_location_id) VALUES (:sales_record_id, :sales_order_id, :created_date, :created_time, :last_updated_date, :last_updated_time, :sales_staff_id, :counterparty_id, :units_sold, :unit_price, :currency_id, :design_id, :agreed_payment_date, :agreed_delivery_date, :agreed_delivery_location_id)",
                     sales_record_id=sale[0], sales_order_id=sale[1], created_date=sale[2], created_time=sale[3], last_updated_date=sale[4], last_updated_time=sale[5], sales_staff_id=sale[6], counterparty_id=sale[7], units_sold=sale[8], unit_price=sale[9], currency_id=sale[10], design_id=sale[11], agreed_payment_date=sale[12], agreed_delivery_date=sale[13], agreed_delivery_location_id=sale[14])
 
         conn.close()
