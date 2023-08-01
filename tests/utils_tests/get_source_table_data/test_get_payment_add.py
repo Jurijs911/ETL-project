@@ -1,33 +1,34 @@
 from decimal import Decimal
 from src.ingestion_lambda.get_payment_add import get_payment_add
-from unittest.mock import patch, Mock
-from unittest import mock
-import pg8000.native
+from unittest.mock import patch
 import datetime
 import pytest
+import os
+import pg8000.exceptions
+from dotenv import load_dotenv
+
+load_dotenv()
+
+ingestion_utils_path = 'src.ingestion_lambda.'
+payment_get_last_time_path = 'get_payment_add.get_last_time'
+get_last_time_patch_path = ingestion_utils_path + \
+    payment_get_last_time_path
 
 
-def test_get_payment_add_returns_list():
-    with patch(
-        "src.ingestion_lambda.get_payment_add.get_last_time"
-    ) as mock_get_last_time:
+def test_get_payment_add_returns_list_with_correct_keys():
+    with patch(get_last_time_patch_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
-        # test that we are returning a list,
-        result = get_payment_add()
+
+        result = get_payment_add(
+            db_user=os.environ.get("TEST_SOURCE_USER"),
+            db_database=os.environ.get("TEST_SOURCE_DATABASE"),
+            db_host=os.environ.get("TEST_SOURCE_HOST"),
+            db_port=os.environ.get("TEST_SOURCE_PORT"),
+            db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
 
         assert isinstance(result, list)
-
-
-def test_get_payment_add_returns_correct_keys():
-    with patch(
-        "src.ingestion_lambda.get_payment_add.get_last_time"
-    ) as mock_get_last_time:
-        mock_get_last_time.return_value = datetime.datetime.strptime(
-            "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
-        )
-        # test that we have the correct keys
         expected_keys = {
             "payment_id",
             "created_at",
@@ -42,19 +43,20 @@ def test_get_payment_add_returns_correct_keys():
             "company_ac_number",
             "counterparty_ac_number",
         }
-        result = get_payment_add()
         assert all(set(item.keys()) == expected_keys for item in result)
 
 
 def test_get_payment_add_has_correct_value_types():
-    with patch(
-        "src.ingestion_lambda.get_payment_add.get_last_time"
-    ) as mock_get_last_time:
+    with patch(get_last_time_patch_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
-        # test that each key has the correct type value
-        result = get_payment_add()
+        result = get_payment_add(
+            db_user=os.environ.get("TEST_SOURCE_USER"),
+            db_database=os.environ.get("TEST_SOURCE_DATABASE"),
+            db_host=os.environ.get("TEST_SOURCE_HOST"),
+            db_port=os.environ.get("TEST_SOURCE_PORT"),
+            db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
         for item in result:
             assert isinstance(item["payment_id"], int)
             assert isinstance(item["created_at"], datetime.date)
@@ -71,12 +73,62 @@ def test_get_payment_add_has_correct_value_types():
 
 
 def test_get_payment_add_calls_get_last_time():
-    # test that the SQL query calls get_last_time()
-    with patch(
-        "src.ingestion_lambda.get_payment_add.get_last_time"
-    ) as mock_get_last_time:
+    with patch(get_last_time_patch_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
-        get_payment_add()
+        get_payment_add(
+            db_user=os.environ.get("TEST_SOURCE_USER"),
+            db_database=os.environ.get("TEST_SOURCE_DATABASE"),
+            db_host=os.environ.get("TEST_SOURCE_HOST"),
+            db_port=os.environ.get("TEST_SOURCE_PORT"),
+            db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
         assert mock_get_last_time.call_count == 1
+
+
+def test_database_error():
+    with patch('pg8000.native.Connection') as mock_connection:
+        mock_connection.side_effect = pg8000.exceptions.DatabaseError(
+            "Database error")
+        with pytest.raises(Exception, match="Database error"):
+            get_payment_add(
+                db_user=os.environ.get("TEST_SOURCE_USER"),
+                db_database=os.environ.get("TEST_SOURCE_DATABASE"),
+                db_host=os.environ.get("TEST_SOURCE_HOST"),
+                db_port=os.environ.get("TEST_SOURCE_PORT"),
+                db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+
+
+# def test_missing_environment_variables():
+#     with patch('os.environ', {}):
+#         with pytest.raises(MissingRequiredEnvironmentVariables):
+#             get_currency_add(
+#                 db_user=os.environ.get("test_user"),
+#                 db_database=os.environ.get("test_database"),
+#                 db_host=os.environ.get('test_host'),
+#                 db_port=os.environ.get("test_port"),
+#                 db_password=os.environ.get("test_password"))
+
+
+def test_correct_data_returned_by_query():
+    with patch(get_last_time_patch_path) as mock_get_last_time:
+        mock_get_last_time.return_value = datetime.datetime.strptime(
+            "2023-07-29 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
+        )
+        result = get_payment_add(
+            db_user=os.environ.get("TEST_SOURCE_USER"),
+            db_database=os.environ.get("TEST_SOURCE_DATABASE"),
+            db_host=os.environ.get("TEST_SOURCE_HOST"),
+            db_port=os.environ.get("TEST_SOURCE_PORT"),
+            db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+
+        assert result == [
+            {'payment_id': 1, 'created_at': datetime.datetime(
+                2023, 8, 1, 12, 39, 34, 942457),
+             'last_updated': datetime.datetime(
+                 2023, 8, 1, 12, 39, 34, 942457),
+             'transaction_id': 1, 'counterparty_id': 1,
+             'payment_amount': Decimal('12.59'),
+             'currency_id': 1, 'payment_type_id': 1, 'paid': True,
+             'payment_date': 'Today', 'company_ac_number': 123,
+             'counterparty_ac_number': 123}]

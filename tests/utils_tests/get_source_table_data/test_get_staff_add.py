@@ -1,26 +1,31 @@
 from src.ingestion_lambda.get_staff_add import get_staff_add
 from unittest.mock import patch
+import os
 import datetime
+import pytest
+import pg8000.exceptions
+from dotenv import load_dotenv
+
+load_dotenv()
 
 ingestion_utils_path = "src.ingestion_lambda."
 staff_get_last_time_path = "get_staff_add.get_last_time"
 get_last_time_patch_path = ingestion_utils_path + staff_get_last_time_path
 
 
-def test_get_staff_add_returns_list():
+def test_get_staff_add_returns_list_with_correct_keys():
     with patch(get_last_time_patch_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
-        result = get_staff_add()
+        result = get_staff_add(
+            db_user=os.environ.get("TEST_SOURCE_USER"),
+            db_database=os.environ.get("TEST_SOURCE_DATABASE"),
+            db_host=os.environ.get("TEST_SOURCE_HOST"),
+            db_port=os.environ.get("TEST_SOURCE_PORT"),
+            db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+
         assert isinstance(result, list)
-
-
-def test_gget_staff_add_returns_correct_keys():
-    with patch(get_last_time_patch_path) as mock_get_last_time:
-        mock_get_last_time.return_value = datetime.datetime.strptime(
-            "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
-        )
         expected_keys = {
             "staff_id",
             "first_name",
@@ -30,7 +35,6 @@ def test_gget_staff_add_returns_correct_keys():
             "created_at",
             "last_updated",
         }
-        result = get_staff_add()
         assert all(set(item.keys()) == expected_keys for item in result)
 
 
@@ -39,7 +43,12 @@ def test_get_staff_add_has_correct_value_types():
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
-        result = get_staff_add()
+        result = get_staff_add(
+            db_user=os.environ.get("TEST_SOURCE_USER"),
+            db_database=os.environ.get("TEST_SOURCE_DATABASE"),
+            db_host=os.environ.get("TEST_SOURCE_HOST"),
+            db_port=os.environ.get("TEST_SOURCE_PORT"),
+            db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
         for item in result:
             assert isinstance(item["staff_id"], int)
             assert isinstance(item["first_name"], str)
@@ -55,5 +64,65 @@ def test_get_staff_add_calls_get_last_time():
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
-        get_staff_add()
+        get_staff_add(
+            db_user=os.environ.get("TEST_SOURCE_USER"),
+            db_database=os.environ.get("TEST_SOURCE_DATABASE"),
+            db_host=os.environ.get("TEST_SOURCE_HOST"),
+            db_port=os.environ.get("TEST_SOURCE_PORT"),
+            db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
         assert mock_get_last_time.call_count == 1
+
+
+def test_database_error():
+    with patch('pg8000.native.Connection') as mock_connection:
+        mock_connection.side_effect = pg8000.exceptions.DatabaseError(
+            "Database error")
+        with pytest.raises(Exception, match="Database error"):
+            get_staff_add(
+                db_user=os.environ.get("TEST_SOURCE_USER"),
+                db_database=os.environ.get("TEST_SOURCE_DATABASE"),
+                db_host=os.environ.get("TEST_SOURCE_HOST"),
+                db_port=os.environ.get("TEST_SOURCE_PORT"),
+                db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+
+
+# def test_missing_environment_variables():
+#     with patch('os.environ', {}):
+#         with pytest.raises(MissingRequiredEnvironmentVariables):
+#             get_address_add(db_user=os.environ.get("test_user"),
+#                             db_database=os.environ.get("test_database"),
+#                             db_host=os.environ.get('test_host'),
+#                             db_port=os.environ.get("test_port"),
+#                             db_password=os.environ.get("test_password"))
+
+
+def test_correct_data_returned_by_query():
+    with patch(get_last_time_patch_path) as mock_get_last_time:
+        mock_get_last_time.return_value = datetime.datetime.strptime(
+            "2023-07-27 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
+        )
+        result = get_staff_add(
+            db_user=os.environ.get("TEST_SOURCE_USER"),
+            db_database=os.environ.get("TEST_SOURCE_DATABASE"),
+            db_host=os.environ.get("TEST_SOURCE_HOST"),
+            db_port=os.environ.get("TEST_SOURCE_PORT"),
+            db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+        assert result == [
+            {'staff_id': 1,
+             'first_name': 'Paul',
+             'last_name': 'McCartney',
+             'department_id': 1,
+             'email_address': 'paul@northcoders.com',
+             'created_at': datetime.datetime(
+                2023, 7, 28, 15, 1, 52, 760464),
+             'last_updated': datetime.datetime(
+                2023, 7, 28, 15, 1, 52, 760464)},
+            {'staff_id': 2,
+             'first_name': 'Ringo',
+             'last_name': 'Starr',
+             'department_id': 2,
+             'email_address': 'ringo@northcoders.com',
+             'created_at': datetime.datetime(
+                2023, 7, 28, 15, 2, 21, 393482),
+             'last_updated': datetime.datetime(
+                2023, 7, 28, 15, 2, 21, 393482)}]

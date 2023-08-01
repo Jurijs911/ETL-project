@@ -15,17 +15,17 @@ get_last_time_patch_path = ingestion_utils_path + address_get_last_time_path
 
 
 def test_get_address_add_returns_list_with_correct_keys():
-
     with patch(get_last_time_patch_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
 
-        result = get_address_add(db_user=os.environ.get("TEST_USER"),
-                                 db_database=os.environ.get("TEST_DATABASE"),
-                                 db_host=os.environ.get("TEST_HOST"),
-                                 db_port=os.environ.get("TEST_PORT"),
-                                 db_password=os.environ.get("TEST_PASSWORD"))
+        result = get_address_add(
+            db_user=os.environ.get("TEST_SOURCE_USER"),
+            db_database=os.environ.get("TEST_SOURCE_DATABASE"),
+            db_host=os.environ.get("TEST_SOURCE_HOST"),
+            db_port=os.environ.get("TEST_SOURCE_PORT"),
+            db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
 
         assert isinstance(result, list)
         expected_keys = {
@@ -48,11 +48,12 @@ def test_get_address_add_has_correct_value_types():
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
-        result = get_address_add(db_user=os.environ.get("TEST_USER"),
-                                 db_database=os.environ.get("TEST_DATABASE"),
-                                 db_host=os.environ.get("TEST_HOST"),
-                                 db_port=os.environ.get("TEST_PORT"),
-                                 db_password=os.environ.get("TEST_PASSWORD"))
+        result = get_address_add(
+            db_user=os.environ.get("TEST_SOURCE_USER"),
+            db_database=os.environ.get("TEST_SOURCE_DATABASE"),
+            db_host=os.environ.get("TEST_SOURCE_HOST"),
+            db_port=os.environ.get("TEST_SOURCE_PORT"),
+            db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
         for item in result:
             assert isinstance(item["location_id"], int)
             assert isinstance(item["address_line_1"], str)
@@ -77,11 +78,11 @@ def test_get_address_calls_get_last_time():
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
         get_address_add(
-            db_user=os.environ.get("TEST_USER"),
-            db_database=os.environ.get("TEST_DATABASE"),
-            db_host=os.environ.get("TEST_HOST"),
-            db_port=os.environ.get("TEST_PORT"),
-            db_password=os.environ.get("TEST_PASSWORD"))
+            db_user=os.environ.get("TEST_SOURCE_USER"),
+            db_database=os.environ.get("TEST_SOURCE_DATABASE"),
+            db_host=os.environ.get("TEST_SOURCE_HOST"),
+            db_port=os.environ.get("TEST_SOURCE_PORT"),
+            db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
         assert mock_get_last_time.call_count == 1
 
 
@@ -91,11 +92,11 @@ def test_database_error():
             "Database error")
         with pytest.raises(Exception, match="Database error"):
             get_address_add(
-                db_user=os.environ.get("TEST_USER"),
-                db_database=os.environ.get("TEST_DATABASE"),
-                db_host=os.environ.get("TEST_HOST"),
-                db_port=os.environ.get("TEST_PORT"),
-                db_password=os.environ.get("TEST_PASSWORD"))
+                db_user=os.environ.get("TEST_SOURCE_USER"),
+                db_database=os.environ.get("TEST_SOURCE_DATABASE"),
+                db_host=os.environ.get("TEST_SOURCE_HOST"),
+                db_port=os.environ.get("TEST_SOURCE_PORT"),
+                db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
 
 
 # def test_missing_environment_variables():
@@ -113,11 +114,12 @@ def test_correct_data_returned_by_query():
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2023-07-29 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
-        result = get_address_add(db_user=os.environ.get("TEST_USER"),
-                                 db_database=os.environ.get("TEST_DATABASE"),
-                                 db_host=os.environ.get("TEST_HOST"),
-                                 db_port=os.environ.get("TEST_PORT"),
-                                 db_password=os.environ.get("TEST_PASSWORD"))
+        result = get_address_add(
+            db_user=os.environ.get("TEST_SOURCE_USER"),
+            db_database=os.environ.get("TEST_SOURCE_DATABASE"),
+            db_host=os.environ.get("TEST_SOURCE_HOST"),
+            db_port=os.environ.get("TEST_SOURCE_PORT"),
+            db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
         assert result == [
             {
                 'location_id': 3, 'address_line_1': 'Bank of England',
