@@ -3,6 +3,9 @@ import os
 from unittest.mock import patch
 from moto import mock_s3, mock_logs
 import boto3
+from dotenv import load_dotenv
+
+load_dotenv()
 
 test_user = os.environ.get("TEST_SOURCE_USER")
 test_database = os.environ.get("TEST_SOURCE_DATABASE")
