@@ -177,7 +177,7 @@ def format_dim_date(date_data):
         }
         formatted_data.append(formatted_date)
         return formatted_data
-    except ValueError:
+    except (ValueError, TypeError):
         raise InputValidationError
 
 
