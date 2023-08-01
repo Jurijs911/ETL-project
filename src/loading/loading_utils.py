@@ -60,9 +60,12 @@ def insert_into_dim_design(conn, design_data):
             if len(design) != 4:
                 raise InputValidationError
 
-            conn.run("INSERT INTO dim_design (design_id, design_name, file_location, file_name) VALUES (:(design_id), :(design_name), :(file_location), :(file_name))",
+            conn.run('SET search_path TO "project_team_2", public;')
+
+            conn.run("INSERT INTO dim_design (design_id, design_name, file_location, file_name) VALUES (design_id, design_name, file_location, file_name)",
                      design_id=design[0], design_name=design[1], file_location=design[2], file_name=design[3])
 
+        print("inserted data")
         conn.close()
 
         return get_loaded_data(conn, "dim_design")
@@ -194,32 +197,32 @@ def insert_into_dim_date(conn, date_data):
 
     try:
         for date in date_data:
-            if not isinstance(date["date_id"], str):
+            if not isinstance(date[0], str):
                 raise InputValidationError
             try:
-                datetime.datetime.strptime(date["date_id"], "%Y-%m-%d")
+                datetime.datetime.strptime(date[0], "%Y-%m-%d")
             except ValueError:
                 raise InputValidationError
                 
-            if not isinstance(date["year"], int):
+            if not isinstance(date[1], int):
                 raise InputValidationError
             
-            if not isinstance(date["month"], int):
+            if not isinstance(date[2], int):
                 raise InputValidationError
             
-            if not isinstance(date["day"], int):
+            if not isinstance(date[3], int):
                 raise InputValidationError
             
-            if not isinstance(date["day_of_week"], int):
+            if not isinstance(date[4], int):
                 raise InputValidationError
             
-            if not isinstance(date["day_name"], str):
+            if not isinstance(date[5], str):
                 raise InputValidationError
             
-            if not isinstance(date["month_name"], str):
+            if not isinstance(date[6], str):
                 raise InputValidationError
             
-            if not isinstance(date["quarter"], int):
+            if not isinstance(date[7], int):
                 raise InputValidationError
 
             conn.run("INSERT INTO dim_date (date_id, year, month, day, day_of_week, day_name, month_name, quarter) VALUES (:(date_id), :(year), :(month), :(day), :(day_of_week), :(day_name), :(month_name), :(quarter))",

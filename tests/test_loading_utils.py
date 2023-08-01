@@ -1,5 +1,5 @@
 import pytest
-from datetime import datetime
+import datetime
 from unittest.mock import patch, Mock
 from src.loading.loading_utils import (
     create_connection, 
@@ -25,7 +25,7 @@ def test_read_inserted_dim_design_data():
             [5, "Design 5", "location5", "file5"],
             [6, "Design 6", "location6", "file6"],
         ]
-        mock_connection.run.return_value = design_data
+        mock_connection.run.side_effect = lambda query, **params: design_data
 
         result = insert_into_dim_design(mock_connection, design_data)
         assert result == design_data
@@ -91,7 +91,7 @@ def test_read_inserted_dim_staff_data():
     mock_connection = Mock()
     with patch('src.loading.loading_utils.create_connection', return_value=mock_connection):
         staff_data = [
-            [1, "Zenab", "Haider", "Sales", "Manchester", "zenab.email.com"],  # Invalid email format
+            [1, "Zenab", "Haider", "Sales", "Manchester", "zenab.email.com"],
             [2, "Lisa", "S", "Marketing", "London", "lisa@email.com"],
         ]
         mock_connection.run.return_value = staff_data
@@ -169,14 +169,6 @@ def test_insert_into_dim_date_invalid_input():
 
 
 
-def test_insert_into_dim_date_invalid_input():
-    mock_connection = Mock()
-    invalid_date_data = [
-        ["2023-07-27", "Invalid", 7, 27, 4, "Thursday", "July", 2]
-    ]
-
-    with pytest.raises(InputValidationError):
-        insert_into_dim_date(mock_connection, invalid_date_data)
 
 def test_insert_into_dim_date_invalid_date_format():
     mock_connection = Mock()
@@ -187,7 +179,6 @@ def test_insert_into_dim_date_invalid_date_format():
 
         with pytest.raises(InputValidationError):
             insert_into_dim_date(mock_connection, date_data)
-
 
 def test_insert_into_dim_counterparty():
     mock_connection = Mock()
@@ -200,24 +191,25 @@ def test_insert_into_dim_counterparty():
         result = insert_into_dim_counterparty(mock_connection, counterparty_data)
         assert result == counterparty_data
 
+
 def test_insert_into_dim_counterparty_invalid_input():
     mock_connection = Mock()
     with patch('src.loading.loading_utils.create_connection', return_value=mock_connection):
         counterparty_data = [
-            [1, "Counterparty 1", "Address 1", "Address 2", "District 1", "City 1", "12345", "Country 1", "12345"]
-        ]
-        
-        invalid_data = [
-            ["1", "Counterparty 2", "Address 1", "Address 2", "District 1", "City 1", "12345", "Country 1", "12345"]
+            [1, "Counterparty 1", "Address 1", "Address 2", "District 1", "City 1", "12345", "Country 1", 12345]
         ]
 
-       
+        invalid_data = [
+            [1, "Counterparty 2", "Address 1", "Address 2", "District 1", "City 1", "12345", "Country 1", "12345"]
+        ]
+
         result = insert_into_dim_counterparty(mock_connection, counterparty_data)
         assert result == counterparty_data
 
-        
         with pytest.raises(InputValidationError):
             insert_into_dim_counterparty(mock_connection, invalid_data)
+            
+
 def test_insert_into_dim_counterparty_invalid_currency_id():
     mock_connection = Mock()
     with patch('src.loading.loading_utils.create_connection', return_value=mock_connection):
