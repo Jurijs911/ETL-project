@@ -3,7 +3,7 @@ import boto3
 import time
 import os
 from src.ingestion_lambda.get_address_add import get_address_add
-from src.remodelling.upload_csv import upload_csv
+from src.ingestion_lambda.upload_csv import upload_csv
 from src.ingestion_lambda.find_most_recent_time import find_most_recent_time
 from src.ingestion_lambda.write_updated_time import write_updated_time
 from src.ingestion_lambda.get_counterparty_add import get_counterparty_add
@@ -23,50 +23,69 @@ cloudwatch_logs = boto3.client("logs")
 
 def log_to_cloudwatch(message, log_group_name, log_stream_name):
     cloudwatch_logs.put_log_events(
-        logGroupName=log_group_name,
-        logStreamName=log_stream_name,
+        logGroupName="/aws/lambda/ingestion-lambda",
+        logStreamName="lambda-log-stream",
         logEvents=[
             {"timestamp": int(round(time.time() * 1000)), "message": message},
         ],
     )
 
 
-def lambda_handler(event, context, db_user=os.environ.get("DB_SOURCE_USER"),
-                   db_database=os.environ.get("DB_SOURCE_NAME"),
-                   db_host=os.environ.get("DB_SOURCE_HOST"),
-                   db_port=os.environ.get("DB_SOURCE_PORT"),
-                   db_password=os.environ.get("DB_SOURCE_PASSWORD")):
+def lambda_handler(
+    event,
+    context,
+    db_user=os.environ.get("DB_SOURCE_USER"),
+    db_database=os.environ.get("DB_SOURCE_NAME"),
+    db_host=os.environ.get("DB_SOURCE_HOST"),
+    db_port=os.environ.get("DB_SOURCE_PORT"),
+    db_password=os.environ.get("DB_SOURCE_PASSWORD"),
+):
     try:
         address_data = get_address_add(
-            db_user, db_database, db_host, db_port, db_password)
-        print(address_data)
+            db_user, db_database, db_host, db_port, db_password
+        )
 
         if len(address_data) > 0:
-            print('111111111', len(address_data))
             updated_timestamp = find_most_recent_time(address_data)
-            print('222222222', updated_timestamp)
-            upload_csv(address_data, "address",
-                       "kp-northcoder-ingestion-bucket")
-            print('33333333')
+            upload_csv(
+                address_data, "address", "kp-northcoder-ingestion-bucket"
+            )
             write_updated_time(updated_timestamp, "address")
-            print('44444444444')
-            log_to_cloudwatch(str('New data returned'),
-                              "/aws/lambda/remodelling-lambda", "lambda-log-stream")
-            print('55555555')
+            log_to_cloudwatch(
+                str("New data returned"),
+                "/aws/lambda/ingestion-lambda",
+                "lambda-log-stream",
+            )
         else:
-            print('666666666')
-            log_to_cloudwatch(str('No new data returned'),
-                              "/aws/lambda/remodelling-lambda", "lambda-log-stream")
-            print('77777777')
+            log_to_cloudwatch(
+                str("No new address data returned"),
+                "/aws/lambda/ingestion-lambda",
+                "lambda-log-stream",
+            )
 
-        # counterparty_data = get_counterparty_add()
+        counterparty_data = get_counterparty_add(
+            db_user, db_database, db_host, db_port, db_password
+        )
 
-        # if len(counterparty_data) > 0:
-        #     updated_timestamp = find_most_recent_time(counterparty_data)
-        #     upload_csv(
-        #         counterparty_data, "counterparty", "kp-northcoder-ingestion-bucket"
-        #     )
-        #     write_updated_time(updated_timestamp, "counterparty")
+        if len(counterparty_data) > 0:
+            updated_timestamp = find_most_recent_time(counterparty_data)
+            upload_csv(
+                counterparty_data,
+                "counterparty",
+                "kp-northcoder-ingestion-bucket",
+            )
+            write_updated_time(updated_timestamp, "counterparty")
+            log_to_cloudwatch(
+                str("New data returned"),
+                "/aws/lambda/ingestion-lambda",
+                "lambda-log-stream",
+            )
+        else:
+            log_to_cloudwatch(
+                str("No new counterparty data returned"),
+                "/aws/lambda/ingestion-lambda",
+                "lambda-log-stream",
+            )
 
         # currency_data = get_currency_add()
 
@@ -128,8 +147,8 @@ def lambda_handler(event, context, db_user=os.environ.get("DB_SOURCE_USER"),
         #     write_updated_time(updated_timestamp, "staff")
 
     except Exception as e:
-        print(e, "error")
         logger.error(f"An error occurred: {str(e)}")
         log_to_cloudwatch(
-            str(e), "/aws/lambda/remodelling-lambda", "lambda-log-stream")
+            str(e), "/aws/lambda/ingestion-lambda", "lambda-log-stream"
+        )
         raise  # this triggers the CloudWatch alarm

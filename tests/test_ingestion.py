@@ -1,36 +1,86 @@
-from src.ingestion_lambda.find_most_recent_time import find_most_recent_time
-from src.ingestion_lambda.get_address_add import get_address_add
-from src.ingestion_lambda.write_updated_time import write_updated_time
-from src.ingestion_lambda.ingestion import lambda_handler, log_to_cloudwatch
+from src.ingestion_lambda.ingestion import lambda_handler
 import os
-from unittest.mock import patch, DEFAULT, ANY, Mock
+from unittest.mock import patch
 from moto import mock_s3, mock_logs
-from src.upload_csv import upload_csv
 import boto3
 
-test_user = os.environ.get("test_user")
-test_database = os.environ.get("test_database")
-test_host = os.environ.get("test_host")
-test_port = os.environ.get("test_port")
-test_password = os.environ.get("test_password")
+test_user = os.environ.get("TEST_USER")
+test_database = os.environ.get("TEST_DATABASE")
+test_host = os.environ.get("TEST_HOST")
+test_port = os.environ.get("TEST_PORT")
+test_password = os.environ.get("TEST_PASSWORD")
 
 
 @mock_s3
 @mock_logs
 def test_lambda_handler_calls_get_address_add():
-   # Set up mock S3 service
-    conn = boto3.resource('s3', region_name='us-east-1')
-    conn.create_bucket(Bucket='kp-northcoder-ingestion-bucket')
-    conn.Object('kp-northcoder-ingestion-bucket',
-                'address/created_at.txt').put(Body='2020-07-25 15:20:49.962000')
-    client = boto3.client('logs')
-    client.create_log_group(logGroupName='/aws/lambda/remodelling-lambda')
+    conn = boto3.resource("s3", region_name="eu-west-2")
+    conn.create_bucket(
+        Bucket="kp-northcoder-ingestion-bucket",
+        CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+    )
+    conn.Object(
+        "kp-northcoder-ingestion-bucket", "address/created_at.txt"
+    ).put(Body="2023-07-29 15:20:49.962000")
+    conn.Object(
+        "kp-northcoder-ingestion-bucket", "counterparty/created_at.txt"
+    ).put(Body="2023-07-30 15:20:49.962000")
+    client = boto3.client("logs")
+    client.create_log_group(logGroupName="/aws/lambda/ingestion-lambda")
     client.create_log_stream(
-        logGroupName='/aws/lambda/remodelling-lambda', logStreamName='lambda-log-stream')
+        logGroupName="/aws/lambda/ingestion-lambda",
+        logStreamName="lambda-log-stream",
+    )
+    with patch("src.ingestion_lambda.ingestion.log_to_cloudwatch"):
+        lambda_handler(
+            {},
+            {},
+            test_user,
+            test_database,
+            test_host,
+            test_port,
+            test_password,
+        )
 
-    lambda_handler({}, {}, test_user, test_database,
-                   test_host, test_port, test_password)
-    get_address_add.assert_called_once()
+        s3_client = boto3.client("s3")
+
+        address_response = (
+            s3_client.get_object(
+                Bucket="kp-northcoder-ingestion-bucket",
+                Key="address.csv",
+            )["Body"]
+            .read()
+            .decode("utf-8")
+        )
+
+        assert (
+            "3,Bank of England,Threadneedle St,,London,EC2R 8AH"
+            in address_response
+        )
+
+        counterparty_response = (
+            s3_client.get_object(
+                Bucket="kp-northcoder-ingestion-bucket",
+                Key="counterparty.csv",
+            )["Body"]
+            .read()
+            .decode("utf-8")
+        )
+
+        assert (
+            "2,Harris and Sons Ltd,2,Contract_2,Matt" in counterparty_response
+        )
+
+        txt_response = (
+            s3_client.get_object(
+                Bucket="kp-northcoder-ingestion-bucket",
+                Key="address/created_at.txt",
+            )["Body"]
+            .read()
+            .decode("utf-8")
+        )
+
+        assert txt_response == "2023-07-30 14:07:32.362337"
 
 
 #     # with patch.multiple('src.ingestion_lambda',
