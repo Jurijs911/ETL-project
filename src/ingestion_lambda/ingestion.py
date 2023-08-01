@@ -42,7 +42,11 @@ def lambda_handler(
 ):
     try:
         address_data = get_address_add(
-            db_user, db_database, db_host, db_port, db_password
+            db_user,
+            db_database,
+            db_host,
+            db_port,
+            db_password
         )
 
         if len(address_data) > 0:
