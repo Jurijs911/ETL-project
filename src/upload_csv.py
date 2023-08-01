@@ -6,7 +6,7 @@ def upload_csv(data, table_name, bucket_name):
     with open(f"{table_name}.csv", "a", newline="") as csvfile:
         fieldnames = data[0].keys()
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-
+        print('8888', fieldnames)
         writer.writeheader()
 
         for row in data:
