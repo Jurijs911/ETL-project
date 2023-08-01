@@ -8,7 +8,6 @@ from src.remodelling.manipulation_utils import (
     format_dim_counterparty,
     InputValidationError,
 )
-from datetime import datetime
 import pytest
 
 
@@ -17,8 +16,10 @@ class Test_Format_Fact_Sales_Order:
         sample_sales_data = [
             [
                 "2",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
                 "100",
                 "200",
                 "2000",
@@ -37,9 +38,9 @@ class Test_Format_Fact_Sales_Order:
             {
                 "sales_order_id": "2",
                 "created_date": "2023-07-25",
-                "created_time": "15:20:49:962000",
+                "created_time": "15:20:49.962000",
                 "last_updated_date": "2023-07-25",
-                "last_updated_time": "15:20:49:962000",
+                "last_updated_time": "15:20:49.962000",
                 "sales_staff_id": "200",
                 "counterparty_id": "2000",
                 "units_sold": "5",
@@ -57,8 +58,8 @@ class Test_Format_Fact_Sales_Order:
         sample_sales_data = [
             [
                 "2",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
                 True,
                 "200",
                 "2000",
@@ -80,8 +81,8 @@ class Test_Format_Fact_Sales_Order:
         sample_sales_data = [
             [
                 "2",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
                 "letters",
                 "200",
                 "2000",
@@ -103,8 +104,8 @@ class Test_Format_Fact_Sales_Order:
         sample_sales_data = [
             [
                 "2",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
                 "2023, 7, 30",
                 "2023, 8, 12",
                 "2",
@@ -120,8 +121,8 @@ class Test_Format_Dim_Design:
         sample_design_data = [
             [
                 "1",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
                 "design 1",
                 "./design.jpg",
                 "design.jpg",
@@ -145,8 +146,8 @@ class Test_Format_Dim_Design:
         sample_design_data = [
             [
                 "1",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
                 None,
                 "./design.jpg",
                 "design.jpg",
@@ -154,7 +155,7 @@ class Test_Format_Dim_Design:
         ]
 
         with pytest.raises(InputValidationError):
-            format_fact_sales_order(sample_design_data)
+            format_dim_design(sample_design_data)
 
     def test_raises_exception_when_input_has_id_that_cannot_convert_to_integer(
         self,
@@ -162,8 +163,8 @@ class Test_Format_Dim_Design:
         sample_design_data = [
             [
                 "letters",
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
-                datetime(2023, 7, 25, 15, 20, 49, 962000),
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
                 "design 1",
                 "./design.jpg",
                 "design.jpg",
@@ -171,7 +172,7 @@ class Test_Format_Dim_Design:
         ]
 
         with pytest.raises(InputValidationError):
-            format_fact_sales_order(sample_design_data)
+            format_dim_design(sample_design_data)
 
     def test_raises_exception_when_input_is_wrong_length(
         self,
@@ -184,172 +185,476 @@ class Test_Format_Dim_Design:
         ]
 
         with pytest.raises(InputValidationError):
-            format_fact_sales_order(sample_design_data)
+            format_dim_design(sample_design_data)
 
 
-def test_format_dim_staff():
-    sample_staff_data = [
-        [
-            "1",
-            "zenab",
-            "haider",
-            "1",
-            "zenab@gmail.com",
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-        ],
-    ]
-    sample_department_data = [
-        [
-            "1",
-            "coding",
-            "manchester",
-            "zenab",
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-        ],
-    ]
+class Test_Format_Dim_Staff:
+    def test_format_dim_staff(self):
+        sample_staff_data = [
+            [
+                "1",
+                "zenab",
+                "haider",
+                "1",
+                "zenab@gmail.com",
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
+            ],
+        ]
+        sample_department_data = [
+            [
+                "1",
+                "coding",
+                "manchester",
+                "zenab",
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
+            ],
+        ]
 
-    formatted_staff = format_dim_staff(
-        sample_staff_data, sample_department_data
-    )
+        formatted_staff = format_dim_staff(
+            sample_staff_data, sample_department_data
+        )
 
-    expected_staff_data = [
-        {
-            "staff_id": "1",
-            "first_name": "zenab",
-            "last_name": "haider",
-            "department_name": "coding",
-            "location": "manchester",
-            "email_address": "zenab@gmail.com",
-        },
-    ]
+        expected_staff_data = [
+            {
+                "staff_id": "1",
+                "first_name": "zenab",
+                "last_name": "haider",
+                "department_name": "coding",
+                "location": "manchester",
+                "email_address": "zenab@gmail.com",
+            },
+        ]
 
-    assert formatted_staff == expected_staff_data
+        assert formatted_staff == expected_staff_data
+
+    def test_raises_exception_when_input_is_wrong_type(self):
+        sample_staff_data = [
+            [
+                "1",
+                "zenab",
+                "haider",
+                "1",
+                "zenab@gmail.com",
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
+            ],
+        ]
+        sample_department_data = [
+            [
+                "1",
+                "coding",
+                "manchester",
+                "zenab",
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_dim_staff(sample_staff_data, sample_department_data)
+
+    def test_raises_exception_when_input_has_id_that_cannot_convert_to_integer(
+        self,
+    ):
+        sample_staff_data = [
+            [
+                "1",
+                "zenab",
+                "haider",
+                "letters",
+                "zenab@gmail.com",
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
+            ],
+        ]
+        sample_department_data = [
+            [
+                "letters",
+                "coding",
+                "manchester",
+                "zenab",
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_dim_staff(sample_staff_data, sample_department_data)
+
+    def test_raises_exception_when_input_is_wrong_length(
+        self,
+    ):
+        sample_staff_data = [
+            [
+                "1",
+                "zenab",
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
+            ],
+        ]
+        sample_department_data = [
+            [
+                "1",
+                "coding",
+                "manchester",
+                "zenab",
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_dim_staff(sample_staff_data, sample_department_data)
 
 
-def test_format_dim_location():
-    sample_address = [
-        [
-            1,
-            "123 apple street",
-            "apple street",
-            "bolton",
-            "greater manchester",
-            "ABC 123",
-            "England",
-            "123 456 789",
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-        ],
-    ]
+class Test_Format_Dim_Location:
+    def test_format_dim_location(self):
+        sample_address = [
+            [
+                "1",
+                "123 apple street",
+                "apple street",
+                "bolton",
+                "greater manchester",
+                "ABC 123",
+                "England",
+                "123 456 789",
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
+            ],
+        ]
 
-    formatted_location = format_dim_location(sample_address)
+        formatted_location = format_dim_location(sample_address)
 
-    expected_location_data = [
-        {
-            "location_id": 1,
-            "address_line_1": "123 apple street",
-            "address_line_2": "apple street",
-            "district": "bolton",
-            "city": "greater manchester",
-            "postal_code": "ABC 123",
-            "country": "England",
-            "phone": "123 456 789",
-        },
-    ]
+        expected_location_data = [
+            {
+                "location_id": "1",
+                "address_line_1": "123 apple street",
+                "address_line_2": "apple street",
+                "district": "bolton",
+                "city": "greater manchester",
+                "postal_code": "ABC 123",
+                "country": "England",
+                "phone": "123 456 789",
+            },
+        ]
 
-    assert formatted_location == expected_location_data
+        assert formatted_location == expected_location_data
+
+    def test_raises_exception_when_input_is_wrong_type(self):
+        sample_address = [
+            [
+                1,
+                "123 apple street",
+                "apple street",
+                "bolton",
+                "greater manchester",
+                "ABC 123",
+                "England",
+                "123 456 789",
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_dim_location(sample_address)
+
+    def test_raises_exception_when_input_has_id_that_cannot_convert_to_integer(
+        self,
+    ):
+        sample_address = [
+            [
+                "letter",
+                "123 apple street",
+                "apple street",
+                "bolton",
+                "greater manchester",
+                "ABC 123",
+                "England",
+                "123 456 789",
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_dim_location(sample_address)
+
+    def test_raises_exception_when_input_is_wrong_length(
+        self,
+    ):
+        sample_address = [
+            [
+                "greater manchester",
+                "ABC 123",
+                "England",
+                "123 456 789",
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_dim_location(sample_address)
 
 
-def test_format_dim_date():
-    sample_date_data = "2023-01-01"
+class Test_Format_Dim_Date:
+    def test_format_dim_date(self):
+        sample_date_data = "2023-01-01"
 
-    formatted_date = format_dim_date(sample_date_data)
+        formatted_date = format_dim_date(sample_date_data)
 
-    expected_date_data = [
-        {
-            "date_id": "2023-01-01",
-            "year": 2023,
-            "month": 1,
-            "day": 1,
-            "day_of_week": 6,
-            "day_name": "Sunday",
-            "month_name": "January",
-            "quarter": 1,
-        },
-    ]
+        expected_date_data = [
+            {
+                "date_id": "2023-01-01",
+                "year": 2023,
+                "month": 1,
+                "day": 1,
+                "day_of_week": 6,
+                "day_name": "Sunday",
+                "month_name": "January",
+                "quarter": 1,
+            },
+        ]
 
-    assert formatted_date == expected_date_data
+        assert formatted_date == expected_date_data
 
+    def test_raises_exception_when_input_is_wrong_type(self):
+        sample_date_data = 1
 
-def test_format_dim_currency():
-    sample_currency_data = [
-        [
-            "1",
-            "gbp",
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-        ],
-    ]
+        with pytest.raises(InputValidationError):
+            format_dim_date(sample_date_data)
 
-    formatted_currency = format_dim_currency(sample_currency_data)
+    def test_raises_exception_when_input_is_invalid_date(
+        self,
+    ):
+        sample_date_data = "2023-16-51"
 
-    expected_currency_data = [
-        {
-            "currency_id": "1",
-            "currency_code": "gbp",
-            "currency_name": "British Pound",
-        },
-    ]
-
-    assert formatted_currency == expected_currency_data
+        with pytest.raises(InputValidationError):
+            format_dim_date(sample_date_data)
 
 
-def test_format_dim_counterparty():
-    sample_counterparty_data = [
-        [
-            "1",
-            "hello",
-            "1",
-            "commercial_contact",
-            "delivery_contact",
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-        ],
-    ]
+class Test_Format_Dim_Currency:
+    def test_format_dim_currency(self):
+        sample_currency_data = [
+            [
+                "1",
+                "gbp",
+                "2023-06-12 15:20:49.962000",
+                "2023-06-12 15:20:49.962000",
+            ],
+        ]
 
-    sample_address = [
-        [
-            "1",
-            "123 apple street",
-            "apple street",
-            "bolton",
-            "greater manchester",
-            "ABC 123",
-            "England",
-            "123 456 789",
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-            datetime(2023, 7, 25, 15, 20, 49, 962000),
-        ],
-    ]
+        formatted_currency = format_dim_currency(sample_currency_data)
 
-    formatted_counterparty_data = format_dim_counterparty(
-        sample_counterparty_data, sample_address
-    )
+        expected_currency_data = [
+            {
+                "currency_id": "1",
+                "currency_code": "gbp",
+                "currency_name": "British Pound",
+            },
+        ]
 
-    expected_counterparty_data = [
-        {
-            "counterparty_id": "1",
-            "counterparty_legal_name": "hello",
-            "counterparty_legal_address_line_1": "123 apple street",
-            "counterparty_legal_address_line2": "apple street",
-            "counterparty_legal_district": "bolton",
-            "counterparty_legal_city": "greater manchester",
-            "counterparty_legal_postal_code": "ABC 123",
-            "counterparty_legal_country": "England",
-            "counterparty_legal_phone_number": "123 456 789",
-        },
-    ]
+        assert formatted_currency == expected_currency_data
 
-    assert formatted_counterparty_data == expected_counterparty_data
+    def test_raises_exception_when_input_is_wrong_type(self):
+        sample_currency_data = [
+            [
+                1,
+                "gbp",
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_dim_currency(sample_currency_data)
+
+    def test_raises_exception_when_input_has_id_that_cannot_convert_to_integer(
+        self,
+    ):
+        sample_currency_data = [
+            [
+                "letters",
+                "gbp",
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_dim_currency(sample_currency_data)
+
+    def test_raises_exception_when_input_is_wrong_length(
+        self,
+    ):
+        sample_currency_data = [
+            [
+                "1",
+                "2023-07-25 15:20:49.962000",
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_dim_currency(sample_currency_data)
+
+    def test_raises_exception_when_input_currency_code_is_invalid(
+        self,
+    ):
+        sample_currency_data = [
+            [
+                "1",
+                "xyz",
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_dim_currency(sample_currency_data)
+
+
+class Test_Format_Dim_Counterparty:
+    def test_format_dim_counterparty(self):
+        sample_counterparty_data = [
+            [
+                "1",
+                "hello",
+                "1",
+                "commercial_contact",
+                "delivery_contact",
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
+            ],
+        ]
+
+        sample_address = [
+            [
+                "1",
+                "123 apple street",
+                "apple street",
+                "bolton",
+                "greater manchester",
+                "ABC 123",
+                "England",
+                "123 456 789",
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
+            ],
+        ]
+
+        formatted_counterparty_data = format_dim_counterparty(
+            sample_counterparty_data, sample_address
+        )
+
+        expected_counterparty_data = [
+            {
+                "counterparty_id": "1",
+                "counterparty_legal_name": "hello",
+                "counterparty_legal_address_line_1": "123 apple street",
+                "counterparty_legal_address_line2": "apple street",
+                "counterparty_legal_district": "bolton",
+                "counterparty_legal_city": "greater manchester",
+                "counterparty_legal_postal_code": "ABC 123",
+                "counterparty_legal_country": "England",
+                "counterparty_legal_phone_number": "123 456 789",
+            },
+        ]
+
+        assert formatted_counterparty_data == expected_counterparty_data
+
+    def test_raises_exception_when_input_is_wrong_type(self):
+        sample_counterparty_data = [
+            [
+                1,
+                "hello",
+                1,
+                "commercial_contact",
+                "delivery_contact",
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
+            ],
+        ]
+
+        sample_address = [
+            [
+                "1",
+                "123 apple street",
+                "apple street",
+                "bolton",
+                "greater manchester",
+                "ABC 123",
+                "England",
+                "123 456 789",
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_dim_counterparty(sample_counterparty_data, sample_address)
+
+    def test_raises_exception_when_input_has_id_that_cannot_convert_to_integer(
+        self,
+    ):
+        sample_counterparty_data = [
+            [
+                "1",
+                "hello",
+                "1",
+                "commercial_contact",
+                "delivery_contact",
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
+            ],
+        ]
+
+        sample_address = [
+            [
+                "letters",
+                "123 apple street",
+                "apple street",
+                "bolton",
+                "greater manchester",
+                "ABC 123",
+                "England",
+                "123 456 789",
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_dim_counterparty(sample_counterparty_data, sample_address)
+
+    def test_raises_exception_when_input_is_wrong_length(
+        self,
+    ):
+        sample_counterparty_data = [
+            [
+                "1",
+                "hello",
+                "2023-07-25 15:20:49.962000",
+            ],
+        ]
+
+        sample_address = [
+            [
+                "1",
+                "123 apple street",
+                "apple street",
+                "bolton",
+                "greater manchester",
+                "ABC 123",
+                "England",
+                "123 456 789",
+                "2023-07-25 15:20:49.962000",
+                "2023-07-25 15:20:49.962000",
+            ],
+        ]
+
+        with pytest.raises(InputValidationError):
+            format_dim_counterparty(sample_counterparty_data, sample_address)

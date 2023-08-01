@@ -3,7 +3,7 @@ import boto3
 import time
 import os
 from src.ingestion_lambda.get_address_add import get_address_add
-from src.upload_csv import upload_csv
+from src.remodelling.upload_csv import upload_csv
 from src.ingestion_lambda.find_most_recent_time import find_most_recent_time
 from src.ingestion_lambda.write_updated_time import write_updated_time
 from src.ingestion_lambda.get_counterparty_add import get_counterparty_add
@@ -26,11 +26,8 @@ def log_to_cloudwatch(message, log_group_name, log_stream_name):
         logGroupName=log_group_name,
         logStreamName=log_stream_name,
         logEvents=[
-            {
-                'timestamp': int(round(time.time() * 1000)),
-                'message': message
-            },
-        ]
+            {"timestamp": int(round(time.time() * 1000)), "message": message},
+        ],
     )
 
 
