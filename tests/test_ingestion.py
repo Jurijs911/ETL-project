@@ -57,7 +57,7 @@ def test_lambda_handler_calls_get_address_add():
     #     "kp-northcoder-ingestion-bucket", "staff/created_at.txt"
     # ).put(Body="2020-07-30 15:20:49.962000")
 
-    client = boto3.client("logs")
+    client = boto3.client("logs", region_name="eu-west-2")
     client.create_log_group(logGroupName="/aws/lambda/ingestion-lambda")
     client.create_log_stream(
         logGroupName="/aws/lambda/ingestion-lambda",

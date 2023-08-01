@@ -18,7 +18,7 @@ from src.ingestion_lambda.get_staff_add import get_staff_add
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-cloudwatch_logs = boto3.client("logs")
+cloudwatch_logs = boto3.client("logs", region_name="eu-west-2")
 
 
 def log_to_cloudwatch(message, log_group_name, log_stream_name):

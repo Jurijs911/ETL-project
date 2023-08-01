@@ -16,10 +16,6 @@ def upload_csv(data, table_name, bucket_name):
             .decode("utf-8")
             .split("\r\n")
         )
-<<<<<<< HEAD
-
-=======
->>>>>>> main
         with open(f"{table_name}.csv", "w", newline="") as csvfile:
             writer = csv.writer(csvfile)
             for row in downloaded_csv:
