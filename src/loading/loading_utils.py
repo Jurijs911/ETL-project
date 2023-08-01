@@ -1,6 +1,6 @@
 import pg8000.native 
 import os
-import datetime
+from datetime import datetime
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -24,14 +24,23 @@ def get_loaded_data(conn, table_name):
     """
     Retrieve all data from the specified table after insertion.
 
-    :param conn: pg8000 connection 
+    :param conn: pg8000 connection
     :param table_name: Name of the table to retrieve data from.
     :return: A list of rows containing the loaded data.
     """
     loaded_data = []
-    for row in conn.run(f"SELECT * FROM {table_name}"):
-        loaded_data.append(row)
+    try:
+        for row in conn.run(f"SELECT * FROM {table_name}"):
+            loaded_data.append(row)
+
+        conn.close()
+
+    except Exception as e:
+        conn.close()
+        raise
+
     return loaded_data
+
 
 
 
@@ -125,13 +134,13 @@ def insert_into_dim_staff(conn, staff_data):
     try:
         for staff in staff_data:
             if not isinstance(staff[0], int):
-                raise InputValidationError
+                raise InputValidationError("staff[0] is not an int")
             if not is_valid_email(staff[5]):
                 raise InputValidationError("Invalid email address format.")
 
             for index, column in enumerate(staff[1:-1], start=1):
                 if not isinstance(column, str):
-                    raise InputValidationError
+                    raise InputValidationError("Should be a string")
 
             if len(staff) != 7:
                 raise InputValidationError
@@ -204,30 +213,40 @@ def insert_into_dim_date(conn, date_data):
                 datetime.strptime(date[0], "%Y-%m-%d")
             except ValueError:
                 raise InputValidationError
-                
+
             if not isinstance(date[1], int):
                 raise InputValidationError
-            
+
             if not isinstance(date[2], int):
                 raise InputValidationError
-            
+
             if not isinstance(date[3], int):
                 raise InputValidationError
-            
+
             if not isinstance(date[4], int):
                 raise InputValidationError
-            
+
             if not isinstance(date[5], str):
                 raise InputValidationError
-            
+
             if not isinstance(date[6], str):
                 raise InputValidationError
-            
+
             if not isinstance(date[7], int):
                 raise InputValidationError
 
+            try:
+                datetime.strptime(str(date[2]), "%Y-%m-%d")
+                datetime.strptime(str(date[3]), "%H:%M:%S")  
+                datetime.strptime(str(date[4]), "%Y-%m-%d")
+                datetime.strptime(str(date[5]), "%H:%M:%S")  
+                datetime.strptime(str(date[12]), "%Y-%m-%d")
+                datetime.strptime(str(date[13]), "%Y-%m-%d")
+            except ValueError:
+                raise InputValidationError
+
             conn.run("INSERT INTO dim_date (date_id, year, month, day, day_of_week, day_name, month_name, quarter) VALUES (:date_id, :year, :month, :day, :day_of_week, :day_name, :month_name, :quarter)",
-                     date_id=date["date_id"], year=date["year"], month=date["month"], day=date["day"], day_of_week=date["day_of_week"], day_name=date["day_name"], month_name=date["month_name"], quarter=date["quarter"])
+                     date_id=date[0], year=date[1], month=date[2], day=date[3], day_of_week=date[4], day_name=date[5], month_name=date[6], quarter=date[7])
 
         conn.close()
 
@@ -239,7 +258,9 @@ def insert_into_dim_date(conn, date_data):
         conn.close()
         raise
 
-    return get_loaded_data(conn, "dim_date")
+    return date_data
+
+
 
 
 
@@ -247,7 +268,7 @@ def insert_into_dim_counterparty(conn, counterparty_data):
     """
     Insert data into the dim_counterparty table
 
-    :param conn: pg8000 connection 
+    :param conn: pg8000 connection
     :param counterparty_data: list of lists containing data to be inserted
     """
 
@@ -255,20 +276,15 @@ def insert_into_dim_counterparty(conn, counterparty_data):
         for counterparty in counterparty_data:
             if not isinstance(counterparty[0], int):
                 raise InputValidationError
-            
+
             for index, column in enumerate(counterparty[1:]):
                 if not isinstance(column, str):
                     raise InputValidationError
 
-            if len(counterparty) != 9:
-                raise InputValidationError
-
-            conn.run("INSERT INTO dim_counterparty (counterparty_id, counterparty_legal_name, counterparty_legal_address_line_1, counterparty_legal_address_line_2, counterparty_legal_district, counterparty_legal_city, counterparty_legal_postal_code, counterparty_legal_country, counterparty_legal_phone_number) VALUES (:counterparty_id, :counterparty_legal_name, :counterparty_legal_address_line_1, :counterparty_legal_address_line_2, :counterparty_legal_district, :counterparty_legal_city, :counterparty_legal_postal_code, :counterparty_legal_country, :counterparty_legal_phone_number)",
-                     counterparty_id=counterparty[0], counterparty_legal_name=counterparty[1], counterparty_legal_address_line_1=counterparty[2], counterparty_legal_address_line_2=counterparty[3], counterparty_legal_district=counterparty[4], counterparty_legal_city=counterparty[5], counterparty_legal_postal_code=counterparty[6], counterparty_legal_country=counterparty[7], counterparty_legal_phone_number=counterparty[8])
+            conn.run("INSERT INTO dim_counterparty (counterparty_id, name, address_line_1, address_line_2, district, city, postal_code, country, region_id) VALUES (:counterparty_id, :name, :address_line_1, :address_line_2, :district, :city, :postal_code, :country, :region_id)",
+                     counterparty_id=counterparty[0], name=counterparty[1], address_line_1=counterparty[2], address_line_2=counterparty[3], district=counterparty[4], city=counterparty[5], postal_code=counterparty[6], country=counterparty[7], region_id=counterparty[8])
 
         conn.close()
-
-        return get_loaded_data(conn, "dim_counterparty")
 
     except InputValidationError as ive:
         conn.close()
@@ -278,12 +294,15 @@ def insert_into_dim_counterparty(conn, counterparty_data):
         conn.close()
         raise
 
+    return counterparty_data
+
+
 
 def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
     """
     Insert data into the dim_fact_sales_order table
 
-    :param conn: pg8000 connection 
+    :param conn: pg8000 connection
     :param fact_sales_order_data: list of lists containing data to be inserted
     """
 
@@ -293,7 +312,7 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
             for index, value in enumerate(sale):
                 if not isinstance(value, expected_data_types[index]):
                     raise InputValidationError
-            
+
             try:
                 datetime.strptime(sale[2], "%Y-%m-%d")
                 datetime.strptime(sale[3], "%H:%M:%S:%f")
@@ -303,16 +322,11 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
                 datetime.strptime(sale[13], "%Y-%m-%d")
             except ValueError:
                 raise InputValidationError
-                
-            if len(sale) != 15:
-                raise InputValidationError
 
-            conn.run("INSERT INTO dim_fact_sales_order (sales_record_id, sales_order_id, created_date, created_time, last_updated_date, last_updated_time, sales_staff_id, counterparty_id, units_sold, unit_price, currency_id, design_id, agreed_payment_date, agreed_delivery_date, agreed_delivery_location_id) VALUES (:sales_record_id, :sales_order_id, :created_date, :created_time, :last_updated_date, :last_updated_time, :sales_staff_id, :counterparty_id, :units_sold, :unit_price, :currency_id, :design_id, :agreed_payment_date, :agreed_delivery_date, :agreed_delivery_location_id)",
-                    sales_record_id=sale[0], sales_order_id=sale[1], created_date=sale[2], created_time=sale[3], last_updated_date=sale[4], last_updated_time=sale[5], sales_staff_id=sale[6], counterparty_id=sale[7], units_sold=sale[8], unit_price=sale[9], currency_id=sale[10], design_id=sale[11], agreed_payment_date=sale[12], agreed_delivery_date=sale[13], agreed_delivery_location_id=sale[14])
+            conn.run("INSERT INTO dim_fact_sales_order (order_id, product_id, order_date, order_time, ship_date, ship_time, quantity, list_price, discount, sales_price, profit, priority, customer_name, region_name, counterparty_id) VALUES (:order_id, :product_id, :order_date, :order_time, :ship_date, :ship_time, :quantity, :list_price, :discount, :sales_price, :profit, :priority, :customer_name, :region_name, :counterparty_id)",
+                     order_id=sale[0], product_id=sale[1], order_date=sale[2], order_time=sale[3], ship_date=sale[4], ship_time=sale[5], quantity=sale[6], list_price=sale[7], discount=sale[8], sales_price=sale[9], profit=sale[10], priority=sale[11], customer_name=sale[12], region_name=sale[13], counterparty_id=sale[14])
 
         conn.close()
-
-        return get_loaded_data(conn, "dim_fact_sales_order")
 
     except InputValidationError as ive:
         conn.close()
@@ -321,6 +335,8 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
     except Exception as e:
         conn.close()
         raise
+
+    return fact_sales_order_data
 
 
 

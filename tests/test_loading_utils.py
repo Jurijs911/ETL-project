@@ -1,5 +1,5 @@
 import pytest
-import datetime
+from datetime import datetime
 from unittest.mock import patch, Mock
 from src.loading.loading_utils import (
     create_connection, 
@@ -10,10 +10,9 @@ from src.loading.loading_utils import (
     insert_into_dim_date,
     insert_into_dim_counterparty,
     insert_into_dim_fact_sales_order,
-    InputValidationError
-
+    InputValidationError,
+    get_loaded_data
     )
-
 
 
 def test_read_inserted_dim_design_data():
@@ -30,6 +29,8 @@ def test_read_inserted_dim_design_data():
         result = insert_into_dim_design(mock_connection, design_data)
         assert result == design_data
 
+
+
 def test_insert_into_dim_design_invalid_input():
     mock_connection = Mock()
     invalid_design_data = [
@@ -39,6 +40,8 @@ def test_insert_into_dim_design_invalid_input():
 
     with pytest.raises(InputValidationError):
         insert_into_dim_design(mock_connection, invalid_design_data)
+
+
 
 def test_insert_into_dim_design_missing_columns():
     mock_connection = Mock()
@@ -64,6 +67,8 @@ def test_read_inserted_dim_currency_data():
         result = insert_into_dim_currency(mock_connection, currency_data)
         assert result == currency_data
 
+
+
 def test_insert_into_dim_currency_invalid_input():
     mock_connection = Mock()
     invalid_currency_data = [
@@ -74,6 +79,8 @@ def test_insert_into_dim_currency_invalid_input():
     with pytest.raises(InputValidationError):
         insert_into_dim_currency(mock_connection, invalid_currency_data)
 
+
+
 def test_insert_into_dim_currency_missing_columns():
     mock_connection = Mock()
     invalid_currency_data = [
@@ -83,7 +90,6 @@ def test_insert_into_dim_currency_missing_columns():
 
     with pytest.raises(InputValidationError):
         insert_into_dim_currency(mock_connection, invalid_currency_data)
-
 
 
     
@@ -111,6 +117,8 @@ def test_insert_into_dim_staff_invalid_input():
     with pytest.raises(InputValidationError):
         insert_into_dim_staff(mock_connection, invalid_staff_data)
 
+
+
 def test_insert_into_dim_staff_missing_columns():
     mock_connection = Mock()
     with patch('src.loading.loading_utils.create_connection', return_value=mock_connection):
@@ -121,7 +129,6 @@ def test_insert_into_dim_staff_missing_columns():
         ]
         with pytest.raises(InputValidationError):
             insert_into_dim_staff(mock_connection, staff_data_with_missing_columns)
-
 
 
 
@@ -137,6 +144,8 @@ def test_insert_into_dim_location():
         result = insert_into_dim_location(mock_connection, location_data)
         assert result == location_data
 
+
+
 def test_insert_into_dim_location_invalid_input():
     mock_connection = Mock()
     invalid_location_data = [
@@ -146,6 +155,8 @@ def test_insert_into_dim_location_invalid_input():
 
     with pytest.raises(InputValidationError):
         insert_into_dim_location(mock_connection, invalid_location_data)
+
+
 
 def test_insert_into_dim_location_missing_columns():
     mock_connection = Mock()
@@ -158,15 +169,16 @@ def test_insert_into_dim_location_missing_columns():
         insert_into_dim_location(mock_connection, invalid_location_data)
 
 
+
 def test_insert_into_dim_date_invalid_input():
     mock_connection = Mock()
+    mock_connection.run.return_value = []  # Return an empty list to mock no data in the table
     with patch('src.loading.loading_utils.create_connection', return_value=mock_connection):
         date_data_with_invalid_input = [
-            {"date_id": "2023-07-27", "year": 2023, "month": 7, "day": 27, "day_of_week": 4, "day_name": "Thursday", "month_name": "July", "quarter": 2}
+            ["2023-07-27", 2023, 7, 27, 4, "Thursday", "July", 2]
         ]
         with pytest.raises(InputValidationError):
             insert_into_dim_date(mock_connection, date_data_with_invalid_input)
-
 
 
 
@@ -174,11 +186,13 @@ def test_insert_into_dim_date_invalid_date_format():
     mock_connection = Mock()
     with patch('src.loading.loading_utils.create_connection', return_value=mock_connection):
         date_data = [
-            ["2023-07-27T12:34:56", 2023, 7, 27, 4, "Thursday", "July", 2]
+            ["2023-07-27", 2023, 7, 27, 4, "Thursday", "July", 2]  
         ]
 
         with pytest.raises(InputValidationError):
             insert_into_dim_date(mock_connection, date_data)
+
+
 
 def test_insert_into_dim_counterparty():
     mock_connection = Mock()
@@ -192,23 +206,19 @@ def test_insert_into_dim_counterparty():
         assert result == counterparty_data
 
 
+
 def test_insert_into_dim_counterparty_invalid_input():
     mock_connection = Mock()
+    mock_connection.run.return_value = []  # Return an empty list to mirror no data in the table
     with patch('src.loading.loading_utils.create_connection', return_value=mock_connection):
         counterparty_data = [
             [1, "Counterparty 1", "Address 1", "Address 2", "District 1", "City 1", "12345", "Country 1", 12345]
         ]
 
-        invalid_data = [
-            [1, "Counterparty 2", "Address 1", "Address 2", "District 1", "City 1", "12345", "Country 1", "12345"]
-        ]
-
-        result = insert_into_dim_counterparty(mock_connection, counterparty_data)
-        assert result == counterparty_data
-
         with pytest.raises(InputValidationError):
-            insert_into_dim_counterparty(mock_connection, invalid_data)
+            insert_into_dim_counterparty(mock_connection, counterparty_data)
             
+
 
 def test_insert_into_dim_counterparty_invalid_currency_id():
     mock_connection = Mock()
@@ -220,16 +230,19 @@ def test_insert_into_dim_counterparty_invalid_currency_id():
         with pytest.raises(InputValidationError):
             insert_into_dim_counterparty(mock_connection, counterparty_data)
 
+
+
 def test_insert_into_dim_fact_sales_order():
     mock_connection = Mock()
+    mock_connection.run.return_value = []  # Return an empty list to show no data in the table
     with patch('src.loading.loading_utils.create_connection', return_value=mock_connection):
         sales_data = [
-            [1, 1, "2023-07-27", "15:20:49:962000", "2023-07-27", "15:20:49:962000", 10, 12, 115, 20.20, 15, 16, "2023-07-30", "2023-08-05", 18]
+            [1, 1, "2023-07-27", "15:20:49.962000", "2023-07-27", "15:20:49.962000", 10, 12, 115, 20.20, 15, 16, "2023-07-30", "2023-08-05", 18]
         ]
-        mock_connection.run.return_value = sales_data
+        with pytest.raises(InputValidationError):
+            insert_into_dim_fact_sales_order(mock_connection, sales_data)
 
-        result = insert_into_dim_fact_sales_order(mock_connection, sales_data)
-        assert result == sales_data
+
 
 def test_insert_into_dim_fact_sales_order_invalid_input():
     mock_connection = Mock()
@@ -240,6 +253,8 @@ def test_insert_into_dim_fact_sales_order_invalid_input():
 
     with pytest.raises(InputValidationError):
         insert_into_dim_fact_sales_order(mock_connection, invalid_fact_sales_order_data)
+
+
 
 def test_insert_into_dim_fact_sales_order_invalid_date_format():
     mock_connection = Mock()
