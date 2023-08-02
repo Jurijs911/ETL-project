@@ -5,6 +5,12 @@ env:
   DB_SOURCE_NAME: ${{ secrets.SOURCE_DB_NAME }}
   DB_SOURCE_PORT: ${{ secrets.SOURCE_DB_PORT }}
   DB_SOURCE_PASSWORD: ${{ secrets.SOURCE_DB_PASSWORD }}
+  TEST_SOURCE_USER: ${{ secrets.TEST_SOURCE_USER }}
+  TEST_SOURCE_HOST: ${{ secrets.TEST_SOURCE_HOST }}
+  TEST_SOURCE_DATABASE: ${{ secrets.TEST_SOURCE_DATABASE}}
+  TEST_SOURCE_PORT: ${{ secrets.TEST_SOURCE_PORT }}
+  TEST_SOURCE_PASSWORD: ${{ secrets.TEST_SOURCE_PASSWORD}}
+  
 on:
   push:
     branches:
