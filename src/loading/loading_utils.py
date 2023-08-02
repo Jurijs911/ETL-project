@@ -206,44 +206,18 @@ def insert_into_dim_date(conn, date_data):
     """            
     try:
         for date in date_data:
-            if not isinstance(date[0], str):
-                raise InputValidationError
-            try:
-                datetime.strptime(date[0], "%Y-%m-%d")
-            except ValueError:
-                raise InputValidationError
-
-            if not isinstance(date[1], int):
-                raise InputValidationError
-
-            if not isinstance(date[2], int):
-                raise InputValidationError
-
-            if not isinstance(date[3], int):
-                raise InputValidationError
-
-            if not isinstance(date[4], int):
-                raise InputValidationError
-
-            if not isinstance(date[5], str):
-                raise InputValidationError
-
-            if not isinstance(date[6], str):
-                raise InputValidationError
-
-            if not isinstance(date[7], int):
-                raise InputValidationError
-
-            try:
-                datetime.strptime(str(date[4]), "%Y-%m-%d")
-                datetime.strptime(str(date[5]), "%H:%M:%S")  
-                datetime.strptime(str(date[12]), "%Y-%m-%d")
-                datetime.strptime(str(date[13]), "%Y-%m-%d")
-            except ValueError:
-                raise InputValidationError
-
-            conn.run("INSERT INTO dim_date (date_id, year, month, day, day_of_week, day_name, month_name, quarter) VALUES (:date_id AS DATE, :year, :month, :day, :day_of_week, :day_name, :month_name, :quarter)",
-         date_id=date[0], year=date[1], month=date[2], day=date[3], day_of_week=date[4], day_name=date[5], month_name=date[6], quarter=date[7])
+            conn.run(
+                "INSERT INTO dim_date (date_id, year, month, day, day_of_week, day_name, month_name, quarter) "
+                "VALUES (:date_id, :year, :month, :day, :day_of_week, :day_name, :month_name, :quarter)",
+                date_id=date[0],
+                year=date[1],
+                month=date[2],
+                day=date[3],
+                day_of_week=date[4],
+                day_name=date[5],
+                month_name=date[6],
+                quarter=date[7],
+            )
 
         conn.close()
 
@@ -256,8 +230,6 @@ def insert_into_dim_date(conn, date_data):
         raise
 
     return date_data
-
-
 
 
 
@@ -278,7 +250,8 @@ def insert_into_dim_counterparty(conn, counterparty_data):
                 if not isinstance(column, str):
                     raise InputValidationError
 
-            conn.run("INSERT INTO dim_counterparty (counterparty_id, counterparty_legal_name, counterparty_legal_address_line_1, counterparty_legal_address_line2, counterparty_legal_district, counterparty_legal_city, counterparty_legal_postal_code, counterparty_legal_country, counterparty_legal_phone_number) VALUES (:counterparty_id, :counterparty_legal_name, :counterparty_legal_address_line_1, :counterparty_legal_address_line2, :counterparty_legal_district, :counterparty_legal_city, :counterparty_legal_postal_code, :counterparty_legal_country, :counterparty_legal_phone_number)",
+            conn.run(
+                    "INSERT INTO dim_counterparty (counterparty_id, counterparty_legal_name, counterparty_legal_address_line_1, counterparty_legal_address_line2, counterparty_legal_district, counterparty_legal_city, counterparty_legal_postal_code, counterparty_legal_country, counterparty_legal_phone_number) VALUES (:counterparty_id, :counterparty_legal_name, :counterparty_legal_address_line_1, :counterparty_legal_address_line2, :counterparty_legal_district, :counterparty_legal_city, :counterparty_legal_postal_code, :counterparty_legal_country, :counterparty_legal_phone_number)",
                      counterparty_id=counterparty[0], counterparty_legal_name=counterparty[1], counterparty_legal_address_line_1=counterparty[2], counterparty_legal_address_line2=counterparty[3], counterparty_legal_district=counterparty[4], counterparty_legal_city=counterparty[5], counterparty_legal_postal_code=counterparty[6], counterparty_legal_country=counterparty[7], counterparty_legal_phone_number=counterparty[8])
 
         conn.close()

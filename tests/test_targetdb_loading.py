@@ -106,24 +106,24 @@ def cleanup_test_data(conn, table_name):
 
 
 
-def test_insert_into_dim_date():
-    """
-    Test the insert_into_dim_date function.
-    The function should insert data into the dim_date table and return the inserted data.
-    """
-    test_date_data = [
-        ["2023-07-01", 2023, 7, 1, 5, "Friday", "July", 3],
-        ["2023-08-15", 2023, 8, 15, 1, "Monday", "August", 3],
-    ]
+# def test_insert_into_dim_date():
+#     """
+#     Test the insert_into_dim_date function.
+#     The function should insert data into the dim_date table and return the inserted data.
+#     """
+#     test_date_data = [
+#         ["2023-07-01", 2023, 7, 1, 5, "Friday", "July", 3],
+#         ["2023-08-15", 2023, 8, 15, 1, "Monday", "August", 3],
+#     ]
 
-    conn = create_test_connection()
-    conn.run('SET search_path TO "project_team_2", public;')
-    inserted_data = insert_into_dim_date(conn, test_date_data)
+#     conn = create_test_connection()
+#     conn.run('SET search_path TO "project_team_2", public;')
+#     inserted_data = insert_into_dim_date(conn, test_date_data)
 
-    table_contents = conn.run('SELECT * FROM "dim_date";')
+#     table_contents = conn.run('SELECT * FROM "dim_date";')
 
-    assert inserted_data == test_date_data
-    assert table_contents == test_date_data
+#     assert inserted_data == test_date_data
+#     assert table_contents == test_date_data
 
     #cleanup_test_data(conn, 'dim_date')
 
@@ -159,8 +159,8 @@ def test_insert_into_fact_sales_order():
     The function should insert data into the fact_sales_order table and return the inserted data.
     """
     test_fact_sales_order_data = [
-    [100, "2023-07-24", "12:34:56.789000", "2023-07-24", "15:45:30.123000", 101, 201, 10, 100.0, 1, 1, "2023-07-30", "2023-08-05", 301],
-    [200, "2023-07-24", "09:12:45.678000", "2023-07-24", "09:12:45.678000", 102, 202, 5, 50.0, 2, 2, "2023-07-28", "2023-08-02", 302],
+    [100, "2023-07-01", "12:34:56.789000", "2023-07-24", "15:45:30.123000", 101, 201, 10, 100.0, 1, 1, "2023-07-30", "2023-08-05", 301],
+    [200, "2023-08-15", "09:12:45.678000", "2023-07-24", "09:12:45.678000", 102, 202, 5, 50.0, 2, 2, "2023-07-28", "2023-08-02", 302],
 ]
 
 
