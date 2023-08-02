@@ -20,9 +20,6 @@ logger = logging.getLogger(__name__)
 cloudwatch_logs = boto3.client("logs")
 
 def log_to_cloudwatch(message, log_group_name, log_stream_name):
-
-    """ Log a message to AWS CloudWatch Logs."""
-
     cloudwatch_logs.put_log_events(
         logGroupName=log_group_name,
         logStreamName=log_stream_name,
@@ -35,16 +32,6 @@ def log_to_cloudwatch(message, log_group_name, log_stream_name):
     )
 
 def lambda_handler(event, context):
-
-    """ AWS Lambda function to process data and insert it into the respective dimension and fact tables.
-
-   
-
-    Raises:
-        Exception: If an error occurs during data processing or insertion, the exception is logged to CloudWatch,
-                   and a CloudWatch alarm is triggered to alert on the error.
-    """
-    
     try:
         bucket_name = "kp-northcoder-data-bucket"  
        
