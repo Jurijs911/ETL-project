@@ -9,6 +9,10 @@ class InputValidationError(Exception):
     pass
 
 def create_connection():
+
+    """Create a connection to the PostgreSQL database using the environment variables.
+
+    """
     DB_SOURCE_USER = os.getenv('DB_SOURCE_USER')
     DB_SOURCE_HOST = os.getenv('DB_SOURCE_HOST')
     DB_SOURCE_NAME = os.getenv('DB_SOURCE_NAME')
@@ -45,6 +49,12 @@ def get_loaded_data(conn, table_name):
 
 
 def is_valid_email(email):
+
+    """ Check if the given email address is in a valid format.
+
+    Returns:
+        bool: True if the email address is valid, False otherwise."""
+    
     import re
     pattern = r"[^@]+@[^@]+\.[^@]+"
     return bool(re.match(pattern, email))
@@ -53,10 +63,13 @@ def is_valid_email(email):
 
 def insert_into_dim_design(conn, design_data):
     """
-    Insert data into the dim_design table
+     Insert data into the dim_design table.
 
-    :param conn: pg8000 connection 
-    :param design_data: list of lists containing data to be inserted
+    Returns:
+        list: A list of rows containing the loaded data after insertion.
+    
+    Raises:
+        InputValidationError: If the input data does not meet the required format for insertion.
     """
 
     try:
@@ -91,10 +104,13 @@ def insert_into_dim_design(conn, design_data):
 
 def insert_into_dim_currency(conn, currency_data):
     """
-    Insert data into the dim_currency table
+     Insert data into the dim_currency table.
 
-    :param conn: pg8000 connection 
-    :param currency_data: list of lists containing data to be inserted
+    Returns:
+        list: A list of rows containing the loaded data after insertion.
+    
+    Raises:
+        InputValidationError: If the input data does not meet the required format for insertion.
     """
 
     try:
@@ -125,10 +141,13 @@ def insert_into_dim_currency(conn, currency_data):
 
 def insert_into_dim_staff(conn, staff_data):
     """
-    Insert data into the dim_staff table
+    Insert data into the dim_staff table.
 
-    :param conn: pg8000 connection 
-    :param staff_data: list of lists containing data to be inserted
+    Returns:
+        list: A list of rows containing the loaded data after insertion.
+    
+    Raises:
+        InputValidationError: If the input data does not meet the required format for insertion.
     """
 
     try:
@@ -164,10 +183,13 @@ def insert_into_dim_staff(conn, staff_data):
 
 def insert_into_dim_location(conn, location_data):
     """
-    Insert data into the dim_location table
+    Insert data into the dim_location table.
 
-    :param conn: pg8000 connection 
-    :param location_data: list of lists containing data to be inserted
+    Returns:
+        list: A list of rows containing the loaded data after insertion.
+    
+    Raises:
+        InputValidationError: If the input data does not meet the required format for insertion.
     """
     try:
         for location in location_data:
@@ -199,10 +221,13 @@ def insert_into_dim_location(conn, location_data):
 
 def insert_into_dim_date(conn, date_data):
     """
-    Insert data into the dim_date table
+    Insert data into the dim_date table.
 
-    :param conn: pg8000 connection 
-    :param date_data: list of lists containing data to be inserted
+    Returns:
+        list: A list of rows containing the loaded data after insertion.
+    
+    Raises:
+        InputValidationError: If the input data does not meet the required format for insertion.
     """            
     try:
         for date in date_data:
@@ -235,10 +260,13 @@ def insert_into_dim_date(conn, date_data):
 
 def insert_into_dim_counterparty(conn, counterparty_data):
     """
-    Insert data into the dim_counterparty table
+    Insert data into the dim_counterparty table.
 
-    :param conn: pg8000 connection
-    :param counterparty_data: list of lists containing data to be inserted
+    Returns:
+        list: A list of rows containing the loaded data after insertion.
+    
+    Raises:
+        InputValidationError: If the input data does not meet the required format for insertion.
     """
 
     try:
@@ -271,10 +299,13 @@ def insert_into_dim_counterparty(conn, counterparty_data):
 
 def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
     """
-    Insert data into the dim_fact_sales_order table
+    Insert data into the dim_fact_sales_order table.
 
-    :param conn: pg8000 connection
-    :param fact_sales_order_data: list of lists containing data to be inserted
+    Returns:
+        list: A list of rows containing the loaded data after insertion.
+    
+    Raises:
+        InputValidationError: If the input data does not meet the required format for insertion.
     """
 
     try:

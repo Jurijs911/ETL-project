@@ -17,6 +17,13 @@ from src.loading.loading_utils import (
 
 def test_read_inserted_dim_design_data():
 
+    """Insert the given design data into the dimension table for designs.
+
+    
+    Raises:
+        InputValidationError: If the design_data is not in the expected format or contains invalid values.
+    """    
+
     mock_connection = Mock()
     with patch('src.loading.loading_utils.create_connection', return_value=mock_connection):
 
@@ -56,6 +63,22 @@ def test_insert_into_dim_design_missing_columns():
 
 
 def test_read_inserted_dim_currency_data():
+
+    """ Insert the given currency data into the dimension table for currencies.
+
+    Parameters:
+        connection (object): The database connection object.
+        currency_data (list): A list of lists containing currency data. Each inner list should have the following format:
+                              [currency_id (int), currency_code (str), currency_name (str)]
+
+    Returns:
+        list: The inserted currency data as a list of lists, with each inner list containing the inserted row's values.
+              If successful, this will be the same as the input currency_data.
+
+    Raises:
+        InputValidationError: If the currency_data is not in the expected format or contains invalid values.
+    """
+
     mock_connection = Mock()
     with patch('src.loading.loading_utils.create_connection', return_value=mock_connection):
         currency_data = [
@@ -94,6 +117,14 @@ def test_insert_into_dim_currency_missing_columns():
 
     
 def test_read_inserted_dim_staff_data():
+
+    """Insert the given staff data into the dimension table for staff members.
+
+    
+    Raises:
+        InputValidationError: If the staff_data is not in the expected format or contains invalid values.
+    """
+
     mock_connection = Mock()
     with patch('src.loading.loading_utils.create_connection', return_value=mock_connection):
         staff_data = [
@@ -133,6 +164,14 @@ def test_insert_into_dim_staff_missing_columns():
 
 
 def test_insert_into_dim_location():
+
+    """ Insert the given location data into the dimension table for locations.
+
+   
+    Raises:
+        InputValidationError: If the location_data is not in the expected format or contains invalid values.
+    """
+
     mock_connection = Mock()
     with patch('src.loading.loading_utils.create_connection', return_value=mock_connection):
         location_data = [
@@ -171,6 +210,13 @@ def test_insert_into_dim_location_missing_columns():
 
 
 def test_insert_into_dim_date_invalid_input():
+
+    """Insert the given date data into the dimension table for dates.
+
+    Raises:
+        InputValidationError: If the date_data is not in the expected format or contains invalid values.
+    """
+
     mock_connection = Mock()
     mock_connection.run.return_value = []  # Return an empty list to mock no data in the table
     with patch('src.loading.loading_utils.create_connection', return_value=mock_connection):
@@ -195,6 +241,14 @@ def test_insert_into_dim_date_invalid_date_format():
 
 
 def test_insert_into_dim_counterparty():
+
+    """ Insert the given counterparty data into the dimension table for counterparties.
+
+    
+    Raises:
+        InputValidationError: If the counterparty_data is not in the expected format or contains invalid values.
+    """
+
     mock_connection = Mock()
     with patch('src.loading.loading_utils.create_connection', return_value=mock_connection):
         counterparty_data = [
@@ -233,6 +287,13 @@ def test_insert_into_dim_counterparty_invalid_currency_id():
 
 
 def test_insert_into_dim_fact_sales_order():
+
+    """ Insert the given sales order data into the fact table for sales orders.
+
+    Raises:
+        InputValidationError: If the sales_data is not in the expected format or contains invalid values.
+    """
+    
     mock_connection = Mock()
     mock_connection.run.return_value = []  # Return an empty list to show no data in the table
     with patch('src.loading.loading_utils.create_connection', return_value=mock_connection):
