@@ -142,7 +142,7 @@ def insert_into_dim_staff(conn, staff_data):
                 if not isinstance(column, str):
                     raise InputValidationError("Should be a string")
 
-            if len(staff) != 7:
+            if len(staff) != 6:
                 raise InputValidationError
 
             conn.run("INSERT INTO dim_staff (staff_id, first_name, last_name, department_name, location, email_address) VALUES (:staff_id, :first_name, :last_name, :department_name, :location, :email_address)",
@@ -203,8 +203,7 @@ def insert_into_dim_date(conn, date_data):
 
     :param conn: pg8000 connection 
     :param date_data: list of lists containing data to be inserted
-    """
-
+    """            
     try:
         for date in date_data:
             if not isinstance(date[0], str):
@@ -281,8 +280,8 @@ def insert_into_dim_counterparty(conn, counterparty_data):
                 if not isinstance(column, str):
                     raise InputValidationError
 
-            conn.run("INSERT INTO dim_counterparty (counterparty_id, name, address_line_1, address_line_2, district, city, postal_code, country, region_id) VALUES (:counterparty_id, :name, :address_line_1, :address_line_2, :district, :city, :postal_code, :country, :region_id)",
-                     counterparty_id=counterparty[0], name=counterparty[1], address_line_1=counterparty[2], address_line_2=counterparty[3], district=counterparty[4], city=counterparty[5], postal_code=counterparty[6], country=counterparty[7], region_id=counterparty[8])
+            conn.run("INSERT INTO dim_counterparty (counterparty_id, counterparty_legal_name, counterparty_legal_address_line_1, counterparty_legal_address_line2, counterparty_legal_district, counterparty_legal_city, counterparty_legal_postal_code, counterparty_legal_country, counterparty_legal_phone_number) VALUES (:counterparty_id, :counterparty_legal_name, :counterparty_legal_address_line_1, :counterparty_legal_address_line2, :counterparty_legal_district, :counterparty_legal_city, :counterparty_legal_postal_code, :counterparty_legal_country, :counterparty_legal_phone_number)",
+                     counterparty_id=counterparty[0], counterparty_legal_name=counterparty[1], counterparty_legal_address_line_1=counterparty[2], counterparty_legal_address_line2=counterparty[3], counterparty_legal_district=counterparty[4], counterparty_legal_city=counterparty[5], counterparty_legal_postal_code=counterparty[6], counterparty_legal_country=counterparty[7], counterparty_legal_phone_number=counterparty[8])
 
         conn.close()
 
