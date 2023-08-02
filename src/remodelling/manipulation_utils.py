@@ -167,7 +167,7 @@ def format_dim_date(date_data):
             datetime.strptime(date_data.split(" ")[0], "%Y-%m-%d")
         )
         formatted_date = {
-            "date_id": date_obj,
+            "date_id": date_obj.strftime("%Y-%m-%d"),
             "year": date_obj.year,
             "month": date_obj.month,
             "day": date_obj.day,
@@ -177,7 +177,7 @@ def format_dim_date(date_data):
             "quarter": (date_obj.month - 1) // 3 + 1,
         }
         return formatted_date
-    except (ValueError, TypeError) as e:
+    except (ValueError, TypeError, AttributeError) as e:
         raise InputValidationError(e)
 
 

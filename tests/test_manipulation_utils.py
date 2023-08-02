@@ -405,18 +405,16 @@ class Test_Format_Dim_Date:
 
         formatted_date = format_dim_date(sample_date_data)
 
-        expected_date_data = [
-            {
-                "date_id": "2023-01-01",
-                "year": 2023,
-                "month": 1,
-                "day": 1,
-                "day_of_week": 6,
-                "day_name": "Sunday",
-                "month_name": "January",
-                "quarter": 1,
-            },
-        ]
+        expected_date_data = {
+            "date_id": "2023-01-01",
+            "year": 2023,
+            "month": 1,
+            "day": 1,
+            "day_of_week": 6,
+            "day_name": "Sunday",
+            "month_name": "January",
+            "quarter": 1,
+        }
 
         assert formatted_date == expected_date_data
 

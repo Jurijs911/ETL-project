@@ -6,7 +6,6 @@ from botocore.exceptions import ClientError
 
 def upload_csv(data, table_name, bucket_name):
     s3_client = boto3.client("s3")
-
     try:
         downloaded_csv = (
             s3_client.get_object(Bucket=bucket_name, Key=f"{table_name}.csv")[
@@ -14,18 +13,19 @@ def upload_csv(data, table_name, bucket_name):
             ]
             .read()
             .decode("utf-8")
-            .split("\n")
+            .split("\r\n")
         )
 
-        if downloaded_csv[0] != "":
+        if downloaded_csv != [""]:
+            keys = list(data[0].keys())
             for idx, row in enumerate(downloaded_csv):
                 if idx > 0:
-                    old_data = {
-                        key: row.split(",")[i]
-                        for dict in data
-                        for i, key in enumerate(dict)
-                    }
-                    data.append(old_data)
+                    data.append(
+                        {
+                            keys[idx]: item
+                            for idx, item in enumerate(row.split(","))
+                        }
+                    )
 
     except ClientError:
         pass
