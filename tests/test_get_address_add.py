@@ -1,24 +1,24 @@
-from src.ingestion_lambda.get_staff_add import get_staff_add
-from unittest.mock import patch
 import os
-import datetime
+from get_address_add \
+    import get_address_add
 import pytest
+from unittest.mock import patch
+import datetime
 import pg8000.exceptions
 from dotenv import load_dotenv
 
 load_dotenv()
 
-ingestion_utils_path = "src.ingestion_lambda."
-staff_get_last_time_path = "get_staff_add.get_last_time"
-get_last_time_patch_path = ingestion_utils_path + staff_get_last_time_path
+address_get_last_time_path = "get_address_add.get_last_time"
 
 
-def test_get_staff_add_returns_list_with_correct_keys():
-    with patch(get_last_time_patch_path) as mock_get_last_time:
+def test_get_address_add_returns_list_with_correct_keys():
+    with patch(address_get_last_time_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
-        result = get_staff_add(
+
+        result = get_address_add(
             db_user=os.environ.get("TEST_SOURCE_USER"),
             db_database=os.environ.get("TEST_SOURCE_DATABASE"),
             db_host=os.environ.get("TEST_SOURCE_HOST"),
@@ -27,44 +27,55 @@ def test_get_staff_add_returns_list_with_correct_keys():
 
         assert isinstance(result, list)
         expected_keys = {
-            "staff_id",
-            "first_name",
-            "last_name",
-            "department_id",
-            "email_address",
+            "location_id",
+            "address_line_1",
+            "address_line_2",
+            "district",
+            "city",
+            "postal_code",
+            "country",
+            "phone",
             "created_at",
             "last_updated",
         }
         assert all(set(item.keys()) == expected_keys for item in result)
 
 
-def test_get_staff_add_has_correct_value_types():
-    with patch(get_last_time_patch_path) as mock_get_last_time:
+def test_get_address_add_has_correct_value_types():
+    with patch(address_get_last_time_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
-        result = get_staff_add(
+        result = get_address_add(
             db_user=os.environ.get("TEST_SOURCE_USER"),
             db_database=os.environ.get("TEST_SOURCE_DATABASE"),
             db_host=os.environ.get("TEST_SOURCE_HOST"),
             db_port=os.environ.get("TEST_SOURCE_PORT"),
             db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
         for item in result:
-            assert isinstance(item["staff_id"], int)
-            assert isinstance(item["first_name"], str)
-            assert isinstance(item["last_name"], str)
-            assert isinstance(item["department_id"], int)
-            assert isinstance(item["email_address"], str)
+            assert isinstance(item["location_id"], int)
+            assert isinstance(item["address_line_1"], str)
+            assert (
+                isinstance(item["address_line_2"], str)
+                or item["address_line_2"] is None
+            )
+            assert (
+                isinstance(item["district"], str) or item["district"] is None
+            )
+            assert isinstance(item["city"], str)
+            assert isinstance(item["postal_code"], str)
+            assert isinstance(item["country"], str)
+            assert isinstance(item["phone"], str)
             assert isinstance(item["created_at"], datetime.date)
             assert isinstance(item["last_updated"], datetime.date)
 
 
-def test_get_staff_add_calls_get_last_time():
-    with patch(get_last_time_patch_path) as mock_get_last_time:
+def test_get_address_calls_get_last_time():
+    with patch(address_get_last_time_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
-        get_staff_add(
+        get_address_add(
             db_user=os.environ.get("TEST_SOURCE_USER"),
             db_database=os.environ.get("TEST_SOURCE_DATABASE"),
             db_host=os.environ.get("TEST_SOURCE_HOST"),
@@ -78,7 +89,7 @@ def test_database_error():
         mock_connection.side_effect = pg8000.exceptions.DatabaseError(
             "Database error")
         with pytest.raises(Exception, match="Database error"):
-            get_staff_add(
+            get_address_add(
                 db_user=os.environ.get("TEST_SOURCE_USER"),
                 db_database=os.environ.get("TEST_SOURCE_DATABASE"),
                 db_host=os.environ.get("TEST_SOURCE_HOST"),
@@ -97,32 +108,21 @@ def test_database_error():
 
 
 def test_correct_data_returned_by_query():
-    with patch(get_last_time_patch_path) as mock_get_last_time:
+    with patch(address_get_last_time_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
-            "2023-07-27 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
+            "2023-07-29 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
-        result = get_staff_add(
+        result = get_address_add(
             db_user=os.environ.get("TEST_SOURCE_USER"),
             db_database=os.environ.get("TEST_SOURCE_DATABASE"),
             db_host=os.environ.get("TEST_SOURCE_HOST"),
             db_port=os.environ.get("TEST_SOURCE_PORT"),
             db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
         assert result == [
-            {'staff_id': 1,
-             'first_name': 'Paul',
-             'last_name': 'McCartney',
-             'department_id': 1,
-             'email_address': 'paul@northcoders.com',
-             'created_at': datetime.datetime(
-                2023, 7, 28, 15, 1, 52, 760464),
+            {'location_id': 3, 'address_line_1': 'Bank of England',
+             'address_line_2': 'Threadneedle St', 'district': '',
+             'city': 'London', 'postal_code': 'EC2R 8AH', 'country': 'UK',
+             'phone': '02034614444', 'created_at': datetime.datetime(
+                 2023, 7, 30, 14, 7, 32, 362337),
              'last_updated': datetime.datetime(
-                2023, 7, 28, 15, 1, 52, 760464)},
-            {'staff_id': 2,
-             'first_name': 'Ringo',
-             'last_name': 'Starr',
-             'department_id': 2,
-             'email_address': 'ringo@northcoders.com',
-             'created_at': datetime.datetime(
-                2023, 7, 28, 15, 2, 21, 393482),
-             'last_updated': datetime.datetime(
-                2023, 7, 28, 15, 2, 21, 393482)}]
+                 2023, 7, 30, 14, 7, 32, 362337)}]

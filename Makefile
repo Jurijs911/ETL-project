@@ -9,12 +9,15 @@ REGION = eu-west-2
 PYTHON_INTERPRETER = python
 WD=$(shell pwd)
 PYTHONPATH=${WD}
+PYTHONPATH_INGEST="$(shell pwd)/src/ingestion_lambda"
+PYTHONPATH_REMODEL="$(shell pwd)/src/remodelling"
 SHELL := /bin/bash
 PROFILE = default
 PIP:=pip
 
 ## Create python interpreter environment.
 create-environment:
+	
 	@echo ">>> About to create environment: $(PROJECT_NAME)..."
 	@echo ">>> check python3 version"
 	( \
@@ -25,6 +28,10 @@ create-environment:
 	    $(PIP) install -q virtualenv virtualenvwrapper; \
 	    virtualenv venv --python=$(PYTHON_INTERPRETER); \
 	)
+
+
+
+
 
 # Define utility variable to help calling Python from the virtual environment
 ACTIVATE_ENV := source venv/bin/activate
@@ -75,11 +82,11 @@ run-flake:
 
 ## Run the unit tests
 unit-test:
-	$(call execute_in_env, PYTHONPATH=${PYTHONPATH} pytest -v)
+	$(call execute_in_env, PYTHONPATH=${PYTHONPATH}:${PYTHONPATH_INGEST}:${PYTHONPATH_REMODEL}  pytest -v)
 
 ## Run the coverage check
 check-coverage:
-	$(call execute_in_env, PYTHONPATH=${PYTHONPATH} coverage run --omit 'venv/*' -m pytest && coverage report -m --fail-under=90)
+	$(call execute_in_env, PYTHONPATH=${PYTHONPATH}:${PYTHONPATH_INGEST}:${PYTHONPATH_REMODEL} coverage run --omit 'venv/*' -m pytest && coverage report -m --fail-under=90)
 
 ## Run all checks
 run-checks: security-test run-flake unit-test check-coverage

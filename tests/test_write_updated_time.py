@@ -7,7 +7,7 @@ import boto3
 def test_write_updated_time_returns_status_code_when_successfully_uploading():
     s3_client = boto3.client("s3")
     s3_client.create_bucket(
-        Bucket="kp-northcoder-ingestion-bucket",
+        Bucket="kp-northcoders-ingestion-bucket",
         CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
     )
 

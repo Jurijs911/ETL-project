@@ -1,4 +1,4 @@
-from src.remodelling.manipulation_utils import (
+from manipulation_utils import (
     format_dim_counterparty,
     format_dim_currency,
     format_dim_date,
@@ -7,10 +7,10 @@ from src.remodelling.manipulation_utils import (
     format_dim_staff,
     format_fact_sales_order,
 )
-from src.remodelling.read_ingestion_csv import read_ingestion_csv
-from src.remodelling.filter_data_by_timestamp import filter_data
-from src.remodelling.write_timestamp import write_timestamp
-from src.remodelling.upload_csv import upload_csv
+from read_ingestion_csv import read_ingestion_csv
+from filter_data_by_timestamp import filter_data
+from write_timestamp import write_timestamp
+from upload_csv import upload_csv
 from datetime import datetime
 import logging
 import boto3

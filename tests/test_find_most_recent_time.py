@@ -1,4 +1,4 @@
-from src.ingestion_lambda.find_most_recent_time \
+from find_most_recent_time \
     import find_most_recent_time
 import datetime
 
@@ -17,7 +17,8 @@ test_data = [
      'address_line_2': None, 'district': 'Buckinghamshire',
      'city': 'Lake Myrlfurt', 'postal_code': '94545-4284',
      'country': 'Falkland Islands (Malvinas)',
-     'phone': '1083 286132', 'created_at': datetime.datetime(2022, 11, 3, 14, 20, 49, 962000),
+     'phone': '1083 286132',
+     'created_at': datetime.datetime(2022, 11, 3, 14, 20, 49, 962000),
      'last_updated': datetime.datetime(2022, 11, 3, 14, 20, 49, 962000)}]
 
 

@@ -1,14 +1,9 @@
 import os
 import pg8000.native
-from src.ingestion_lambda.get_last_time import get_last_time
+from get_last_time import get_last_time
 from dotenv import load_dotenv
 
 load_dotenv()
-
-ingestion_utils_path = "src.ingestion_lambda."
-sales_order_get_last_time_path = "get_sales_order_add.get_last_time"
-get_last_time_patch_path = ingestion_utils_path +\
-     sales_order_get_last_time_path
 
 
 def get_sales_order_add(
@@ -19,7 +14,7 @@ def get_sales_order_add(
         db_password=os.environ.get("DB_SOURCE_PASSWORD")):
     """
     CONNECTION
-    """  
+    """
     #
     # TO BE RE-ADDED LATER - CAUSES CI/CD FAILURE
     # if not all([db_user, db_database, db_host, db_port, db_password]):

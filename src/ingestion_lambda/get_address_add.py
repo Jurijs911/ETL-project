@@ -1,6 +1,6 @@
 import os
 import pg8000.native
-from src.ingestion_lambda.get_last_time import get_last_time
+from get_last_time import get_last_time
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -44,12 +44,6 @@ def get_address_add(db_user=os.environ.get("DB_SOURCE_USER"),
     #     )
     # except pg8000.exceptions.DatabaseError:
     #     raise Exception("Database error")
-
-    print("user=", db_user)
-    print("db name=", db_database)
-    print("host=", db_host)
-    print("port=", db_port)
-    print("password=", db_password)
 
     conn = pg8000.native.Connection(
             user=db_user,

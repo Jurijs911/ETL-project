@@ -1,29 +1,27 @@
-from src.ingestion_lambda.get_sales_order_add \
-    import get_sales_order_add
-from unittest.mock import patch
-import os
-import datetime
-import pytest
 from decimal import Decimal
+import os
+from get_purchase_order_add \
+    import get_purchase_order_add
+import pytest
+from unittest.mock import patch
+import datetime
 import pg8000.exceptions
 from dotenv import load_dotenv
 
 load_dotenv()
 
-ingestion_utils_path = 'src.ingestion_lambda.'
-sales_order_get_last_time_path = 'get_sales_order_add.get_last_time'
-get_last_time_patch_path = ingestion_utils_path + \
-    sales_order_get_last_time_path
+
+purchase_order_get_last_time_path = \
+    'get_purchase_order_add.get_last_time'
 
 
-def test_get_sales_order_add_returns_list_with_correct_keys():
-
-    with patch(get_last_time_patch_path) as mock_get_last_time:
+def test_get_purchase_order_add_returns_list_with_correct_keys():
+    with patch(purchase_order_get_last_time_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
 
-        result = get_sales_order_add(
+        result = get_purchase_order_add(
             db_user=os.environ.get("TEST_SOURCE_USER"),
             db_database=os.environ.get("TEST_SOURCE_DATABASE"),
             db_host=os.environ.get("TEST_SOURCE_HOST"),
@@ -31,44 +29,52 @@ def test_get_sales_order_add_returns_list_with_correct_keys():
             db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
 
         assert isinstance(result, list)
-        expected_keys = {
-            "sales_order_id", "created_at", "last_updated", "design_id",
-            "staff_id", "counter_party_id", "units_sold", "unit_price",
-            "currency_id", "agreed_delivery_date", "agreed_payment_date",
-            "agreed_delivery_location_id"}
+        expected_keys = {"purchase_order_id",
+                         "created_at",
+                         "last_updated",
+                         "staff_id",
+                         "counterparty_id",
+                         "item_code",
+                         "item_quantity",
+                         "item_unit_price",
+                         "currency_id",
+                         "agreed_delivery_date",
+                         "agreed_payment_date",
+                         "agreed_delivery_location_id"
+                         }
         assert all(set(item.keys()) == expected_keys for item in result)
 
 
-def test_get_sales_order_add_has_correct_value_types():
-    with patch(get_last_time_patch_path) as mock_get_last_time:
+def test_get_address_add_has_correct_value_types():
+    with patch(purchase_order_get_last_time_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             '2020-07-25 15:20:49.962000', '%Y-%m-%d %H:%M:%S.%f')
-        result = get_sales_order_add(
+        result = get_purchase_order_add(
             db_user=os.environ.get("TEST_SOURCE_USER"),
             db_database=os.environ.get("TEST_SOURCE_DATABASE"),
             db_host=os.environ.get("TEST_SOURCE_HOST"),
             db_port=os.environ.get("TEST_SOURCE_PORT"),
             db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
         for item in result:
-            assert isinstance(item['sales_order_id'], int)
+            assert isinstance(item['purchase_order_id'], int)
             assert isinstance(item['created_at'], datetime.date)
             assert isinstance(item['last_updated'], datetime.date)
-            assert isinstance(item['design_id'], int)
             assert isinstance(item['staff_id'], int)
-            assert isinstance(item['counter_party_id'], int)
-            assert isinstance(item['units_sold'], int)
-            assert isinstance(item['unit_price'], Decimal)
+            assert isinstance(item['counterparty_id'], int)
+            assert isinstance(item['item_code'], str)
+            assert isinstance(item['item_quantity'], int)
+            assert isinstance(item['item_unit_price'], Decimal)
             assert isinstance(item['currency_id'], int)
             assert isinstance(item['agreed_delivery_date'], str)
             assert isinstance(item['agreed_payment_date'], str)
             assert isinstance(item['agreed_delivery_location_id'], int)
 
 
-def test_get_sales_order_calls_get_last_time():
-    with patch(get_last_time_patch_path) as mock_get_last_time:
+def test_get_purchase_order_add_calls_get_last_time():
+    with patch(purchase_order_get_last_time_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             '2020-07-25 15:20:49.962000', '%Y-%m-%d %H:%M:%S.%f')
-        get_sales_order_add(
+        get_purchase_order_add(
             db_user=os.environ.get("TEST_SOURCE_USER"),
             db_database=os.environ.get("TEST_SOURCE_DATABASE"),
             db_host=os.environ.get("TEST_SOURCE_HOST"),
@@ -82,7 +88,7 @@ def test_database_error():
         mock_connection.side_effect = pg8000.exceptions.DatabaseError(
             "Database error")
         with pytest.raises(Exception, match="Database error"):
-            get_sales_order_add(
+            get_purchase_order_add(
                 db_user=os.environ.get("TEST_SOURCE_USER"),
                 db_database=os.environ.get("TEST_SOURCE_DATABASE"),
                 db_host=os.environ.get("TEST_SOURCE_HOST"),
@@ -101,28 +107,23 @@ def test_database_error():
 
 
 def test_correct_data_returned_by_query():
-    with patch(get_last_time_patch_path) as mock_get_last_time:
+    with patch(purchase_order_get_last_time_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
-            "2023-07-27 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
+            "2023-07-29 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
-        result = get_sales_order_add(
+        result = get_purchase_order_add(
             db_user=os.environ.get("TEST_SOURCE_USER"),
             db_database=os.environ.get("TEST_SOURCE_DATABASE"),
             db_host=os.environ.get("TEST_SOURCE_HOST"),
             db_port=os.environ.get("TEST_SOURCE_PORT"),
             db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
         assert result == [
-            {'sales_order_id': 1,
-             'created_at': datetime.datetime(
-                2023, 7, 28, 15, 9, 58, 335449),
+            {'purchase_order_id': 1, 'created_at': datetime.datetime(
+                2023, 8, 1, 12, 36, 40, 948439),
              'last_updated': datetime.datetime(
-                 2023, 7, 28, 15, 9, 58, 335449),
-             'design_id': 1,
-             'staff_id': 1,
-             'counter_party_id': 1,
-             'units_sold': 100,
-             'unit_price': Decimal('2.5'),
-             'currency_id': 1, 
-             'agreed_delivery_date': 'Tuesday next week',
-             'agreed_payment_date': 'Following Wednesday',
+                 2023, 8, 1, 12, 36, 40, 948439),
+             'staff_id': 1, 'counterparty_id': 1, 'item_code': '1',
+             'item_quantity': 1, 'item_unit_price': Decimal('1.50'),
+             'currency_id': 1, 'agreed_delivery_date': 'Next Week',
+             'agreed_payment_date': 'Week After',
              'agreed_delivery_location_id': 1}]
