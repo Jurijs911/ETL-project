@@ -14,17 +14,23 @@ def upload_csv(data, table_name, bucket_name):
             ]
             .read()
             .decode("utf-8")
-            .split("\r\n")
+            .split("\n")
         )
 
-        with open(f"{table_name}.csv", "w", newline="") as csvfile:
-            writer = csv.writer(csvfile)
-            for row in downloaded_csv:
-                writer.writerow([row])
+        if downloaded_csv[0] != "":
+            for idx, row in enumerate(downloaded_csv):
+                if idx > 0:
+                    old_data = {
+                        key: row.split(",")[i]
+                        for dict in data
+                        for i, key in enumerate(dict)
+                    }
+                    data.append(old_data)
+
     except ClientError:
         pass
 
-    with open(f"{table_name}.csv", "a", newline="") as csvfile:
+    with open(f"{table_name}.csv", "w", newline="") as csvfile:
         if len(data) > 0:
             fieldnames = data[0].keys()
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
