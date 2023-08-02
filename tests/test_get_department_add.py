@@ -1,4 +1,4 @@
-from src.ingestion_lambda.get_department_add \
+from get_department_add \
     import get_department_add
 from unittest.mock import patch
 import datetime
@@ -10,14 +10,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-ingestion_utils_path = 'src.ingestion_lambda.'
 department_get_last_time_path = 'get_department_add.get_last_time'
-get_last_time_patch_path = ingestion_utils_path + \
-    department_get_last_time_path
 
 
 def test_get_department_add_returns_list_with_correct_keys():
-    with patch(get_last_time_patch_path) as mock_get_last_time:
+    with patch(department_get_last_time_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
@@ -42,7 +39,7 @@ def test_get_department_add_returns_list_with_correct_keys():
 
 
 def test_get_department_add_has_correct_value_types():
-    with patch(get_last_time_patch_path) as mock_get_last_time:
+    with patch(department_get_last_time_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
@@ -65,7 +62,7 @@ def test_get_department_add_has_correct_value_types():
 
 
 def test_get_department_add_calls_get_last_time():
-    with patch(get_last_time_patch_path) as mock_get_last_time:
+    with patch(department_get_last_time_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )
@@ -104,7 +101,7 @@ def test_database_error():
 
 
 def test_correct_data_returned_by_query():
-    with patch(get_last_time_patch_path) as mock_get_last_time:
+    with patch(department_get_last_time_path) as mock_get_last_time:
         mock_get_last_time.return_value = datetime.datetime.strptime(
             "2023-07-29 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
         )

@@ -20,45 +20,71 @@ def test_lambda_handler_calls_get_address_add():
     conn = boto3.resource("s3", region_name="eu-west-2")
 
     conn.create_bucket(
-        Bucket="kp-northcoder-ingestion-bucket",
+        Bucket="kp-northcoders-ingestion-bucket",
         CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
     )
 
+    #
+    # table.txt objects
+
     conn.Object(
-        "kp-northcoder-ingestion-bucket", "address/created_at.txt"
+        "kp-northcoders-ingestion-bucket", "address/created_at.txt"
     ).put(Body="2023-07-29 15:20:49.962000")
 
     conn.Object(
-        "kp-northcoder-ingestion-bucket", "counterparty/created_at.txt"
+        "kp-northcoders-ingestion-bucket", "counterparty/created_at.txt"
     ).put(Body="2023-07-30 15:20:49.962000")
 
     conn.Object(
-        "kp-northcoder-ingestion-bucket", "currency/created_at.txt"
+        "kp-northcoders-ingestion-bucket", "currency/created_at.txt"
     ).put(Body="2020-07-30 15:20:49.962000")
 
     conn.Object(
-        "kp-northcoder-ingestion-bucket", "department/created_at.txt"
+        "kp-northcoders-ingestion-bucket", "department/created_at.txt"
     ).put(Body="2020-07-30 15:20:49.962000")
 
     conn.Object(
-        "kp-northcoder-ingestion-bucket", "design/created_at.txt"
+        "kp-northcoders-ingestion-bucket", "design/created_at.txt"
     ).put(Body="2020-07-30 15:20:49.962000")
 
     # conn.Object(
-    #     "kp-northcoder-ingestion-bucket", "payment/created_at.txt"
+    #     "kp-northcoders-ingestion-bucket", "payment/created_at.txt"
     # ).put(Body="2020-07-30 15:20:49.962000")
 
     # conn.Object(
-    #     "kp-northcoder-ingestion-bucket", "purchase_order/created_at.txt"
+    #     "kp-northcoders-ingestion-bucket", "purchase_order/created_at.txt"
     # ).put(Body="2020-07-30 15:20:49.962000")
 
     # conn.Object(
-    #     "kp-northcoder-ingestion-bucket", "sales_order/created_at.txt"
+    #     "kp-northcoders-ingestion-bucket", "sales_order/created_at.txt"
     # ).put(Body="2020-07-30 15:20:49.962000")
 
     # conn.Object(
-    #     "kp-northcoder-ingestion-bucket", "staff/created_at.txt"
+    #     "kp-northcoders-ingestion-bucket", "staff/created_at.txt"
     # ).put(Body="2020-07-30 15:20:49.962000")
+
+    #
+    # table.csv objects
+
+    conn.Object(
+        "kp-northcoders-ingestion-bucket", "address.csv"
+    ).put()
+
+    conn.Object(
+        "kp-northcoders-ingestion-bucket", "counterparty.csv"
+    ).put()
+
+    conn.Object(
+        "kp-northcoders-ingestion-bucket", "currency.csv"
+    ).put()
+
+    conn.Object(
+        "kp-northcoders-ingestion-bucket", "department.csv"
+    ).put()
+
+    conn.Object(
+        "kp-northcoders-ingestion-bucket", "design.csv"
+    ).put()
 
     client = boto3.client("logs", region_name="eu-west-2")
     client.create_log_group(logGroupName="/aws/lambda/ingestion-lambda")
@@ -81,7 +107,7 @@ def test_lambda_handler_calls_get_address_add():
 
         address_response = (
             s3_client.get_object(
-                Bucket="kp-northcoder-ingestion-bucket",
+                Bucket="kp-northcoders-ingestion-bucket",
                 Key="address.csv",
             )["Body"]
             .read()
@@ -95,7 +121,7 @@ def test_lambda_handler_calls_get_address_add():
 
         counterparty_response = (
             s3_client.get_object(
-                Bucket="kp-northcoder-ingestion-bucket",
+                Bucket="kp-northcoders-ingestion-bucket",
                 Key="counterparty.csv",
             )["Body"]
             .read()
@@ -107,7 +133,7 @@ def test_lambda_handler_calls_get_address_add():
 
         currency_response = (
             s3_client.get_object(
-                Bucket="kp-northcoder-ingestion-bucket",
+                Bucket="kp-northcoders-ingestion-bucket",
                 Key="currency.csv",
             )["Body"]
             .read()
@@ -119,7 +145,7 @@ def test_lambda_handler_calls_get_address_add():
 
         department_response = (
             s3_client.get_object(
-                Bucket="kp-northcoder-ingestion-bucket",
+                Bucket="kp-northcoders-ingestion-bucket",
                 Key="department.csv",
             )["Body"]
             .read()
@@ -131,7 +157,7 @@ def test_lambda_handler_calls_get_address_add():
 
         design_response = (
             s3_client.get_object(
-                Bucket="kp-northcoder-ingestion-bucket",
+                Bucket="kp-northcoders-ingestion-bucket",
                 Key="design.csv",
             )["Body"]
             .read()
@@ -143,7 +169,7 @@ def test_lambda_handler_calls_get_address_add():
 
         # payment_response = (
         #     s3_client.get_object(
-        #         Bucket="kp-northcoder-ingestion-bucket",
+        #         Bucket="kp-northcoders-ingestion-bucket",
         #         Key="payment.csv",
         #     )["Body"]
         #     .read()
@@ -156,7 +182,7 @@ def test_lambda_handler_calls_get_address_add():
 
         # purchase_order_response = (
         #     s3_client.get_object(
-        #         Bucket="kp-northcoder-ingestion-bucket",
+        #         Bucket="kp-northcoders-ingestion-bucket",
         #         Key="purchase_order.csv",
         #     )["Body"]
         #     .read()
@@ -168,7 +194,7 @@ def test_lambda_handler_calls_get_address_add():
 
         # sales_order_response = (
         #     s3_client.get_object(
-        #         Bucket="kp-northcoder-ingestion-bucket",
+        #         Bucket="kp-northcoders-ingestion-bucket",
         #         Key="sales_order.csv",
         #     )["Body"]
         #     .read()
@@ -181,7 +207,7 @@ def test_lambda_handler_calls_get_address_add():
 
         # staff_response = (
         #     s3_client.get_object(
-        #         Bucket="kp-northcoder-ingestion-bucket",
+        #         Bucket="kp-northcoders-ingestion-bucket",
         #         Key="staff.csv",
         #     )["Body"]
         #     .read()
@@ -194,7 +220,7 @@ def test_lambda_handler_calls_get_address_add():
 
         txt_response = (
             s3_client.get_object(
-                Bucket="kp-northcoder-ingestion-bucket",
+                Bucket="kp-northcoders-ingestion-bucket",
                 Key="address/created_at.txt",
             )["Body"]
             .read()
@@ -205,7 +231,7 @@ def test_lambda_handler_calls_get_address_add():
 
         txt_response = (
             s3_client.get_object(
-                Bucket="kp-northcoder-ingestion-bucket",
+                Bucket="kp-northcoders-ingestion-bucket",
                 Key="counterparty/created_at.txt",
             )["Body"]
             .read()
@@ -216,7 +242,7 @@ def test_lambda_handler_calls_get_address_add():
 
         txt_response = (
             s3_client.get_object(
-                Bucket="kp-northcoder-ingestion-bucket",
+                Bucket="kp-northcoders-ingestion-bucket",
                 Key="currency/created_at.txt",
             )["Body"]
             .read()
@@ -227,7 +253,7 @@ def test_lambda_handler_calls_get_address_add():
 
         txt_response = (
             s3_client.get_object(
-                Bucket="kp-northcoder-ingestion-bucket",
+                Bucket="kp-northcoders-ingestion-bucket",
                 Key="department/created_at.txt",
             )["Body"]
             .read()
@@ -238,7 +264,7 @@ def test_lambda_handler_calls_get_address_add():
 
         txt_response = (
             s3_client.get_object(
-                Bucket="kp-northcoder-ingestion-bucket",
+                Bucket="kp-northcoders-ingestion-bucket",
                 Key="design/created_at.txt",
             )["Body"]
             .read()
@@ -249,7 +275,7 @@ def test_lambda_handler_calls_get_address_add():
 
         # txt_response = (
         #     s3_client.get_object(
-        #         Bucket="kp-northcoder-ingestion-bucket",
+        #         Bucket="kp-northcoders-ingestion-bucket",
         #         Key="payment/created_at.txt",
         #     )["Body"]
         #     .read()
@@ -260,7 +286,7 @@ def test_lambda_handler_calls_get_address_add():
 
         # txt_response = (
         #     s3_client.get_object(
-        #         Bucket="kp-northcoder-ingestion-bucket",
+        #         Bucket="kp-northcoders-ingestion-bucket",
         #         Key="purchase_order/created_at.txt",
         #     )["Body"]
         #     .read()
@@ -271,7 +297,7 @@ def test_lambda_handler_calls_get_address_add():
 
         # txt_response = (
         #     s3_client.get_object(
-        #         Bucket="kp-northcoder-ingestion-bucket",
+        #         Bucket="kp-northcoders-ingestion-bucket",
         #         Key="sales_order/created_at.txt",
         #     )["Body"]
         #     .read()
@@ -282,7 +308,7 @@ def test_lambda_handler_calls_get_address_add():
 
         # txt_response = (
         #     s3_client.get_object(
-        #         Bucket="kp-northcoder-ingestion-bucket",
+        #         Bucket="kp-northcoders-ingestion-bucket",
         #         Key="staff/created_at.txt",
         #     )["Body"]
         #     .read()

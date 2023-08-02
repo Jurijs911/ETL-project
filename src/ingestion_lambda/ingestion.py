@@ -2,21 +2,22 @@ import logging
 import boto3
 import time
 import os
-from src.ingestion_lambda.get_address_add import get_address_add
-from src.ingestion_lambda.upload_csv import upload_csv
-from src.ingestion_lambda.find_most_recent_time import find_most_recent_time
-from src.ingestion_lambda.write_updated_time import write_updated_time
-from src.ingestion_lambda.get_counterparty_add import get_counterparty_add
-from src.ingestion_lambda.get_currency_add import get_currency_add
-from src.ingestion_lambda.get_department_add import get_department_add
-from src.ingestion_lambda.get_design_add import get_design_add
-from src.ingestion_lambda.get_payment_add import get_payment_add
-from src.ingestion_lambda.get_purchase_order_add import get_purchase_order_add
-from src.ingestion_lambda.get_sales_order_add import get_sales_order_add
-from src.ingestion_lambda.get_staff_add import get_staff_add
+from get_address_add import get_address_add
+from upload_csv import upload_csv
+from find_most_recent_time import find_most_recent_time
+from write_updated_time import write_updated_time
+from get_counterparty_add import get_counterparty_add
+from get_currency_add import get_currency_add
+from get_department_add import get_department_add
+from get_design_add import get_design_add
+# from get_payment_add import get_payment_add
+# from get_purchase_order_add import get_purchase_order_add
+# from get_sales_order_add import get_sales_order_add
+# from get_staff_add import get_staff_add
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 cloudwatch_logs = boto3.client("logs", region_name="eu-west-2")
 
@@ -41,6 +42,8 @@ def lambda_handler(
     db_password=os.environ.get("DB_SOURCE_PASSWORD"),
 ):
     try:
+        print(db_user, db_database, db_host, db_port, db_password)
+
         address_data = get_address_add(
             db_user,
             db_database,
@@ -48,11 +51,11 @@ def lambda_handler(
             db_port,
             db_password
         )
-
+        print(address_data)
         if len(address_data) > 0:
             updated_timestamp = find_most_recent_time(address_data)
             upload_csv(
-                address_data, "address", "kp-northcoder-ingestion-bucket"
+                address_data, "address", "kp-northcoders-ingestion-bucket"
             )
             write_updated_time(updated_timestamp, "address")
             log_to_cloudwatch(
@@ -76,7 +79,7 @@ def lambda_handler(
             upload_csv(
                 counterparty_data,
                 "counterparty",
-                "kp-northcoder-ingestion-bucket",
+                "kp-northcoders-ingestion-bucket",
             )
             write_updated_time(updated_timestamp, "counterparty")
             log_to_cloudwatch(
@@ -96,7 +99,7 @@ def lambda_handler(
         if len(currency_data) > 0:
             updated_timestamp = find_most_recent_time(currency_data)
             upload_csv(currency_data, "currency",
-                       "kp-northcoder-ingestion-bucket")
+                       "kp-northcoders-ingestion-bucket")
             write_updated_time(updated_timestamp, "currency")
             log_to_cloudwatch(
                 str("New currency data returned"),
@@ -115,7 +118,7 @@ def lambda_handler(
         if len(department_data) > 0:
             updated_timestamp = find_most_recent_time(department_data)
             upload_csv(
-                department_data, "department", "kp-northcoder-ingestion-bucket"
+                department_data, "department", "kp-northcoders-ingestion-bucket"
             )
             write_updated_time(updated_timestamp, "department")
             log_to_cloudwatch(
@@ -134,7 +137,7 @@ def lambda_handler(
 
         if len(design_data) > 0:
             updated_timestamp = find_most_recent_time(design_data)
-            upload_csv(design_data, "design", "kp-northcoder-ingestion-bucket")
+            upload_csv(design_data, "design", "kp-northcoders-ingestion-bucket")
             write_updated_time(updated_timestamp, "design")
             log_to_cloudwatch(
                 str("New design data returned"),
@@ -153,7 +156,7 @@ def lambda_handler(
         # if len(payment_data) > 0:
         #     updated_timestamp = find_most_recent_time(payment_data)
         #     upload_csv(payment_data, "payment",
-        #                "kp-northcoder-ingestion-bucket")
+        #                "kp-northcoders-ingestion-bucket")
         #     write_updated_time(updated_timestamp, "payment")
         #     log_to_cloudwatch(
         #         str("New payment data returned"),
@@ -174,7 +177,7 @@ def lambda_handler(
         #     upload_csv(
         #         purchase_order_data,
         #         "purchase_order",
-        #         "kp-northcoder-ingestion-bucket",
+        #         "kp-northcoders-ingestion-bucket",
         #     )
         #     write_updated_time(updated_timestamp, "purchase_order")
         #     log_to_cloudwatch(
@@ -194,7 +197,8 @@ def lambda_handler(
         # if len(sales_order_data) > 0:
         #     updated_timestamp = find_most_recent_time(sales_order_data)
         #     upload_csv(
-        #         sales_order_data, "sales_order", "kp-northcoder-ingestion-bucket"
+        #         sales_order_data, "sales_order",
+        #           "kp-northcoders-ingestion-bucket"
         #     )
         #     write_updated_time(updated_timestamp, "sales_order")
         #     log_to_cloudwatch(
@@ -213,7 +217,7 @@ def lambda_handler(
 
         # if len(staff_data) > 0:
         #     updated_timestamp = find_most_recent_time(staff_data)
-        #     upload_csv(staff_data, "staff", "kp-northcoder-ingestion-bucket")
+        #     upload_csv(staff_data, "staff", "kp-northcoders-ingestion-bucket")
         #     write_updated_time(updated_timestamp, "staff")
         #     log_to_cloudwatch(
         #         str("New staff data returned"),

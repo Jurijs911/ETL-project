@@ -6,7 +6,7 @@ from botocore.exceptions import ClientError
 def write_updated_time(timestamp, table):
     s3_resource = boto3.resource("s3")
 
-    bucket_name = "kp-northcoder-ingestion-bucket"
+    bucket_name = "kp-northcoders-ingestion-bucket"
     key = f"{table}/created_at.txt"
 
     updated_time = timestamp
