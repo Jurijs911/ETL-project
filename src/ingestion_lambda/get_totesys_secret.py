@@ -7,6 +7,10 @@ def get_secret():
     secret_name = "totesys_DB_access"
     region_name = "eu-west-2"
 
+    s3_client = boto3.client("s3", region_name=region_name)
+
+    s3_client.list_objects_v2("kp-northcoders-ingestion-bucket")
+
     client = boto3.client(
         service_name="secretsmanager", region_name=region_name
     )
