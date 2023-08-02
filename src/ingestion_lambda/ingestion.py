@@ -1,7 +1,7 @@
 import logging
 import boto3
 import time
-from get_totesys_secret import get_secret
+from get_secret import get_secret
 from get_address_add import get_address_add
 from upload_csv import upload_csv
 from find_most_recent_time import find_most_recent_time
