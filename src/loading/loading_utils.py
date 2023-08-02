@@ -235,8 +235,6 @@ def insert_into_dim_date(conn, date_data):
                 raise InputValidationError
 
             try:
-                datetime.strptime(str(date[2]), "%Y-%m-%d")
-                datetime.strptime(str(date[3]), "%H:%M:%S")  
                 datetime.strptime(str(date[4]), "%Y-%m-%d")
                 datetime.strptime(str(date[5]), "%H:%M:%S")  
                 datetime.strptime(str(date[12]), "%Y-%m-%d")
@@ -244,8 +242,8 @@ def insert_into_dim_date(conn, date_data):
             except ValueError:
                 raise InputValidationError
 
-            conn.run("INSERT INTO dim_date (date_id, year, month, day, day_of_week, day_name, month_name, quarter) VALUES (:date_id, :year, :month, :day, :day_of_week, :day_name, :month_name, :quarter)",
-                     date_id=date[0], year=date[1], month=date[2], day=date[3], day_of_week=date[4], day_name=date[5], month_name=date[6], quarter=date[7])
+            conn.run("INSERT INTO dim_date (date_id, year, month, day, day_of_week, day_name, month_name, quarter) VALUES (:date_id AS DATE, :year, :month, :day, :day_of_week, :day_name, :month_name, :quarter)",
+         date_id=date[0], year=date[1], month=date[2], day=date[3], day_of_week=date[4], day_name=date[5], month_name=date[6], quarter=date[7])
 
         conn.close()
 
@@ -297,6 +295,7 @@ def insert_into_dim_counterparty(conn, counterparty_data):
 
 
 
+
 def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
     """
     Insert data into the dim_fact_sales_order table
@@ -307,23 +306,30 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
 
     try:
         for sale in fact_sales_order_data:
-            expected_data_types = [int, int, str, str, str, str, int, int, int, float, int, int, str, str, int]
+            expected_data_types = [int, str, str, str, str, int, int, int, float, int, int, str, str, int]
             for index, value in enumerate(sale):
                 if not isinstance(value, expected_data_types[index]):
                     raise InputValidationError
 
             try:
-                datetime.strptime(sale[2], "%Y-%m-%d")
-                datetime.strptime(sale[3], "%H:%M:%S:%f")
-                datetime.strptime(sale[4], "%Y-%m-%d")
-                datetime.strptime(sale[5], "%H:%M:%S:%f")
+                datetime.strptime(sale[1], "%Y-%m-%d")
+                
+                # Remove the fractional part from the time strings before parsing
+                datetime.strptime(sale[2].split(".")[0], "%H:%M:%S")
+                
+                datetime.strptime(sale[3], "%Y-%m-%d")
+                
+                # Remove the fractional part from the time strings before parsing
+                datetime.strptime(sale[4].split(".")[0], "%H:%M:%S")
+
+                datetime.strptime(sale[11], "%Y-%m-%d")
                 datetime.strptime(sale[12], "%Y-%m-%d")
-                datetime.strptime(sale[13], "%Y-%m-%d")
+
             except ValueError:
                 raise InputValidationError
 
-            conn.run("INSERT INTO dim_fact_sales_order (order_id, product_id, order_date, order_time, ship_date, ship_time, quantity, list_price, discount, sales_price, profit, priority, customer_name, region_name, counterparty_id) VALUES (:order_id, :product_id, :order_date, :order_time, :ship_date, :ship_time, :quantity, :list_price, :discount, :sales_price, :profit, :priority, :customer_name, :region_name, :counterparty_id)",
-                     order_id=sale[0], product_id=sale[1], order_date=sale[2], order_time=sale[3], ship_date=sale[4], ship_time=sale[5], quantity=sale[6], list_price=sale[7], discount=sale[8], sales_price=sale[9], profit=sale[10], priority=sale[11], customer_name=sale[12], region_name=sale[13], counterparty_id=sale[14])
+            conn.run("INSERT INTO fact_sales_order(sales_order_id, created_date, created_time, last_updated_date, last_updated_time, sales_staff_id, counterparty_id, units_sold, unit_price, currency_id, design_id, agreed_payment_date, agreed_delivery_date, agreed_delivery_location_id) VALUES (:sales_order_id, :created_date, :created_time, :last_updated_date, :last_updated_time, :sales_staff_id, :counterparty_id, :units_sold, :unit_price, :currency_id, :design_id, :agreed_payment_date, :agreed_delivery_date, :agreed_delivery_location_id)",
+                     sales_order_id=sale[0], created_date=sale[1], created_time=sale[2], last_updated_date=sale[3], last_updated_time=sale[4], sales_staff_id=sale[5], counterparty_id=sale[6], units_sold=sale[7], unit_price=sale[8], currency_id=sale[9], design_id=sale[10], agreed_payment_date=sale[11], agreed_delivery_date=sale[12], agreed_delivery_location_id=sale[13])
 
         conn.close()
 
@@ -336,8 +342,6 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
         raise
 
     return fact_sales_order_data
-
-
 
 
 

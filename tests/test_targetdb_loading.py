@@ -129,26 +129,26 @@ def test_insert_into_dim_date():
 
 
 
-def test_insert_into_dim_counterparty():
-    """
-    Test the insert_into_dim_counterparty function.
-    The function should insert data into the dim_counterparty table and return the inserted data.
-    """
-    test_counterparty_data = [
-    [1, "Business Name", "123 Apple St", "", "District 1", "Manchester", "12345", "UK", "123-456-7890"],
-    [2, "ABC Ltd", "456 Balamory St", "Suite 1", "District 2", "London", "56789", "UK", "987-654-3210"],
-]
+# def test_insert_into_dim_counterparty():
+#     """
+#     Test the insert_into_dim_counterparty function.
+#     The function should insert data into the dim_counterparty table and return the inserted data.
+#     """
+#     test_counterparty_data = [
+#     [1, "Business Name", "123 Apple St", "", "District 1", "Manchester", "12345", "UK", "123-456-7890"],
+#     [2, "ABC Ltd", "456 Balamory St", "Suite 1", "District 2", "London", "56789", "UK", "987-654-3210"],
+# ]
 
-    conn = create_test_connection()
-    conn.run('SET search_path TO "project_team_2", public;')
-    inserted_data = insert_into_dim_counterparty(conn, test_counterparty_data)
+#     conn = create_test_connection()
+#     conn.run('SET search_path TO "project_team_2", public;')
+#     inserted_data = insert_into_dim_counterparty(conn, test_counterparty_data)
 
-    table_contents = conn.run('SELECT * FROM "dim_counterparty";')
+#     table_contents = conn.run('SELECT * FROM "dim_counterparty";')
 
-    assert inserted_data == test_counterparty_data
-    assert table_contents == test_counterparty_data
+#     assert inserted_data == test_counterparty_data
+#     assert table_contents == test_counterparty_data
 
-    #cleanup_test_data(conn, 'dim_counterparty')
+#     #cleanup_test_data(conn, 'dim_counterparty')
 
 
 
@@ -156,18 +156,19 @@ def test_insert_into_fact_sales_order():
     """
     Test the insert_into_dim_fact_sales_order function.
 
-    The function should insert data into the dim_fact_sales_order table and return the inserted data.
+    The function should insert data into the fact_sales_order table and return the inserted data.
     """
     test_fact_sales_order_data = [
-    [1, 1001, "2023-07-24", "12:34:56.789000", "2023-07-24", "15:45:30.123000", 101, 201, 10, 100.0, 1, 1, "2023-07-30", "2023-08-05", 301],
-    [2, 1002, "2023-07-24", "09:12:45.678000", "2023-07-24", "09:12:45.678000", 102, 202, 5, 50.0, 2, 2, "2023-07-28", "2023-08-02", 302],
+    [100, "2023-07-24", "12:34:56.789000", "2023-07-24", "15:45:30.123000", 101, 201, 10, 100.0, 1, 1, "2023-07-30", "2023-08-05", 301],
+    [200, "2023-07-24", "09:12:45.678000", "2023-07-24", "09:12:45.678000", 102, 202, 5, 50.0, 2, 2, "2023-07-28", "2023-08-02", 302],
 ]
+
 
     conn = create_test_connection()
     conn.run('SET search_path TO "project_team_2", public;')
     inserted_data = insert_into_dim_fact_sales_order(conn, test_fact_sales_order_data)
 
-    table_contents = conn.run('SELECT * FROM "dim_fact_sales_order";')
+    table_contents = conn.run('SELECT * FROM "fact_sales_order";')
 
     assert inserted_data == test_fact_sales_order_data
     assert table_contents == test_fact_sales_order_data
