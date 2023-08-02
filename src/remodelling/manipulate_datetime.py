@@ -1,3 +1,7 @@
+"""This module takes a datetime string and formats it into separate
+date and time strings using the `strftime`
+method available in Python's datetime module."""
+
 from datetime import datetime
 
 test_data = datetime(2023, 7, 25, 15, 20, 49, 962000)

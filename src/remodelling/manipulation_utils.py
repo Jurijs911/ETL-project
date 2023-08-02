@@ -1,7 +1,7 @@
 from datetime import datetime
 
 """
-Receives data from csv_reader and manipulates it to match
+This module receives data from csv_reader and manipulates it to match
 the final database schema
 
 format_fact_sales_order

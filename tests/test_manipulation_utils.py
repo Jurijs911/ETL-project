@@ -1,3 +1,7 @@
+"""
+Test functions for formatting various data in the remodelling manipulation_utils module.
+"""
+
 from src.remodelling.manipulation_utils import (
     format_fact_sales_order,
     format_dim_design,
@@ -9,7 +13,16 @@ from src.remodelling.manipulation_utils import (
 )
 from datetime import datetime
 
+"""
+    Test the format_fact_sales_order function.
 
+    This function tests the formatting of sales order data to ensure that the datetime fields are properly formatted
+    into separate date and time components.
+
+    Sample sales data is provided, and the function is called to obtain the formatted data. The expected formatted
+    sales data is also provided for comparison. An assertion is made to check if the formatted data matches the expected
+    sales data.
+    """
 def test_format_fact_sales_order():
     sample_sales_data = [
         {
@@ -50,6 +63,16 @@ def test_format_fact_sales_order():
     assert formatted_data == expected_sales_data
 
 
+"""
+    Test the format_dim_design function.
+
+    This function tests the formatting of design data to ensure that it remains unchanged after the formatting process.
+
+    Sample design data is provided, and the function is called to obtain the formatted data. The expected formatted
+    design data is also provided for comparison. An assertion is made to check if the formatted data matches the
+    expected design data.
+    """
+
 def test_format_dim_design():
     sample_design_data = [
         {
@@ -72,6 +95,16 @@ def test_format_dim_design():
     ]
 
     assert formatted_design == expected_design_data
+
+"""
+    Test the format_dim_staff function.
+
+    This function tests the formatting of staff data to ensure that it remains unchanged after the formatting process.
+
+    Sample staff data is provided, and the function is called to obtain the formatted data. The expected formatted
+    staff data is also provided for comparison. An assertion is made to check if the formatted data matches the
+    expected staff data.
+    """
 
 
 def test_format_dim_staff():
@@ -100,6 +133,16 @@ def test_format_dim_staff():
     ]
 
     assert formatted_staff == expected_staff_data
+
+"""
+    Test the format_dim_location function.
+
+    This function tests the formatting of location data to ensure that it remains unchanged after the formatting process.
+
+    Sample location data is provided, and the function is called to obtain the formatted data. The expected formatted
+    location data is also provided for comparison. An assertion is made to check if the formatted data matches the
+    expected location data.
+    """
 
 
 def test_format_dim_location():
@@ -133,6 +176,17 @@ def test_format_dim_location():
 
     assert formatted_location == expected_location_data
 
+"""
+    Test the format_dim_date function.
+
+    This function tests the formatting of date data to ensure that it contains additional fields such as year, month,
+    day, day of the week, day name, month name, and quarter.
+
+    Sample date data is provided, and the function is called to obtain the formatted data. The expected formatted
+    date data is also provided for comparison. An assertion is made to check if the formatted data matches the
+    expected date data.
+    """
+
 
 def test_format_dim_date():
     sample_date_data = [
@@ -158,6 +212,16 @@ def test_format_dim_date():
 
     assert formatted_date == expected_date_data
 
+"""
+    Test the format_dim_currency function.
+
+    This function tests the formatting of currency data to ensure that it remains unchanged after the formatting process.
+
+    Sample currency data is provided, and the function is called to obtain the formatted data. The expected formatted
+    currency data is also provided for comparison. An assertion is made to check if the formatted data matches the
+    expected currency data.
+    """
+
 
 def test_format_dim_currency():
     sample_currency_data = [
@@ -179,6 +243,17 @@ def test_format_dim_currency():
     ]
 
     assert formatted_currency == expected_currency_data
+
+"""
+    Test the format_dim_counterparty function.
+
+    This function tests the formatting of counterparty data to ensure that it remains unchanged after the formatting
+    process.
+
+    Sample counterparty data is provided, and the function is called to obtain the formatted data. The expected
+    formatted counterparty data is also provided for comparison. An assertion is made to check if the formatted data
+    matches the expected counterparty data.
+    """
 
 
 def test_format_dim_counterparty():
