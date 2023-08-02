@@ -40,13 +40,3 @@ resource "aws_lambda_permission" "allow_s3" {
 #   source_arn     = aws_s3_bucket.processed_bucket.arn
 #   source_account = data.aws_caller_identity.current.account_id
 # }
-
-resource "null_resource" "install_dependencies" {
-  provisioner "local-exec" {
-    command = "pip install -r ${path.module}/../requirements.txt -t ${path.module}/../src/remodelling/ --upgrade"
-  }
-
-  triggers = {
-    dependencies_versions = filemd5("${path.module}/../requirements.txt")
-  }
-}

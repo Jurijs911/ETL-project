@@ -1,23 +1,23 @@
 import os
 import pg8000.native
-from src.ingestion_lambda.get_last_time import get_last_time
+from get_last_time import get_last_time
 from dotenv import load_dotenv
 
 load_dotenv()
 
 
-class MissingRequiredEnvironmentVariables (Exception):
-    """
-        Is produced when attempts to connect to DB
-        with variables which do not exist
-    """
+# class MissingRequiredEnvironmentVariables (Exception):
+#     """
+#         Is produced when attempts to connect to DB
+#         with variables which do not exist
+#     """
 
-    def __init__(self, db_user, db_database, db_host, db_port, db_password):
-        self.user = db_user,
-        self.database = db_database,
-        self.host = db_host,
-        self.port = db_port,
-        self.password = db_password
+#     def __init__(self, db_user, db_database, db_host, db_port, db_password):
+#         self.user = db_user,
+#         self.database = db_database,
+#         self.host = db_host,
+#         self.port = db_port,
+#         self.password = db_password
 
 
 def get_address_add(db_user=os.environ.get("DB_SOURCE_USER"),
