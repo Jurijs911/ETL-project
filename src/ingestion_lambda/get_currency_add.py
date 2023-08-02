@@ -1,31 +1,34 @@
-import os
+from get_totesys_secret import get_secret
 import pg8000.native
 from get_last_time import get_last_time
 from dotenv import load_dotenv
 
 load_dotenv()
 
+secret = get_secret()
 
-class MissingRequiredEnvironmentVariables (Exception):
+
+class MissingRequiredEnvironmentVariables(Exception):
     """
-        Is produced when attempts to connect to DB
-        with variables which do not exist
+    Is produced when attempts to connect to DB
+    with variables which do not exist
     """
 
     def __init__(self, db_user, db_database, db_host, db_port, db_password):
-        self.user = db_user,
-        self.database = db_database,
-        self.host = db_host,
-        self.port = db_port,
+        self.user = (db_user,)
+        self.database = (db_database,)
+        self.host = (db_host,)
+        self.port = (db_port,)
         self.password = db_password
 
 
 def get_currency_add(
-        db_user=os.environ.get("DB_SOURCE_USER"),
-        db_database=os.environ.get("DB_SOURCE_NAME"),
-        db_host=os.environ.get("DB_SOURCE_HOST"),
-        db_port=os.environ.get("DB_SOURCE_PORT"),
-        db_password=os.environ.get("DB_SOURCE_PASSWORD")):
+    db_user=secret["username"],
+    db_database=secret["dbname"],
+    db_host=secret["host"],
+    db_port=secret["port"],
+    db_password=secret["password"],
+):
     """
     CONNECTION
     """
@@ -47,12 +50,12 @@ def get_currency_add(
     #     raise Exception("Database error")
 
     conn = pg8000.native.Connection(
-            user=db_user,
-            database=db_database,
-            host=db_host,
-            port=db_port,
-            password=db_password,
-        )
+        user=db_user,
+        database=db_database,
+        host=db_host,
+        port=db_port,
+        password=db_password,
+    )
 
     """
     DETERMINE SEARCH INTERVAL
@@ -68,8 +71,8 @@ def get_currency_add(
 
     #
     # Query table
-    query = 'SELECT * FROM currency WHERE created_at > :search_interval;'
-    params = {'search_interval': search_interval}
+    query = "SELECT * FROM currency WHERE created_at > :search_interval;"
+    params = {"search_interval": search_interval}
     rows = conn.run(query, **params)
 
     created_data = []
