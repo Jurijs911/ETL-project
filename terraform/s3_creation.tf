@@ -14,7 +14,7 @@ resource "aws_s3_object" "created_at_date_address" {
 
 resource "aws_s3_object" "address_csv" {
   bucket = aws_s3_bucket.ingestion_bucket.bucket
-  key    = "address/created_at.txt"
+  key    = "address.csv"
   source = "data/address.csv"
 }
 
@@ -26,7 +26,7 @@ resource "aws_s3_object" "created_at_date_sales_order" {
 
 resource "aws_s3_object" "sales_order_csv" {
   bucket = aws_s3_bucket.ingestion_bucket.bucket
-  key    = "sales_order/created_at.txt"
+  key    = "sales_order.csv"
   source = "data/sales_order.csv"
 }
 
@@ -38,7 +38,7 @@ resource "aws_s3_object" "created_at_date_design" {
 
 resource "aws_s3_object" "design_csv" {
   bucket = aws_s3_bucket.ingestion_bucket.bucket
-  key    = "design/created_at.txt"
+  key    = "design.csv"
   source = "data/design.csv"
 }
 
@@ -50,7 +50,7 @@ resource "aws_s3_object" "created_at_date_currency" {
 
 resource "aws_s3_object" "currency_csv" {
   bucket = aws_s3_bucket.ingestion_bucket.bucket
-  key    = "currency/created_at.txt"
+  key    = "currency.csv"
   source = "data/currency.csv"
 }
 
@@ -62,7 +62,7 @@ resource "aws_s3_object" "created_at_date_counterparty" {
 
 resource "aws_s3_object" "counterparty_csv" {
   bucket = aws_s3_bucket.ingestion_bucket.bucket
-  key    = "counterparty/created_at.txt"
+  key    = "counterparty.csv"
   source = "data/counterparty.csv"
 }
 
@@ -74,7 +74,7 @@ resource "aws_s3_object" "created_at_date_department" {
 
 resource "aws_s3_object" "department_csv" {
   bucket = aws_s3_bucket.ingestion_bucket.bucket
-  key    = "department/created_at.txt"
+  key    = "department.csv"
   source = "data/department.csv"
 }
 
@@ -86,7 +86,7 @@ resource "aws_s3_object" "created_at_date_purchase_order" {
 
 resource "aws_s3_object" "purchase_order_csv" {
   bucket = aws_s3_bucket.ingestion_bucket.bucket
-  key    = "purchase_order/created_at.txt"
+  key    = "purchase_order.csv"
   source = "data/purchase_order.csv"
 }
 
@@ -98,7 +98,7 @@ resource "aws_s3_object" "created_at_date_payment" {
 
 resource "aws_s3_object" "payment_csv" {
   bucket = aws_s3_bucket.ingestion_bucket.bucket
-  key    = "payment/created_at.txt"
+  key    = "payment.csv"
   source = "data/payment.csv"
 }
 
@@ -110,7 +110,7 @@ resource "aws_s3_object" "created_at_date_transaction" {
 
 resource "aws_s3_object" "transaction_csv" {
   bucket = aws_s3_bucket.ingestion_bucket.bucket
-  key    = "transaction/created_at.txt"
+  key    = "transaction.csv"
   source = "data/transaction.csv"
 }
 
