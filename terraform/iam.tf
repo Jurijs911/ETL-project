@@ -26,7 +26,7 @@ data "aws_iam_policy_document" "sm_document" {
     actions = ["secretsmanager:GetSecretValue"]
 
     resources = [
-      "*",
+      "arn:aws:secretsmanager:eu-west-2:124301163178:secret:totesys_DB_access-1tf4ur",
     ]
   }
 }
@@ -97,4 +97,9 @@ resource "aws_iam_role_policy_attachment" "lambda_s3_policy_attachment" {
 resource "aws_iam_role_policy_attachment" "lambda_cw_policy_attachment" {
   role       = aws_iam_role.lambda_role.name
   policy_arn = aws_iam_policy.cw_policy.arn
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_sm_policy_attachment" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.sm_policy.arn
 }
