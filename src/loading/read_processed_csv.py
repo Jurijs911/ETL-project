@@ -1,6 +1,7 @@
 import csv
 import boto3
 
+
 def iterate_bucket_items(bucket):
     """
     Generator that iterates over all objects in a given s3 bucket
@@ -33,16 +34,17 @@ def read_processed_csv(bucket_name="kp-northcoder-data-bucket"):
     }
 
     for item in iterate_bucket_items(bucket=bucket_name):
-            response = (
-                s3_client.get_object(Bucket=bucket_name, Key=item["Key"])["Body"]
-                .read()
-                .decode("utf-8")
-                .splitlines()
-            )
-            records = csv.reader(response)
-            next(records)
-            table_data = []
-            for row in records:
-                table_data.append(row)
-            processed_data[item["Key"].split(".")[0]] = table_data
+        response = (
+            s3_client.get_object(Bucket=bucket_name, Key=item["Key"])["Body"]
+            .read()
+            .decode("utf-8")
+            .splitlines()
+        )
+        records = csv.reader(response)
+        next(records)
+        table_data = []
+        for row in records:
+            table_data.append(row)
+        processed_data[item["Key"].split(".")[0]] = table_data
+
     return processed_data

@@ -1,5 +1,5 @@
 from src.loading.read_processed_csv import read_processed_csv
-from src.ingestion_csv_utils import upload_csv
+from src.remodelling.upload_csv import upload_csv
 import os
 import boto3
 from moto import mock_s3
@@ -9,12 +9,15 @@ from moto import mock_s3
 class Test_read_ingested_csv:
     def test_reads_correct_data_for_one_table(self):
         """
-        Test the 'read_processed_csv' function when there is data for one table in the processed bucket.
+        Test the 'read_processed_csv' function when there is data
+        for one table in the processed bucket.
 
-        The function should read the CSV file for the specified table ('fact_sales_order') and return the
-        data as a list of lists, where each inner list represents a row in the CSV file. The returned
-        dictionary should only contain data for the specified table, and the other tables should have
-        empty lists as there is no data for them.
+        The function should read the CSV file for the specified table
+        ('fact_sales_order') and return the data as a list of lists,
+        where each inner list represents a row in the CSV file.
+        The returned dictionary should only contain data for the specified
+        table, and the other tables should have empty lists as there is no
+        data for them.
         """
 
         s3_client = boto3.client("s3", region_name="eu-west-2")
@@ -24,25 +27,27 @@ class Test_read_ingested_csv:
         )
 
         sales_data = [
-        {
-            "sales_order_id": 2,
-            "created_date": "2023-07-25",
-            "created_time": "15:20:49:962000",
-            "last_updated_date": "2023-07-25",
-            "last_updated_time": "15:20:49:962000",
-            "sales_staff_id": 100,
-            "counterparty_id": 200,
-            "units_sold": 2000,
-            "unit_price": 20.65,
-            "currency_id": 5,
-            "design_id": 1,
-            "agreed_payment_date": "2023, 7, 30",
-            "agreed_delivery_date": "2023, 8, 12",
-            "agreed_delivery_location_id": 2,
-        },
-    ]
+            {
+                "sales_order_id": 2,
+                "created_date": "2023-07-25",
+                "created_time": "15:20:49:962000",
+                "last_updated_date": "2023-07-25",
+                "last_updated_time": "15:20:49:962000",
+                "sales_staff_id": 100,
+                "counterparty_id": 200,
+                "units_sold": 2000,
+                "unit_price": 20.65,
+                "currency_id": 5,
+                "design_id": 1,
+                "agreed_payment_date": "2023, 7, 30",
+                "agreed_delivery_date": "2023, 8, 12",
+                "agreed_delivery_location_id": 2,
+            },
+        ]
 
-        s3_client.put_object(Bucket="processed-bucket", Key="fact_sales_order.csv")
+        s3_client.put_object(
+            Bucket="processed-bucket", Key="fact_sales_order.csv"
+        )
 
         upload_csv(sales_data, "fact_sales_order", "processed-bucket")
 
@@ -81,16 +86,16 @@ class Test_read_ingested_csv:
         if os.path.exists("sales.csv"):
             os.remove("sales.csv")
 
-
-
     def test_reads_correct_data_for_mutliple_tables(self):
         """
-        Test the 'read_processed_csv' function when there is data for multiple tables in the processed bucket.
+        Test the 'read_processed_csv' function when there is data for multiple
+        tables in the processed bucket.
 
-        The function should read the CSV files for the specified tables ('fact_sales_order' and 'dim_staff')
-        and return the data as a dictionary where each key represents a table name and its value is a list
-        of lists containing the data for that table. The other tables should have empty lists as there is no
-        data for them.
+        The function should read the CSV files for the specified tables
+        ('fact_sales_order' and 'dim_staff') and return the data as a
+        dictionary where each key represents a table name and its value
+        is a list of lists containing the data for that table. The other
+        tables should have empty lists as there is no data for them.
         """
 
         s3_client = boto3.client("s3", region_name="eu-west-2")
@@ -111,26 +116,27 @@ class Test_read_ingested_csv:
         ]
 
         sales_data = [
-        {
-            "sales_order_id": "2",
-            "created_date": "2023-07-25",
-            "created_time": "15:20:49:962000",
-            "last_updated_date": "2023-07-25",
-            "last_updated_time": "15:20:49:962000",
-            "sales_staff_id": "100",
-            "counterparty_id": "200",
-            "units_sold": "2000",
-            "unit_price": "20.65",
-            "currency_id": "5",
-            "design_id": "1",
-            "agreed_payment_date": "2023, 7, 30",
-            "agreed_delivery_date": "2023, 8, 12",
-            "agreed_delivery_location_id": "2",
-        },
-
+            {
+                "sales_order_id": "2",
+                "created_date": "2023-07-25",
+                "created_time": "15:20:49:962000",
+                "last_updated_date": "2023-07-25",
+                "last_updated_time": "15:20:49:962000",
+                "sales_staff_id": "100",
+                "counterparty_id": "200",
+                "units_sold": "2000",
+                "unit_price": "20.65",
+                "currency_id": "5",
+                "design_id": "1",
+                "agreed_payment_date": "2023, 7, 30",
+                "agreed_delivery_date": "2023, 8, 12",
+                "agreed_delivery_location_id": "2",
+            },
         ]
 
-        s3_client.put_object(Bucket="processed-bucket", Key="fact_sales_order.csv")
+        s3_client.put_object(
+            Bucket="processed-bucket", Key="fact_sales_order.csv"
+        )
         s3_client.put_object(Bucket="processed-bucket", Key="dim_staff.csv")
 
         upload_csv(sales_data, "fact_sales_order", "processed-bucket")
@@ -157,7 +163,8 @@ class Test_read_ingested_csv:
             ],
             "dim_date": [],
             "dim_staff": [
-                [    
+                [
+
                     "1",
                     "Cameron",
                     "Parsonage",
