@@ -236,10 +236,6 @@ class Test_Remodelling:
             Key="dim_currency.csv",
         )
 
-        s3_client.upload_file(
-            "test.csv", "kp-northcoders-processed-bucket", "dim_currency.csv"
-        )
-
         s3_client.put_object(
             Bucket="kp-northcoders-processed-bucket",
             Key="dim_date.csv",
