@@ -242,7 +242,6 @@ def test_insert_into_dim_location():
 def test_insert_into_fact_sales_order():
     """
     Test the insert_into_dim_fact_sales_order function.
-
     The function should insert data into the fact_sales_order table
     and return the inserted data.
     """

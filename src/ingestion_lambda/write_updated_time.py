@@ -1,25 +1,25 @@
-import datetime
+import logging
 import boto3
+from botocore.exceptions import ClientError
+
 
 def write_updated_time(timestamp, table):
-    
-    s3_client = boto3.client("s3")
     s3_resource = boto3.resource("s3")
 
-    bucket_name = "kp-northcoder-ingestion-bucket"
+    bucket_name = "kp-northcoders-ingestion-bucket"
     key = f"{table}/created_at.txt"
-    
+
     updated_time = timestamp
 
-    with open('created_at.txt', 'w') as f:
+    with open("created_at.txt", "w") as f:
         f.write(updated_time)
-    
 
     try:
-        response = s3_resource.Object(bucket_name, key).put(Body=open('created_at.txt', 'rb'))
-       
+        response = s3_resource.Object(bucket_name, key).put(
+            Body=open("created_at.txt", "rb")
+        )
+
     except ClientError as e:
         logging.error(e)
         return False
     return response
-

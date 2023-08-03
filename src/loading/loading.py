@@ -14,10 +14,10 @@ from loading_utils import (
 from read_processed_csv import read_processed_csv
 
 logging.basicConfig(level=logging.INFO)
+
 logger = logging.getLogger(__name__)
 
 cloudwatch_logs = boto3.client("logs")
-
 
 def log_to_cloudwatch(message, log_group_name, log_stream_name):
     """Log a message to AWS CloudWatch Logs."""

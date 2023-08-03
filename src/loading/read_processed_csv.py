@@ -46,4 +46,5 @@ def read_processed_csv(bucket_name="kp-northcoder-data-bucket"):
         for row in records:
             table_data.append(row)
         processed_data[item["Key"].split(".")[0]] = table_data
+
     return processed_data
