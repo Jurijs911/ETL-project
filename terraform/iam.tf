@@ -26,7 +26,7 @@ data "aws_iam_policy_document" "sm_document" {
     actions = ["secretsmanager:GetSecretValue"]
 
     resources = [
-      "arn:aws:secretsmanager:eu-west-2:124301163178:secret:totesys_DB_access-1tf4ur",
+      "*",
     ]
   }
 }
