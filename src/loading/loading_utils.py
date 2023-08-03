@@ -28,6 +28,7 @@ def create_connection():
     )
     return conn
 
+
 def get_loaded_data(conn, table_name):
     """
     Retrieve all data from the specified table after insertion.
@@ -54,6 +55,7 @@ def is_valid_email(email):
         bool: True if the email address is valid, False otherwise."""
 
     import re
+
     pattern = r"[^@]+@[^@]+\.[^@]+"
     return bool(re.match(pattern, email))
 
@@ -99,6 +101,7 @@ def insert_into_dim_design(conn, design_data):
 
     except Exception:
         raise
+
 
 def insert_into_dim_currency(conn, currency_data):
     """
@@ -188,7 +191,7 @@ def insert_into_dim_staff(conn, staff_data):
     except Exception:
         raise
 
-        
+
 def insert_into_dim_location(conn, location_data):
     """
     Insert data into the dim_location table.
@@ -327,7 +330,7 @@ def insert_into_dim_counterparty(conn, counterparty_data):
 
     return counterparty_data
 
-  
+
 def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
     """
     Insert data into the dim_fact_sales_order table.
