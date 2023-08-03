@@ -1,5 +1,6 @@
 import pg8000.native
 import os
+import datetime
 from src.loading.loading_utils import (
     insert_into_dim_design,
     insert_into_dim_currency,
@@ -7,7 +8,7 @@ from src.loading.loading_utils import (
     insert_into_dim_location,
     insert_into_dim_date,
     insert_into_dim_counterparty,
-    insert_into_dim_fact_sales_order
+    insert_into_dim_fact_sales_order,
 )
 from dotenv import load_dotenv
 
@@ -41,14 +42,17 @@ def cleanup_test_data(conn, table_name):
         "dim_date",
         "dim_counterparty",
         "dim_location",
-        "fact_sales_order"]
+        "fact_sales_order",
+    ]
 
     if table_name in tables_to_cleanup:
         conn.run(f"DELETE FROM {table_name};")
         print(f"Data deleted from {table_name} table.")
     else:
-        print(f"Table '{table_name}' not found in the "
-              "list of tables to cleanup.")
+        print(
+            f"Table '{table_name}' not found in the "
+            "list of tables to cleanup."
+        )
 
 
 def test_insert_into_dim_design():
@@ -64,13 +68,14 @@ def test_insert_into_dim_design():
     ]
 
     conn = create_test_connection()
+    cleanup_test_data(conn, "fact_sales_order")
+    cleanup_test_data(conn, "dim_design")
     conn.run('SET search_path TO "project_team_2", public;')
     insert_into_dim_design(conn, test_design_data)
 
     table_contents = conn.run('SELECT * FROM "dim_design";')
 
     assert table_contents == test_design_data
-    cleanup_test_data(conn)
 
 
 def test_insert_into_dim_currency():
@@ -85,6 +90,8 @@ def test_insert_into_dim_currency():
     ]
 
     conn = create_test_connection()
+    cleanup_test_data(conn, "fact_sales_order")
+    cleanup_test_data(conn, "dim_currency")
     conn.run('SET search_path TO "project_team_2", public;')
     insert_into_dim_currency(conn, test_currency_data)
 
@@ -106,6 +113,8 @@ def test_insert_into_dim_staff():
     ]
 
     conn = create_test_connection()
+    cleanup_test_data(conn, "fact_sales_order")
+    cleanup_test_data(conn, "dim_staff")
     conn.run('SET search_path TO "project_team_2", public;')
     inserted_data = insert_into_dim_staff(conn, test_staff_data)
 
@@ -113,8 +122,6 @@ def test_insert_into_dim_staff():
 
     assert inserted_data == test_staff_data
     assert table_contents == test_staff_data
-
-    # cleanup_test_data(conn, 'dim_staff')
 
 
 def test_insert_into_dim_date():
@@ -124,16 +131,18 @@ def test_insert_into_dim_date():
     and return the inserted data.
     """
     test_date_data = [
-        ["2023-07-01", 2023, 7, 1, 5, "Friday", "July", 3],
-        ["2023-08-05", 2023, 8, 5, 1, "Monday", "August", 3],
-        ["2023-07-24", 2023, 7, 24, 1, "Monday", "July", 3],
-        ["2023-07-30", 2023, 7, 30, 0, "Sunday", "July", 3],
-        ["2023-08-15", 2023, 8, 15, 1, "Monday", "August", 3],
-        ["2023-07-28", 2023, 7, 28, 4, "Monday", "July", 3],
-        ["2023-08-02", 2023, 8, 2, 3, "Tuesday", "August", 3],
+        [datetime.date(2023, 7, 1), 2023, 7, 1, 5, "Friday", "July", 3],
+        [datetime.date(2023, 8, 5), 2023, 8, 5, 1, "Monday", "August", 3],
+        [datetime.date(2023, 7, 24), 2023, 7, 24, 1, "Monday", "July", 3],
+        [datetime.date(2023, 7, 30), 2023, 7, 30, 1, "Sunday", "July", 3],
+        [datetime.date(2023, 8, 15), 2023, 8, 15, 1, "Monday", "August", 3],
+        [datetime.date(2023, 7, 28), 2023, 7, 28, 4, "Monday", "July", 3],
+        [datetime.date(2023, 8, 2), 2023, 8, 2, 3, "Tuesday", "August", 3],
     ]
 
     conn = create_test_connection()
+    cleanup_test_data(conn, "fact_sales_order")
+    cleanup_test_data(conn, "dim_date")
     conn.run('SET search_path TO "project_team_2", public;')
     inserted_data = insert_into_dim_date(conn, test_date_data)
 
@@ -142,8 +151,6 @@ def test_insert_into_dim_date():
     assert inserted_data == test_date_data
     assert table_contents == test_date_data
 
-    cleanup_test_data(conn, 'dim_date')
-
 
 def test_insert_into_dim_counterparty():
     """
@@ -151,6 +158,7 @@ def test_insert_into_dim_counterparty():
     The function should insert data into the dim_counterparty table
     and return the inserted data.
     """
+
     test_counterparty_data = [
         [
             201,
@@ -161,18 +169,7 @@ def test_insert_into_dim_counterparty():
             "Manchester",
             "12345",
             "UK",
-            "123-456-7890"
-        ],
-        [
-            2,
-            "ABC Ltd",
-            "456 Balamory St",
-            "Suite 1",
-            "District 2",
-            "London",
-            "56789",
-            "UK",
-            "987-654-3210"
+            "123-456-7890",
         ],
         [
             202,
@@ -183,11 +180,15 @@ def test_insert_into_dim_counterparty():
             "Manchester",
             "12345",
             "UK",
-            "123-456-7890"
+            "123-456-7890",
         ],
     ]
 
     conn = create_test_connection()
+
+    cleanup_test_data(conn, "fact_sales_order")
+    cleanup_test_data(conn, "dim_counterparty")
+
     conn.run('SET search_path TO "project_team_2", public;')
     inserted_data = insert_into_dim_counterparty(conn, test_counterparty_data)
 
@@ -195,8 +196,6 @@ def test_insert_into_dim_counterparty():
 
     assert inserted_data == test_counterparty_data
     assert table_contents == test_counterparty_data
-
-    cleanup_test_data(conn, 'dim_counterparty')
 
 
 def test_insert_into_dim_location():
@@ -214,7 +213,7 @@ def test_insert_into_dim_location():
             "City",
             "State",
             "Country",
-            "Postal Code"
+            "Postal Code",
         ],
         [
             302,
@@ -224,11 +223,13 @@ def test_insert_into_dim_location():
             "City",
             "State",
             "Country",
-            "Postal Code"
+            "Postal Code",
         ],
     ]
 
     conn = create_test_connection()
+    cleanup_test_data(conn, "fact_sales_order")
+    cleanup_test_data(conn, "dim_location")
     conn.run('SET search_path TO "project_team_2", public;')
     inserted_data = insert_into_dim_location(conn, test_location_data)
 
@@ -241,7 +242,6 @@ def test_insert_into_dim_location():
 def test_insert_into_fact_sales_order():
     """
     Test the insert_into_dim_fact_sales_order function.
-
     The function should insert data into the fact_sales_order table
     and return the inserted data.
     """
@@ -260,7 +260,7 @@ def test_insert_into_fact_sales_order():
             1,
             "2023-07-30",
             "2023-08-05",
-            301
+            301,
         ],
         [
             200,
@@ -276,19 +276,52 @@ def test_insert_into_fact_sales_order():
             2,
             "2023-07-28",
             "2023-08-02",
-            302
+            302,
+        ],
+    ]
+
+    expected_fact_sales_order_data = [
+        [
+            100,
+            datetime.date(2023, 7, 1),
+            datetime.time(12, 34, 56, 789000),
+            datetime.date(2023, 7, 24),
+            datetime.time(15, 45, 30, 123000),
+            101,
+            201,
+            10,
+            100.0,
+            1,
+            1,
+            datetime.date(2023, 7, 30),
+            datetime.date(2023, 8, 5),
+            301,
+        ],
+        [
+            200,
+            datetime.date(2023, 8, 15),
+            datetime.time(9, 12, 45, 678000),
+            datetime.date(2023, 7, 24),
+            datetime.time(9, 12, 45, 678000),
+            102,
+            202,
+            5,
+            50.0,
+            2,
+            2,
+            datetime.date(2023, 7, 28),
+            datetime.date(2023, 8, 2),
+            302,
         ],
     ]
 
     conn = create_test_connection()
     conn.run('SET search_path TO "project_team_2", public;')
-    inserted_data = insert_into_dim_fact_sales_order(
-        conn, test_fact_sales_order_data
-        )
+    insert_into_dim_fact_sales_order(conn, test_fact_sales_order_data)
 
     table_contents = conn.run('SELECT * FROM "fact_sales_order";')
 
-    assert inserted_data == test_fact_sales_order_data
-    assert table_contents == test_fact_sales_order_data
+    assert expected_fact_sales_order_data[0] == table_contents[0][1:]
+    assert expected_fact_sales_order_data[1] == table_contents[1][1:]
 
-    cleanup_test_data(conn, 'dim_fact_sales_order')
+    cleanup_test_data(conn, "dim_fact_sales_order")

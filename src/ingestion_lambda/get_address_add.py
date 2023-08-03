@@ -1,5 +1,5 @@
 from get_last_time import get_last_time
-from get_totesys_secret import get_secret
+from get_secret import get_secret
 import pg8000.native
 from dotenv import load_dotenv
 

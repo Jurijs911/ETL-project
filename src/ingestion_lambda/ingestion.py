@@ -1,7 +1,7 @@
 import logging
 import boto3
 import time
-from get_totesys_secret import get_secret
+from get_secret import get_secret
 from get_address_add import get_address_add
 from upload_csv import upload_csv
 from find_most_recent_time import find_most_recent_time
@@ -10,11 +10,11 @@ from get_counterparty_add import get_counterparty_add
 from get_currency_add import get_currency_add
 from get_department_add import get_department_add
 from get_design_add import get_design_add
+from get_payment_add import get_payment_add
+from get_purchase_order_add import get_purchase_order_add
+from get_sales_order_add import get_sales_order_add
+from get_staff_add import get_staff_add
 
-# from get_payment_add import get_payment_add
-# from get_purchase_order_add import get_purchase_order_add
-# from get_sales_order_add import get_sales_order_add
-# from get_staff_add import get_staff_add
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -22,6 +22,10 @@ logger = logging.getLogger(__name__)
 secret = get_secret()
 
 cloudwatch_logs = boto3.client("logs", region_name="eu-west-2")
+
+# Set the log group and log stream names
+log_group_name = "/aws/lambda/ingestion-lambda"
+log_stream_name = "lambda-log-stream"
 
 
 def log_to_cloudwatch(message, log_group_name, log_stream_name):
@@ -44,12 +48,11 @@ def lambda_handler(
     db_password=secret["password"],
 ):
     try:
-        print(db_user, db_database, db_host, db_port, db_password)
 
         address_data = get_address_add(
             db_user, db_database, db_host, db_port, db_password
         )
-        print(address_data)
+
         if len(address_data) > 0:
             updated_timestamp = find_most_recent_time(address_data)
             upload_csv(
@@ -69,7 +72,11 @@ def lambda_handler(
             )
 
         counterparty_data = get_counterparty_add(
-            db_user, db_database, db_host, db_port, db_password
+            db_user,
+            db_database,
+            db_host,
+            db_port,
+            db_password
         )
 
         if len(counterparty_data) > 0:
@@ -92,7 +99,13 @@ def lambda_handler(
                 "lambda-log-stream",
             )
 
-        currency_data = get_currency_add()
+        currency_data = get_currency_add(
+            db_user,
+            db_database,
+            db_host,
+            db_port,
+            db_password
+        )
 
         if len(currency_data) > 0:
             updated_timestamp = find_most_recent_time(currency_data)
@@ -112,14 +125,19 @@ def lambda_handler(
                 "lambda-log-stream",
             )
 
-        department_data = get_department_add()
+        department_data = get_department_add(
+            db_user,
+            db_database,
+            db_host,
+            db_port,
+            db_password
+        )
 
         if len(department_data) > 0:
             updated_timestamp = find_most_recent_time(department_data)
             upload_csv(
-                department_data,
-                "department",
-                "kp-northcoders-ingestion-bucket",
+                department_data, "department",
+                "kp-northcoders-ingestion-bucket"
             )
             write_updated_time(updated_timestamp, "department")
             log_to_cloudwatch(
@@ -134,13 +152,18 @@ def lambda_handler(
                 "lambda-log-stream",
             )
 
-        design_data = get_design_add()
+        design_data = get_design_add(
+            db_user,
+            db_database,
+            db_host,
+            db_port,
+            db_password
+        )
 
         if len(design_data) > 0:
             updated_timestamp = find_most_recent_time(design_data)
-            upload_csv(
-                design_data, "design", "kp-northcoders-ingestion-bucket"
-            )
+            upload_csv(design_data, "design",
+                       "kp-northcoders-ingestion-bucket")
             write_updated_time(updated_timestamp, "design")
             log_to_cloudwatch(
                 str("New design data returned"),
@@ -154,85 +177,110 @@ def lambda_handler(
                 "lambda-log-stream",
             )
 
-        # payment_data = get_payment_add()
+        payment_data = get_payment_add(
+            db_user,
+            db_database,
+            db_host,
+            db_port,
+            db_password
+        )
 
-        # if len(payment_data) > 0:
-        #     updated_timestamp = find_most_recent_time(payment_data)
-        #     upload_csv(payment_data, "payment",
-        #                "kp-northcoders-ingestion-bucket")
-        #     write_updated_time(updated_timestamp, "payment")
-        #     log_to_cloudwatch(
-        #         str("New payment data returned"),
-        #         "/aws/lambda/ingestion-lambda",
-        #         "lambda-log-stream",
-        #     )
-        # else:
-        #     log_to_cloudwatch(
-        #         str("No new payment data returned"),
-        #         "/aws/lambda/ingestion-lambda",
-        #         "lambda-log-stream",
-        #     )
+        if len(payment_data) > 0:
+            updated_timestamp = find_most_recent_time(payment_data)
+            upload_csv(payment_data, "payment",
+                       "kp-northcoders-ingestion-bucket")
+            write_updated_time(updated_timestamp, "payment")
+            log_to_cloudwatch(
+                str("New payment data returned"),
+                "/aws/lambda/ingestion-lambda",
+                "lambda-log-stream",
+            )
+        else:
+            log_to_cloudwatch(
+                str("No new payment data returned"),
+                "/aws/lambda/ingestion-lambda",
+                "lambda-log-stream",
+            )
 
-        # purchase_order_data = get_purchase_order_add()
+        purchase_order_data = get_purchase_order_add(
+            db_user,
+            db_database,
+            db_host,
+            db_port,
+            db_password
+        )
 
-        # if len(purchase_order_data) > 0:
-        #     updated_timestamp = find_most_recent_time(purchase_order_data)
-        #     upload_csv(
-        #         purchase_order_data,
-        #         "purchase_order",
-        #         "kp-northcoders-ingestion-bucket",
-        #     )
-        #     write_updated_time(updated_timestamp, "purchase_order")
-        #     log_to_cloudwatch(
-        #         str("New purchase_order data returned"),
-        #         "/aws/lambda/ingestion-lambda",
-        #         "lambda-log-stream",
-        #     )
-        # else:
-        #     log_to_cloudwatch(
-        #         str("No new purchase_order data returned"),
-        #         "/aws/lambda/ingestion-lambda",
-        #         "lambda-log-stream",
-        #     )
+        if len(purchase_order_data) > 0:
+            updated_timestamp = find_most_recent_time(purchase_order_data)
+            upload_csv(
+                purchase_order_data,
+                "purchase_order",
+                "kp-northcoders-ingestion-bucket",
+            )
+            write_updated_time(updated_timestamp, "purchase_order")
+            log_to_cloudwatch(
+                str("New purchase_order data returned"),
+                "/aws/lambda/ingestion-lambda",
+                "lambda-log-stream",
+            )
+        else:
+            log_to_cloudwatch(
+                str("No new purchase_order data returned"),
+                "/aws/lambda/ingestion-lambda",
+                "lambda-log-stream",
+            )
 
-        # sales_order_data = get_sales_order_add()
+        sales_order_data = get_sales_order_add(
+            db_user,
+            db_database,
+            db_host,
+            db_port,
+            db_password
+        )
 
-        # if len(sales_order_data) > 0:
-        #     updated_timestamp = find_most_recent_time(sales_order_data)
-        #     upload_csv(
-        #         sales_order_data, "sales_order",
-        #           "kp-northcoders-ingestion-bucket"
-        #     )
-        #     write_updated_time(updated_timestamp, "sales_order")
-        #     log_to_cloudwatch(
-        #         str("New sales_order data returned"),
-        #         "/aws/lambda/ingestion-lambda",
-        #         "lambda-log-stream",
-        #     )
-        # else:
-        #     log_to_cloudwatch(
-        #         str("No new sales_order data returned"),
-        #         "/aws/lambda/ingestion-lambda",
-        #         "lambda-log-stream",
-        #     )
+        if len(sales_order_data) > 0:
+            updated_timestamp = find_most_recent_time(sales_order_data)
+            upload_csv(
+                sales_order_data, "sales_order",
+                "kp-northcoders-ingestion-bucket"
+            )
+            write_updated_time(updated_timestamp, "sales_order")
+            log_to_cloudwatch(
+                str("New sales_order data returned"),
+                "/aws/lambda/ingestion-lambda",
+                "lambda-log-stream",
+            )
+        else:
+            log_to_cloudwatch(
+                str("No new sales_order data returned"),
+                "/aws/lambda/ingestion-lambda",
+                "lambda-log-stream",
+            )
 
-        # staff_data = get_staff_add()
+        staff_data = get_staff_add(
+            db_user,
+            db_database,
+            db_host,
+            db_port,
+            db_password
+        )
 
-        # if len(staff_data) > 0:
-        #     updated_timestamp = find_most_recent_time(staff_data)
-        #     upload_csv(staff_data, "staff", "kp-northcoders-ingestion-bucket"
-        #     write_updated_time(updated_timestamp, "staff")
-        #     log_to_cloudwatch(
-        #         str("New staff data returned"),
-        #         "/aws/lambda/ingestion-lambda",
-        #         "lambda-log-stream",
-        #     )
-        # else:
-        #     log_to_cloudwatch(
-        #         str("No new staff data returned"),
-        #         "/aws/lambda/ingestion-lambda",
-        #         "lambda-log-stream",
-        #     )
+        if len(staff_data) > 0:
+            updated_timestamp = find_most_recent_time(staff_data)
+            upload_csv(staff_data, "staff", "kp-northcoders-ingestion-bucket")
+            write_updated_time(updated_timestamp, "staff")
+            log_to_cloudwatch(
+                str("New staff data returned"),
+                "/aws/lambda/ingestion-lambda",
+                "lambda-log-stream",
+            )
+        else:
+            log_to_cloudwatch(
+                str("No new staff data returned"),
+                "/aws/lambda/ingestion-lambda",
+                "lambda-log-stream",
+            )
+
 
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
