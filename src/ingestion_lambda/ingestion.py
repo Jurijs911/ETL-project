@@ -281,7 +281,6 @@ def lambda_handler(
                 "lambda-log-stream",
             )
 
-
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
         log_to_cloudwatch(
