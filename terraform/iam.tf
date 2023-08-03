@@ -20,6 +20,17 @@ resource "aws_iam_role" "lambda_role" {
     EOF
 }
 
+data "aws_iam_policy_document" "sm_document" {
+  statement {
+
+    actions = ["secretsmanager:GetSecretValue"]
+
+    resources = [
+      "*",
+    ]
+  }
+}
+
 data "aws_iam_policy_document" "s3_document" {
   statement {
 
@@ -62,6 +73,10 @@ data "aws_iam_policy_document" "cw_document" {
 }
 
 
+resource "aws_iam_policy" "sm_policy" {
+  name_prefix = "sm-policy-kp"
+  policy      = data.aws_iam_policy_document.sm_document.json
+}
 
 resource "aws_iam_policy" "s3_policy" {
   name_prefix = "s3-policy-kp"
