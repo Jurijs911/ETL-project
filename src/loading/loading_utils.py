@@ -96,18 +96,12 @@ def insert_into_dim_design(conn, design_data):
                 file_name=design[3],
             )
 
-        print("Inserted data")
-        # conn.commit()  # Commit the changes to the database
-        conn.close()
-
         return get_loaded_data(conn, "dim_design")
 
     except InputValidationError:
-        conn.close()
         raise
 
     except Exception:
-        conn.close()
         raise
 
 
@@ -142,16 +136,12 @@ def insert_into_dim_currency(conn, currency_data):
                 currency_name=currency[2],
             )
 
-        conn.close()
-
         return get_loaded_data(conn, "dim_currency")
 
     except InputValidationError:
-        conn.close()
         raise
 
     except Exception:
-        conn.close()
         raise
 
 
@@ -194,16 +184,12 @@ def insert_into_dim_staff(conn, staff_data):
                 email_address=staff[5],
             )
 
-        conn.close()
-
         return get_loaded_data(conn, "dim_staff")
 
     except InputValidationError:
-        conn.close()
         raise
 
     except Exception:
-        conn.close()
         raise
 
 
@@ -245,16 +231,12 @@ def insert_into_dim_location(conn, location_data):
                 phone=location[7],
             )
 
-        conn.close()
-
         return get_loaded_data(conn, "dim_location")
 
     except InputValidationError:
-        conn.close()
         raise
 
     except Exception:
-        conn.close()
         raise
 
 
@@ -286,14 +268,10 @@ def insert_into_dim_date(conn, date_data):
                 quarter=date[7],
             )
 
-        conn.close()
-
     except InputValidationError:
-        conn.close()
         raise
 
     except Exception:
-        conn.close()
         raise
 
     return date_data
@@ -345,14 +323,10 @@ def insert_into_dim_counterparty(conn, counterparty_data):
                 counterparty_legal_phone_number=counterparty[8],
             )
 
-        conn.close()
-
     except InputValidationError:
-        conn.close()
         raise
 
     except Exception:
-        conn.close()
         raise
 
     return counterparty_data
@@ -436,14 +410,10 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
                 agreed_delivery_location_id=sale[13],
             )
 
-        conn.close()
-
     except InputValidationError:
-        conn.close()
         raise
 
     except Exception:
-        conn.close()
         raise
 
     return fact_sales_order_data
