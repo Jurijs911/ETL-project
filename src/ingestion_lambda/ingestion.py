@@ -1,7 +1,7 @@
 import logging
 import boto3
 import time
-import os
+from get_secret import get_secret
 from get_address_add import get_address_add
 from upload_csv import upload_csv
 from find_most_recent_time import find_most_recent_time
@@ -15,9 +15,11 @@ from get_purchase_order_add import get_purchase_order_add
 from get_sales_order_add import get_sales_order_add
 from get_staff_add import get_staff_add
 
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+secret = get_secret()
 
 cloudwatch_logs = boto3.client("logs", region_name="eu-west-2")
 
@@ -39,20 +41,16 @@ def log_to_cloudwatch(message, log_group_name, log_stream_name):
 def lambda_handler(
     event,
     context,
-    db_user=os.environ.get("DB_SOURCE_USER"),
-    db_database=os.environ.get("DB_SOURCE_NAME"),
-    db_host=os.environ.get("DB_SOURCE_HOST"),
-    db_port=os.environ.get("DB_SOURCE_PORT"),
-    db_password=os.environ.get("DB_SOURCE_PASSWORD"),
+    db_user=secret["username"],
+    db_database=secret["dbname"],
+    db_host=secret["host"],
+    db_port=secret["port"],
+    db_password=secret["password"],
 ):
     try:
 
         address_data = get_address_add(
-            db_user,
-            db_database,
-            db_host,
-            db_port,
-            db_password
+            db_user, db_database, db_host, db_port, db_password
         )
 
         if len(address_data) > 0:
@@ -111,8 +109,9 @@ def lambda_handler(
 
         if len(currency_data) > 0:
             updated_timestamp = find_most_recent_time(currency_data)
-            upload_csv(currency_data, "currency",
-                       "kp-northcoders-ingestion-bucket")
+            upload_csv(
+                currency_data, "currency", "kp-northcoders-ingestion-bucket"
+            )
             write_updated_time(updated_timestamp, "currency")
             log_to_cloudwatch(
                 str("New currency data returned"),
@@ -281,6 +280,7 @@ def lambda_handler(
                 "/aws/lambda/ingestion-lambda",
                 "lambda-log-stream",
             )
+
 
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")

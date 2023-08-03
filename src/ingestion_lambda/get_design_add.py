@@ -1,21 +1,24 @@
-import os
+from get_secret import get_secret
 import pg8000.native
 from get_last_time import get_last_time
 from dotenv import load_dotenv
 
 load_dotenv()
 
+secret = get_secret()
+
 
 def get_design_add(
-        db_user=os.environ.get("DB_SOURCE_USER"),
-        db_database=os.environ.get("DB_SOURCE_NAME"),
-        db_host=os.environ.get("DB_SOURCE_HOST"),
-        db_port=os.environ.get("DB_SOURCE_PORT"),
-        db_password=os.environ.get("DB_SOURCE_PASSWORD")):
+    db_user=secret["username"],
+    db_database=secret["dbname"],
+    db_host=secret["host"],
+    db_port=secret["port"],
+    db_password=secret["password"],
+):
     """
     CONNECTION
     """
-#
+    #
     # TO BE RE-ADDED LATER - CAUSES CI/CD FAILURE
     # if not all([db_user, db_database, db_host, db_port, db_password]):
     #     raise MissingRequiredEnvironmentVariables(
@@ -53,8 +56,8 @@ def get_design_add(
 
     #
     # Query table
-    query = 'SELECT * FROM design WHERE created_at > :search_interval;'
-    params = {'search_interval': search_interval}
+    query = "SELECT * FROM design WHERE created_at > :search_interval;"
+    params = {"search_interval": search_interval}
     rows = conn.run(query, **params)
 
     created_data = []
@@ -66,7 +69,7 @@ def get_design_add(
             "last_updated": row[2],
             "design_name": row[3],
             "file_location": row[4],
-            "file_name": row[5]
+            "file_name": row[5],
         }
         created_data.append(item)
     return created_data
