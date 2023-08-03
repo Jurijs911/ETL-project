@@ -12,10 +12,22 @@ resource "aws_s3_object" "created_at_date_address" {
   source = "data/created_at.txt"
 }
 
+resource "aws_s3_object" "address_csv" {
+  bucket = aws_s3_bucket.ingestion_bucket.bucket
+  key    = "address/created_at.txt"
+  source = "data/address.csv"
+}
+
 resource "aws_s3_object" "created_at_date_sales_order" {
   bucket = aws_s3_bucket.ingestion_bucket.bucket
   key    = "sales_order/created_at.txt"
   source = "data/created_at.txt"
+}
+
+resource "aws_s3_object" "sales_order_csv" {
+  bucket = aws_s3_bucket.ingestion_bucket.bucket
+  key    = "sales_order/created_at.txt"
+  source = "data/sales_order.csv"
 }
 
 resource "aws_s3_object" "created_at_date_design" {
@@ -24,10 +36,22 @@ resource "aws_s3_object" "created_at_date_design" {
   source = "data/created_at.txt"
 }
 
+resource "aws_s3_object" "design_csv" {
+  bucket = aws_s3_bucket.ingestion_bucket.bucket
+  key    = "design/created_at.txt"
+  source = "data/design.csv"
+}
+
 resource "aws_s3_object" "created_at_date_currency" {
   bucket = aws_s3_bucket.ingestion_bucket.bucket
   key    = "currency/created_at.txt"
   source = "data/created_at.txt"
+}
+
+resource "aws_s3_object" "currency_csv" {
+  bucket = aws_s3_bucket.ingestion_bucket.bucket
+  key    = "currency/created_at.txt"
+  source = "data/currency.csv"
 }
 
 resource "aws_s3_object" "created_at_date_counterparty" {
@@ -36,10 +60,22 @@ resource "aws_s3_object" "created_at_date_counterparty" {
   source = "data/created_at.txt"
 }
 
+resource "aws_s3_object" "counterparty_csv" {
+  bucket = aws_s3_bucket.ingestion_bucket.bucket
+  key    = "counterparty/created_at.txt"
+  source = "data/counterparty.csv"
+}
+
 resource "aws_s3_object" "created_at_date_department" {
   bucket = aws_s3_bucket.ingestion_bucket.bucket
   key    = "department/created_at.txt"
   source = "data/created_at.txt"
+}
+
+resource "aws_s3_object" "department_csv" {
+  bucket = aws_s3_bucket.ingestion_bucket.bucket
+  key    = "department/created_at.txt"
+  source = "data/department.csv"
 }
 
 resource "aws_s3_object" "created_at_date_purchase_order" {
@@ -48,16 +84,34 @@ resource "aws_s3_object" "created_at_date_purchase_order" {
   source = "data/created_at.txt"
 }
 
+resource "aws_s3_object" "purchase_order_csv" {
+  bucket = aws_s3_bucket.ingestion_bucket.bucket
+  key    = "purchase_order/created_at.txt"
+  source = "data/purchase_order.csv"
+}
+
 resource "aws_s3_object" "created_at_date_payment" {
   bucket = aws_s3_bucket.ingestion_bucket.bucket
   key    = "payment/created_at.txt"
   source = "data/created_at.txt"
 }
 
+resource "aws_s3_object" "payment_csv" {
+  bucket = aws_s3_bucket.ingestion_bucket.bucket
+  key    = "payment/created_at.txt"
+  source = "data/payment.csv"
+}
+
 resource "aws_s3_object" "created_at_date_transaction" {
   bucket = aws_s3_bucket.ingestion_bucket.bucket
   key    = "transaction/created_at.txt"
   source = "data/created_at.txt"
+}
+
+resource "aws_s3_object" "transaction_csv" {
+  bucket = aws_s3_bucket.ingestion_bucket.bucket
+  key    = "transaction/created_at.txt"
+  source = "data/transaction.csv"
 }
 
 resource "aws_s3_bucket_notification" "ingestion_bucket_notification" {
