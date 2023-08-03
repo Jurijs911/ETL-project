@@ -1,4 +1,5 @@
-from get_staff_add import get_staff_add
+from get_staff_add \
+    import get_staff_add, MissingRequiredEnvironmentVariables
 from unittest.mock import patch
 import os
 import datetime
@@ -85,14 +86,14 @@ def test_database_error():
                 db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
 
 
-# def test_missing_environment_variables():
-#     with patch('os.environ', {}):
-#         with pytest.raises(MissingRequiredEnvironmentVariables):
-#             get_address_add(db_user=os.environ.get("test_user"),
-#                             db_database=os.environ.get("test_database"),
-#                             db_host=os.environ.get('test_host'),
-#                             db_port=os.environ.get("test_port"),
-#                             db_password=os.environ.get("test_password"))
+def test_missing_environment_variables():
+    with patch('os.environ', {}):
+        with pytest.raises(MissingRequiredEnvironmentVariables):
+            get_staff_add(db_user=os.environ.get("test_user"),
+                          db_database=os.environ.get("test_database"),
+                          db_host=os.environ.get('test_host'),
+                          db_port=os.environ.get("test_port"),
+                          db_password=os.environ.get("test_password"))
 
 
 def test_correct_data_returned_by_query():
@@ -113,15 +114,15 @@ def test_correct_data_returned_by_query():
              'department_id': 1,
              'email_address': 'paul@northcoders.com',
              'created_at': datetime.datetime(
-                2023, 7, 28, 15, 1, 52, 760464),
+                 2023, 7, 28, 15, 1, 52, 760464),
              'last_updated': datetime.datetime(
-                2023, 7, 28, 15, 1, 52, 760464)},
+                 2023, 7, 28, 15, 1, 52, 760464)},
             {'staff_id': 2,
              'first_name': 'Ringo',
              'last_name': 'Starr',
              'department_id': 2,
              'email_address': 'ringo@northcoders.com',
              'created_at': datetime.datetime(
-                2023, 7, 28, 15, 2, 21, 393482),
+                 2023, 7, 28, 15, 2, 21, 393482),
              'last_updated': datetime.datetime(
-                2023, 7, 28, 15, 2, 21, 393482)}]
+                 2023, 7, 28, 15, 2, 21, 393482)}]
