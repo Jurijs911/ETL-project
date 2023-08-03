@@ -322,6 +322,7 @@ def test_insert_into_dim_date_invalid_input():
         with pytest.raises(InputValidationError):
             insert_into_dim_date(mock_connection, date_data_with_invalid_input)
 
+
 def test_insert_into_dim_date_invalid_date_format():
     mock_connection = Mock()
     with patch(
@@ -425,6 +426,7 @@ def test_insert_into_dim_counterparty_invalid_currency_id():
         ]
         with pytest.raises(InputValidationError):
             insert_into_dim_counterparty(mock_connection, counterparty_data)
+
 
 def test_insert_into_dim_fact_sales_order():
     """Insert the given sales order data into the fact table for sales orders.

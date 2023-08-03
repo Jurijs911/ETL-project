@@ -164,7 +164,6 @@ class Test_read_ingested_csv:
             "dim_date": [],
             "dim_staff": [
                 [
-
                     "1",
                     "Cameron",
                     "Parsonage",
@@ -178,7 +177,6 @@ class Test_read_ingested_csv:
             "dim_design": [],
             "dim_counterparty": [],
         }
-
 
         result = read_processed_csv("processed-bucket")
 

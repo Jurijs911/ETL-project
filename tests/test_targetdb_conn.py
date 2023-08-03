@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 def create_test_connection():
     test_target_user = os.environ.get("TEST_TARGET_USER")
     test_target_database = os.environ.get("TEST_TARGET_DATABASE")
@@ -21,6 +22,7 @@ def create_test_connection():
     conn.run('SET search_path TO "project_team_2", public;')
     return conn
 
+
 def test_connection():
     try:
         conn = create_test_connection()
@@ -28,5 +30,3 @@ def test_connection():
         conn.close()
     except Exception as e:
         print(f"An error occurred: {str(e)}")
-
-test_connection()

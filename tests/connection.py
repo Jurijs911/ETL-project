@@ -11,20 +11,17 @@ test_target_port = os.environ.get("TEST_TARGET_PORT")
 test_target_password = os.environ.get("TEST_TARGET_PASSWORD")
 
 conn = pg8000.native.Connection(
-        user=test_target_user,
-        database=test_target_database,
-        host=test_target_host,
-        port=test_target_port,
-        password=test_target_password,
-    )
+    user=test_target_user,
+    database=test_target_database,
+    host=test_target_host,
+    port=test_target_port,
+    password=test_target_password,
+)
 
 # conn.run(grant usage on schema project_team_2 to public;)
 # conn.run(grant create on schema public to public;)
 
 conn.run('SET search_path TO "kp-test-source", public;')
-query = 'SELECT * FROM information_schema.tables;'
-query2 = 'SELECT * FROM address;'
+query = "SELECT * FROM information_schema.tables;"
+query2 = "SELECT * FROM address;"
 rows = conn.run(query2)
-
-
-print(rows)
