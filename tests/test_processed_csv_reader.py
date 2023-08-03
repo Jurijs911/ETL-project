@@ -1,5 +1,5 @@
 from src.loading.read_processed_csv import read_processed_csv
-from src.ingestion_csv_utils import upload_csv
+from src.remodelling import upload_csv
 import os
 import boto3
 from moto import mock_s3
@@ -47,7 +47,7 @@ class Test_read_ingested_csv:
 
         s3_client.put_object(
             Bucket="processed-bucket", Key="fact_sales_order.csv"
-            )
+        )
 
         upload_csv(sales_data, "fact_sales_order", "processed-bucket")
 
@@ -136,10 +136,8 @@ class Test_read_ingested_csv:
 
         s3_client.put_object(
             Bucket="processed-bucket", Key="fact_sales_order.csv"
-            )
-        s3_client.put_object(
-            Bucket="processed-bucket", Key="dim_staff.csv"
-            )
+        )
+        s3_client.put_object(Bucket="processed-bucket", Key="dim_staff.csv")
 
         upload_csv(sales_data, "fact_sales_order", "processed-bucket")
         upload_csv(staff_data, "dim_staff", "processed-bucket")
