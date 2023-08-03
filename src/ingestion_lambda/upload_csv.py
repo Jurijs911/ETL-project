@@ -30,7 +30,7 @@ def upload_csv(data, table_name, bucket_name):
     except ClientError:
         pass
 
-    with open(f"{table_name}.csv", "w", newline="") as csvfile:
+    with open(f"/tmp//{table_name}.csv", "w", newline="") as csvfile:
         if len(data) > 0:
             fieldnames = data[0].keys()
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -43,7 +43,7 @@ def upload_csv(data, table_name, bucket_name):
             pass
 
     s3_client.upload_file(
-        f"{table_name}.csv", bucket_name, f"{table_name}.csv"
+        f"/tmp//{table_name}.csv", bucket_name, f"{table_name}.csv"
     )
 
-    os.remove(f"{table_name}.csv")
+    os.remove(f"/tmp//{table_name}.csv")
