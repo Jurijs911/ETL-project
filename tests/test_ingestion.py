@@ -62,48 +62,30 @@ def test_lambda_handler_calls_utils():
         "kp-northcoders-ingestion-bucket", "sales_order/created_at.txt"
     ).put(Body="2020-07-30 15:20:49.962000")
 
-    conn.Object(
-        "kp-northcoders-ingestion-bucket", "staff/created_at.txt"
-    ).put(Body="2020-07-30 15:20:49.962000")
+    conn.Object("kp-northcoders-ingestion-bucket", "staff/created_at.txt").put(
+        Body="2020-07-30 15:20:49.962000"
+    )
 
-#     #
-#     # table.csv objects
+    #     #
+    #     # table.csv objects
 
-    conn.Object(
-        "kp-northcoders-ingestion-bucket", "address.csv"
-    ).put()
+    conn.Object("kp-northcoders-ingestion-bucket", "address.csv").put()
 
-    conn.Object(
-        "kp-northcoders-ingestion-bucket", "counterparty.csv"
-    ).put()
+    conn.Object("kp-northcoders-ingestion-bucket", "counterparty.csv").put()
 
-    conn.Object(
-        "kp-northcoders-ingestion-bucket", "currency.csv"
-    ).put()
+    conn.Object("kp-northcoders-ingestion-bucket", "currency.csv").put()
 
-    conn.Object(
-        "kp-northcoders-ingestion-bucket", "department.csv"
-    ).put()
+    conn.Object("kp-northcoders-ingestion-bucket", "department.csv").put()
 
-    conn.Object(
-        "kp-northcoders-ingestion-bucket", "design.csv"
-    ).put()
+    conn.Object("kp-northcoders-ingestion-bucket", "design.csv").put()
 
-    conn.Object(
-        "kp-northcoders-ingestion-bucket", "payment.csv"
-    ).put()
+    conn.Object("kp-northcoders-ingestion-bucket", "payment.csv").put()
 
-    conn.Object(
-        "kp-northcoders-ingestion-bucket", "purchase_order.csv"
-    ).put()
+    conn.Object("kp-northcoders-ingestion-bucket", "purchase_order.csv").put()
 
-    conn.Object(
-        "kp-northcoders-ingestion-bucket", "sales_order.csv"
-    ).put()
+    conn.Object("kp-northcoders-ingestion-bucket", "sales_order.csv").put()
 
-    conn.Object(
-        "kp-northcoders-ingestion-bucket", "staff.csv"
-    ).put()
+    conn.Object("kp-northcoders-ingestion-bucket", "staff.csv").put()
 
     client = boto3.client("logs", region_name="eu-west-2")
     client.create_log_group(logGroupName="/aws/lambda/ingestion-lambda")
@@ -119,7 +101,7 @@ def test_lambda_handler_calls_utils():
             db_database=test_database,
             db_host=test_host,
             db_port=test_port,
-            db_password=test_password
+            db_password=test_password,
         )
 
         s3_client = boto3.client("s3")
@@ -157,10 +139,7 @@ def test_lambda_handler_calls_utils():
             .read()
             .decode("utf-8")
         )
-        assert (
-            "2,USD,2023-07-28 15:09:53.424884"
-            in currency_response
-        )
+        assert "2,USD,2023-07-28 15:09:53.424884" in currency_response
 
         department_response = (
             s3_client.get_object(
@@ -170,10 +149,7 @@ def test_lambda_handler_calls_utils():
             .read()
             .decode("utf-8")
         )
-        assert (
-            "2,Jeans,2nd Floor,Pete,2023-07-28"
-            in department_response
-        )
+        assert "2,Jeans,2nd Floor,Pete,2023-07-28" in department_response
 
         design_response = (
             s3_client.get_object(
@@ -183,10 +159,7 @@ def test_lambda_handler_calls_utils():
             .read()
             .decode("utf-8")
         )
-        assert (
-            "2023-07-28 14:56:58.558924,Glow in the dark"
-            in design_response
-        )
+        assert "2023-07-28 14:56:58.558924,Glow in the dark" in design_response
 
         payment_response = (
             s3_client.get_object(
@@ -196,10 +169,7 @@ def test_lambda_handler_calls_utils():
             .read()
             .decode("utf-8")
         )
-        assert (
-            "1,2023-08-01 12:39:34.942457,2023-08-01"
-            in payment_response
-        )
+        assert "1,2023-08-01 12:39:34.942457,2023-08-01" in payment_response
 
         purchase_order_response = (
             s3_client.get_object(
@@ -209,10 +179,7 @@ def test_lambda_handler_calls_utils():
             .read()
             .decode("utf-8")
         )
-        assert (
-            "1,2023-08-01 12:36:40.948439"
-            in purchase_order_response
-        )
+        assert "1,2023-08-01 12:36:40.948439" in purchase_order_response
 
         sales_order_response = (
             s3_client.get_object(
@@ -222,10 +189,7 @@ def test_lambda_handler_calls_utils():
             .read()
             .decode("utf-8")
         )
-        assert (
-            "1,2023-07-28 15:09:58.335449"
-            in sales_order_response
-        )
+        assert "1,2023-07-28 15:09:58.335449" in sales_order_response
 
         staff_response = (
             s3_client.get_object(
@@ -235,10 +199,7 @@ def test_lambda_handler_calls_utils():
             .read()
             .decode("utf-8")
         )
-        assert (
-            "1,Paul,McCartney,1,paul@northcoders.com"
-            in staff_response
-        )
+        assert "1,Paul,McCartney,1,paul@northcoders.com" in staff_response
 
         txt_response = (
             s3_client.get_object(
@@ -332,6 +293,7 @@ def test_lambda_handler_calls_utils():
 
 
 @mock_s3
+@pytest.fixture
 def test_lambda_handler_logs(mocker):
     # Set up the mocked S3 bucket and objects
     conn = boto3.resource("s3", region_name="eu-west-2")
@@ -373,40 +335,69 @@ def test_lambda_handler_logs(mocker):
         "kp-northcoders-ingestion-bucket", "sales_order/created_at.txt"
     ).put(Body="2020-07-30 15:20:49.962000")
 
-    conn.Object(
-        "kp-northcoders-ingestion-bucket", "staff/created_at.txt"
-    ).put(Body="2020-07-30 15:20:49.962000")
+    conn.Object("kp-northcoders-ingestion-bucket", "staff/created_at.txt").put(
+        Body="2020-07-30 15:20:49.962000"
+    )
 
     # Create a spy on the log_to_cloudwatch function
     spy = mocker.spy(ingestion, "log_to_cloudwatch")
 
     # Call the lambda_handler function
-    lambda_handler({}, {}, test_user, test_database,
-                   test_host, test_port, test_password)
+    lambda_handler(
+        {}, {}, test_user, test_database, test_host, test_port, test_password
+    )
 
     # Check if the log_to_cloudwatch function was
     # called with the expected arguments
-    spy.assert_any_call("New address data returned",
-                        "/aws/lambda/ingestion-lambda", "lambda-log-stream")
-    spy.assert_any_call("New counterparty data returned",
-                        "/aws/lambda/ingestion-lambda", "lambda-log-stream")
-    spy.assert_any_call("New currency data returned",
-                        "/aws/lambda/ingestion-lambda", "lambda-log-stream")
-    spy.assert_any_call("New department data returned",
-                        "/aws/lambda/ingestion-lambda", "lambda-log-stream")
-    spy.assert_any_call("New design data returned",
-                        "/aws/lambda/ingestion-lambda", "lambda-log-stream")
-    spy.assert_any_call("New payment data returned",
-                        "/aws/lambda/ingestion-lambda", "lambda-log-stream")
-    spy.assert_any_call("New purchase_order data returned",
-                        "/aws/lambda/ingestion-lambda", "lambda-log-stream")
-    spy.assert_any_call("New sales_order data returned",
-                        "/aws/lambda/ingestion-lambda", "lambda-log-stream")
-    spy.assert_any_call("New staff data returned",
-                        "/aws/lambda/ingestion-lambda", "lambda-log-stream")
+    spy.assert_any_call(
+        "New address data returned",
+        "/aws/lambda/ingestion-lambda",
+        "lambda-log-stream",
+    )
+    spy.assert_any_call(
+        "New counterparty data returned",
+        "/aws/lambda/ingestion-lambda",
+        "lambda-log-stream",
+    )
+    spy.assert_any_call(
+        "New currency data returned",
+        "/aws/lambda/ingestion-lambda",
+        "lambda-log-stream",
+    )
+    spy.assert_any_call(
+        "New department data returned",
+        "/aws/lambda/ingestion-lambda",
+        "lambda-log-stream",
+    )
+    spy.assert_any_call(
+        "New design data returned",
+        "/aws/lambda/ingestion-lambda",
+        "lambda-log-stream",
+    )
+    spy.assert_any_call(
+        "New payment data returned",
+        "/aws/lambda/ingestion-lambda",
+        "lambda-log-stream",
+    )
+    spy.assert_any_call(
+        "New purchase_order data returned",
+        "/aws/lambda/ingestion-lambda",
+        "lambda-log-stream",
+    )
+    spy.assert_any_call(
+        "New sales_order data returned",
+        "/aws/lambda/ingestion-lambda",
+        "lambda-log-stream",
+    )
+    spy.assert_any_call(
+        "New staff data returned",
+        "/aws/lambda/ingestion-lambda",
+        "lambda-log-stream",
+    )
 
 
 @mock_s3
+@pytest.fixture
 def test_lambda_handler_logs_no_data(mocker):
     # Set up the mocked S3 bucket and objects
     conn = boto3.resource("s3", region_name="eu-west-2")
@@ -448,41 +439,76 @@ def test_lambda_handler_logs_no_data(mocker):
         "kp-northcoders-ingestion-bucket", "sales_order/created_at.txt"
     ).put(Body="2024-07-30 15:20:49.962000")
 
-    conn.Object(
-        "kp-northcoders-ingestion-bucket", "staff/created_at.txt"
-    ).put(Body="2024-07-30 15:20:49.962000")
+    conn.Object("kp-northcoders-ingestion-bucket", "staff/created_at.txt").put(
+        Body="2024-07-30 15:20:49.962000"
+    )
 
     # Create a spy on the log_to_cloudwatch function
     spy = mocker.spy(ingestion, "log_to_cloudwatch")
 
     # Call the lambda_handler function
-    lambda_handler({}, {}, test_user, test_database,
-                   test_host, test_port, test_password)
+    lambda_handler(
+        {}, {}, test_user, test_database, test_host, test_port, test_password
+    )
 
     # Check if the log_to_cloudwatch function was
     # called with the expected arguments
-    spy.assert_any_call("No new address data returned",
-                        "/aws/lambda/ingestion-lambda", "lambda-log-stream")
-    spy.assert_any_call("No new counterparty data returned",
-                        "/aws/lambda/ingestion-lambda", "lambda-log-stream")
-    spy.assert_any_call("No new currency data returned",
-                        "/aws/lambda/ingestion-lambda", "lambda-log-stream")
-    spy.assert_any_call("No new department data returned",
-                        "/aws/lambda/ingestion-lambda", "lambda-log-stream")
-    spy.assert_any_call("No new design data returned",
-                        "/aws/lambda/ingestion-lambda", "lambda-log-stream")
-    spy.assert_any_call("No new payment data returned",
-                        "/aws/lambda/ingestion-lambda", "lambda-log-stream")
-    spy.assert_any_call("No new purchase_order data returned",
-                        "/aws/lambda/ingestion-lambda", "lambda-log-stream")
-    spy.assert_any_call("No new sales_order data returned",
-                        "/aws/lambda/ingestion-lambda", "lambda-log-stream")
-    spy.assert_any_call("No new staff data returned",
-                        "/aws/lambda/ingestion-lambda", "lambda-log-stream")
+    spy.assert_any_call(
+        "No new address data returned",
+        "/aws/lambda/ingestion-lambda",
+        "lambda-log-stream",
+    )
+    spy.assert_any_call(
+        "No new counterparty data returned",
+        "/aws/lambda/ingestion-lambda",
+        "lambda-log-stream",
+    )
+    spy.assert_any_call(
+        "No new currency data returned",
+        "/aws/lambda/ingestion-lambda",
+        "lambda-log-stream",
+    )
+    spy.assert_any_call(
+        "No new department data returned",
+        "/aws/lambda/ingestion-lambda",
+        "lambda-log-stream",
+    )
+    spy.assert_any_call(
+        "No new design data returned",
+        "/aws/lambda/ingestion-lambda",
+        "lambda-log-stream",
+    )
+    spy.assert_any_call(
+        "No new payment data returned",
+        "/aws/lambda/ingestion-lambda",
+        "lambda-log-stream",
+    )
+    spy.assert_any_call(
+        "No new purchase_order data returned",
+        "/aws/lambda/ingestion-lambda",
+        "lambda-log-stream",
+    )
+    spy.assert_any_call(
+        "No new sales_order data returned",
+        "/aws/lambda/ingestion-lambda",
+        "lambda-log-stream",
+    )
+    spy.assert_any_call(
+        "No new staff data returned",
+        "/aws/lambda/ingestion-lambda",
+        "lambda-log-stream",
+    )
 
 
 def test_raises_exception():
-    with patch('os.environ', {}):
+    with patch("os.environ", {}):
         with pytest.raises(Exception):
-            lambda_handler({}, {}, test_user, test_database,
-                           test_host, test_port, test_password)
+            lambda_handler(
+                {},
+                {},
+                test_user,
+                test_database,
+                test_host,
+                test_port,
+                test_password,
+            )
