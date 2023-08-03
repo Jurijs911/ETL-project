@@ -297,25 +297,25 @@ class Test_Remodelling:
 
             if idx == 0:
                 assert (
-                    "1,hello,123 apple street,apple street,bolton,greater "
-                    "manchester,ABC 123,England,123 456 789" in body
+                    "1|hello|123 apple street|apple street|bolton|greater "
+                    "manchester|ABC 123|England|123 456 789" in body
                 )
             if idx == 1:
-                assert "1,GBP,British Pound" in body
-                assert "2,USD,US Dollar" in body
+                assert "1|GBP|British Pound" in body
+                assert "2|USD|US Dollar" in body
             if idx == 2:
-                assert "2023-7-25,2023,7,25,1,Tuesday,July,3"
+                assert "2023-7-25,2023|7|25|1|Tuesday|July|3"
             if idx == 3:
-                assert "1,design 1,./design.jpg,design.jpg" in body
+                assert "1|design 1|./design.jpg|design.jpg" in body
             if idx == 4:
                 assert (
-                    "1,123 apple street,apple street,bolton,greater "
-                    "manchester,ABC 123,England,123 456 789" in body
+                    "1|123 apple street|apple street|bolton|greater "
+                    "manchester|ABC 123|England|123 456 789" in body
                 )
             if idx == 5:
                 assert len(body) == 0
             if idx == 6:
                 assert (
-                    "2,2023-7-25,15:20:49.962000,2023-7-25,15:20:49.962000,200"
-                    ',2000,5,20.65,1,100,"2023, 8, 12","2023, 7, 30",2' in body
+                    "2|2023-7-25|15:20:49.962000|2023-7-25|15:20:49.962000|200"
+                    "|2000|5|20.65|1|100|2023, 8, 12|2023, 7, 30|2" in body
                 )

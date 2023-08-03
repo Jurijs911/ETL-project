@@ -27,9 +27,6 @@ def test_lambda_handler_calls_utils():
         CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
     )
 
-    #
-    # table.txt objects
-
     conn.Object(
         "kp-northcoders-ingestion-bucket", "address/created_at.txt"
     ).put(Body="2023-07-29 15:20:49.962000")
@@ -65,9 +62,6 @@ def test_lambda_handler_calls_utils():
     conn.Object("kp-northcoders-ingestion-bucket", "staff/created_at.txt").put(
         Body="2020-07-30 15:20:49.962000"
     )
-
-    #     #
-    #     # table.csv objects
 
     conn.Object("kp-northcoders-ingestion-bucket", "address.csv").put()
 
@@ -115,7 +109,7 @@ def test_lambda_handler_calls_utils():
             .decode("utf-8")
         )
         assert (
-            "3,Bank of England,Threadneedle St,,London,EC2R 8AH"
+            "3|Bank of England|Threadneedle St||London|EC2R 8AH"
             in address_response
         )
 
@@ -128,7 +122,7 @@ def test_lambda_handler_calls_utils():
             .decode("utf-8")
         )
         assert (
-            "2,Harris and Sons Ltd,2,Contract_2,Matt" in counterparty_response
+            "2|Harris and Sons Ltd|2|Contract_2|Matt" in counterparty_response
         )
 
         currency_response = (
@@ -139,7 +133,7 @@ def test_lambda_handler_calls_utils():
             .read()
             .decode("utf-8")
         )
-        assert "2,USD,2023-07-28 15:09:53.424884" in currency_response
+        assert "2|USD|2023-07-28 15:09:53.424884" in currency_response
 
         department_response = (
             s3_client.get_object(
@@ -149,7 +143,7 @@ def test_lambda_handler_calls_utils():
             .read()
             .decode("utf-8")
         )
-        assert "2,Jeans,2nd Floor,Pete,2023-07-28" in department_response
+        assert "2|Jeans|2nd Floor|Pete|2023-07-28" in department_response
 
         design_response = (
             s3_client.get_object(
@@ -159,7 +153,7 @@ def test_lambda_handler_calls_utils():
             .read()
             .decode("utf-8")
         )
-        assert "2023-07-28 14:56:58.558924,Glow in the dark" in design_response
+        assert "2023-07-28 14:56:58.558924|Glow in the dark" in design_response
 
         payment_response = (
             s3_client.get_object(
@@ -169,7 +163,7 @@ def test_lambda_handler_calls_utils():
             .read()
             .decode("utf-8")
         )
-        assert "1,2023-08-01 12:39:34.942457,2023-08-01" in payment_response
+        assert "1|2023-08-01 12:39:34.942457|2023-08-01" in payment_response
 
         purchase_order_response = (
             s3_client.get_object(
@@ -179,7 +173,7 @@ def test_lambda_handler_calls_utils():
             .read()
             .decode("utf-8")
         )
-        assert "1,2023-08-01 12:36:40.948439" in purchase_order_response
+        assert "1|2023-08-01 12:36:40.948439" in purchase_order_response
 
         sales_order_response = (
             s3_client.get_object(
@@ -189,7 +183,7 @@ def test_lambda_handler_calls_utils():
             .read()
             .decode("utf-8")
         )
-        assert "1,2023-07-28 15:09:58.335449" in sales_order_response
+        assert "1|2023-07-28 15:09:58.335449" in sales_order_response
 
         staff_response = (
             s3_client.get_object(
@@ -199,7 +193,7 @@ def test_lambda_handler_calls_utils():
             .read()
             .decode("utf-8")
         )
-        assert "1,Paul,McCartney,1,paul@northcoders.com" in staff_response
+        assert "1|Paul|McCartney|1|paul@northcoders.com" in staff_response
 
         txt_response = (
             s3_client.get_object(

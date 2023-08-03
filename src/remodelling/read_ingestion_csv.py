@@ -60,10 +60,11 @@ def read_ingestion_csv(bucket_name="kp-northcoders-ingestion-bucket"):
                 .decode("utf-8")
                 .splitlines()
             )
-            records = csv.reader(response)
+            records = csv.reader(response, delimiter="|")
             next(records)
             table_data = []
             for row in records:
                 table_data.append(row)
             ingested_data[item["Key"].split(".")[0]] = table_data
+    print(ingested_data)
     return ingested_data
