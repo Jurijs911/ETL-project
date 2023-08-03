@@ -1,5 +1,5 @@
 from src.loading.read_processed_csv import read_processed_csv
-from src.remodelling import upload_csv
+from src.remodelling.upload_csv import upload_csv
 import os
 import boto3
 from moto import mock_s3
