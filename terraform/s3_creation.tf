@@ -69,13 +69,13 @@ resource "aws_s3_object" "counterparty_csv" {
 resource "aws_s3_object" "created_at_date_staff" {
   bucket = aws_s3_bucket.ingestion_bucket.bucket
   key    = "staff/created_at.txt"
-  source = "data/staff.csv"
+  source = "data/created_at.txt"
 }
 
-resource "aws_s3_object" "counterparty_csv" {
+resource "aws_s3_object" "staff_csv" {
   bucket = aws_s3_bucket.ingestion_bucket.bucket
-  key    = "counterparty.csv"
-  source = "data/counterparty.csv"
+  key    = "staff.csv"
+  source = "data/staff.csv"
 }
 
 resource "aws_s3_object" "created_at_date_department" {
