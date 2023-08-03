@@ -23,7 +23,7 @@ def upload_csv(data, table_name, bucket_name):
                     data.append(
                         {
                             keys[idx]: item
-                            for idx, item in enumerate(row.split(","))
+                            for idx, item in enumerate(row.split("|"))
                         }
                     )
 
@@ -33,7 +33,9 @@ def upload_csv(data, table_name, bucket_name):
     with open(f"/tmp//{table_name}.csv", "w", newline="") as csvfile:
         if len(data) > 0:
             fieldnames = data[0].keys()
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer = csv.DictWriter(
+                csvfile, fieldnames=fieldnames, delimiter="|"
+            )
 
             writer.writeheader()
 
