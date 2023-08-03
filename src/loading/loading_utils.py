@@ -42,10 +42,7 @@ def get_loaded_data(conn, table_name):
         for row in conn.run(f"SELECT * FROM {table_name}"):
             loaded_data.append(row)
 
-        conn.close()
-
     except Exception:
-        conn.close()
         raise
 
     return loaded_data
@@ -253,6 +250,8 @@ def insert_into_dim_date(conn, date_data):
     """
     try:
         for date in date_data:
+            if False in date:  # CHANGE THIS
+                raise InputValidationError
             conn.run(
                 "INSERT INTO dim_date (date_id, year, month, day, day_of_week,\
                 day_name, month_name, quarter) "
@@ -267,9 +266,6 @@ def insert_into_dim_date(conn, date_data):
                 month_name=date[6],
                 quarter=date[7],
             )
-
-    except InputValidationError:
-        raise
 
     except Exception:
         raise
