@@ -18,13 +18,13 @@ def write_timestamp(data, table_name):
             except Exception:
                 pass
 
-    with open("last_processed.txt", "w") as f:
+    with open("/tmp//last_processed.txt", "w") as f:
         f.write(last_processed)
 
     s3_client.upload_file(
-        "last_processed.txt",
+        "/tmp//last_processed.txt",
         "kp-northcoders-ingestion-bucket",
         f"{table_name}/last_processed.txt",
     )
 
-    os.remove("last_processed.txt")
+    os.remove("/tmp//last_processed.txt")
