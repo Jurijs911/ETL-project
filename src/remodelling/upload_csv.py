@@ -2,6 +2,9 @@ import csv
 import boto3
 import os
 from botocore.exceptions import ClientError
+from boto3.s3.transfer import TransferConfig
+
+config = TransferConfig(use_threads=False)
 
 
 def upload_csv(data, table_name, bucket_name):
@@ -45,7 +48,10 @@ def upload_csv(data, table_name, bucket_name):
             pass
 
     s3_client.upload_file(
-        f"/tmp//{table_name}.csv", bucket_name, f"{table_name}.csv"
+        f"/tmp//{table_name}.csv",
+        bucket_name,
+        f"{table_name}.csv",
+        Config=config,
     )
 
     os.remove(f"/tmp//{table_name}.csv")
