@@ -23,9 +23,6 @@ cloudwatch_logs = boto3.client("logs", region_name="eu-west-2")
 
 
 def log_to_cloudwatch(message, log_group_name, log_stream_name):
-    cloudwatch_logs.create_log_group(
-        logGroupName="/aws/lambda/remodelling-lambda"
-    )
     cloudwatch_logs.put_log_events(
         logGroupName=log_group_name,
         logStreamName=log_stream_name,
