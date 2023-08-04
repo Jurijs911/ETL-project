@@ -12,12 +12,16 @@ from loading_utils import (
     create_connection,
 )
 from read_processed_csv import read_processed_csv
+from loading_filter_data_by_timestamp import filter_data
+from loading_write_timestamp import write_timestamp
 
 logging.basicConfig(level=logging.INFO)
-
 logger = logging.getLogger(__name__)
 
+# Add a get secret function to get target db secret
+
 cloudwatch_logs = boto3.client("logs")
+
 
 def log_to_cloudwatch(message, log_group_name, log_stream_name):
     """Log a message to AWS CloudWatch Logs."""
@@ -31,7 +35,16 @@ def log_to_cloudwatch(message, log_group_name, log_stream_name):
     )
 
 
-def lambda_handler(event, context):
+def lambda_handler(
+    event,
+    context,
+    db_user="username",
+    db_database="dbname",
+    db_host="host",
+    db_port="port",
+    db_password="password"
+):
+
     """AWS Lambda function to process data and insert it into
     the respective dimension and fact tables.
 
@@ -44,11 +57,22 @@ def lambda_handler(event, context):
     """
 
     try:
-        bucket_name = "kp-northcoder-data-bucket"
+        bucket_name = "kp-northcoders-processed-bucket"
 
         processed_data = read_processed_csv(bucket_name)
 
-        conn = create_connection()
+        for table, data in processed_data.items():
+            filtered_data = filter_data(data, table)
+            write_timestamp(filtered_data, table)
+            processed_data[table] = filtered_data
+
+        conn = create_connection(
+            db_user,
+            db_database,
+            db_host,
+            db_port,
+            db_password
+        )
 
         inserted_data = {
             "dim_design": insert_into_dim_design(
