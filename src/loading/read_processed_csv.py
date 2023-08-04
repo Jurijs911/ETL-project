@@ -20,7 +20,7 @@ def iterate_bucket_items(bucket):
                 yield item
 
 
-def read_processed_csv(bucket_name="kp-northcoder-data-bucket"):
+def read_processed_csv(bucket_name="kp-northcoders-processed-bucket"):
     s3_client = boto3.client("s3")
 
     processed_data = {

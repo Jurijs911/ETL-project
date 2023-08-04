@@ -1,5 +1,4 @@
 import pg8000.native
-import os
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -10,21 +9,20 @@ class InputValidationError(Exception):
     pass
 
 
-def create_connection():
+def create_connection(
+    db_user,
+    db_database,
+    db_host,
+    db_port,
+    db_password
+):
+
     """Create a connection to the PostgreSQL database
-    using the environment variables."""
-    DB_SOURCE_USER = os.getenv("DB_SOURCE_USER")
-    DB_SOURCE_HOST = os.getenv("DB_SOURCE_HOST")
-    DB_SOURCE_NAME = os.getenv("DB_SOURCE_NAME")
-    DB_SOURCE_PORT = os.getenv("DB_SOURCE_PORT")
-    DB_SOURCE_PASSWORD = os.getenv("DB_SOURCE_PASSWORD")
+    using the passed connection variables."""
 
     conn = pg8000.native.Connection(
-        user=DB_SOURCE_USER,
-        host=DB_SOURCE_HOST,
-        database=DB_SOURCE_NAME,
-        port=DB_SOURCE_PORT,
-        password=DB_SOURCE_PASSWORD,
+        user=db_user,
+
     )
     return conn
 
