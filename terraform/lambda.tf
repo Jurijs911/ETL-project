@@ -7,6 +7,7 @@ resource "aws_lambda_function" "ingestion_lambda" {
   runtime          = "python3.9"
   layers           = [aws_lambda_layer_version.my_lambda_layer.arn]
   timeout          = 120
+  memory_size      = 512
 }
 
 resource "aws_lambda_function" "remodelling_lambda" {
@@ -18,6 +19,7 @@ resource "aws_lambda_function" "remodelling_lambda" {
   runtime          = "python3.9"
   layers           = [aws_lambda_layer_version.my_lambda_layer.arn]
   timeout          = 120
+  memory_size      = 512
 }
 
 # resource "aws_lambda_function" "loading_lambda" {
