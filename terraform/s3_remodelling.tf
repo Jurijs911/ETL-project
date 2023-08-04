@@ -2,9 +2,9 @@ resource "aws_s3_bucket" "processed_bucket" {
   bucket = "kp-northcoders-processed-bucket"
 }
 
-resource "aws_s3_object" "fact_sales_order_txt" {
+resource "aws_s3_object" "sales_order_txt" {
   bucket = aws_s3_bucket.processed_bucket.bucket
-  key    = "fact_sales_order/last_processed.txt"
+  key    = "sales_order/last_processed.txt"
   source = "data/last_processed.txt"
 }
 
@@ -14,9 +14,9 @@ resource "aws_s3_object" "fact_sales_order_csv" {
   source = "data/remodelling/fact_sales_order.csv"
 }
 
-resource "aws_s3_object" "dim_design_txt" {
+resource "aws_s3_object" "design_txt" {
   bucket = aws_s3_bucket.processed_bucket.bucket
-  key    = "dim_design/last_processed.txt"
+  key    = "design/last_processed.txt"
   source = "data/last_processed.txt"
 }
 
@@ -26,9 +26,9 @@ resource "aws_s3_object" "dim_design_csv" {
   source = "data/remodelling/dim_design.csv"
 }
 
-resource "aws_s3_object" "dim_staff_txt" {
+resource "aws_s3_object" "staff_txt" {
   bucket = aws_s3_bucket.processed_bucket.bucket
-  key    = "dim_staff/last_processed.txt"
+  key    = "staff/last_processed.txt"
   source = "data/last_processed.txt"
 }
 
@@ -38,9 +38,9 @@ resource "aws_s3_object" "dim_staff_csv" {
   source = "data/remodelling/dim_staff.csv"
 }
 
-resource "aws_s3_object" "dim_location_txt" {
+resource "aws_s3_object" "address_txt" {
   bucket = aws_s3_bucket.processed_bucket.bucket
-  key    = "dim_location/last_processed.txt"
+  key    = "address/last_processed.txt"
   source = "data/last_processed.txt"
 }
 
@@ -50,9 +50,9 @@ resource "aws_s3_object" "dim_location_csv" {
   source = "data/remodelling/dim_location.csv"
 }
 
-resource "aws_s3_object" "dim_currency_txt" {
+resource "aws_s3_object" "currency_txt" {
   bucket = aws_s3_bucket.processed_bucket.bucket
-  key    = "dim_currency/last_processed.txt"
+  key    = "currency/last_processed.txt"
   source = "data/last_processed.txt"
 }
 
@@ -62,21 +62,21 @@ resource "aws_s3_object" "dim_currency_csv" {
   source = "data/remodelling/dim_currency.csv"
 }
 
-resource "aws_s3_object" "dim_counterparty_txt" {
+resource "aws_s3_object" "counterparty_txt" {
   bucket = aws_s3_bucket.processed_bucket.bucket
-  key    = "dim_counterparty/last_processed.txt"
+  key    = "counterparty/last_processed.txt"
   source = "data/last_processed.txt"
 }
 
-resource "aws_s3_object" "fdim_counterparty_csv" {
+resource "aws_s3_object" "dim_counterparty_csv" {
   bucket = aws_s3_bucket.processed_bucket.bucket
   key    = "dim_counterparty.csv"
   source = "data/remodelling/dim_counterparty.csv"
 }
 
-resource "aws_s3_object" "dim_date_txt" {
+resource "aws_s3_object" "department_txt" {
   bucket = aws_s3_bucket.processed_bucket.bucket
-  key    = "dim_date/last_processed.txt"
+  key    = "department/last_processed.txt"
   source = "data/last_processed.txt"
 }
 
