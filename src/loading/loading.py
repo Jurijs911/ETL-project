@@ -13,7 +13,7 @@ from loading_utils import (
 )
 from read_processed_csv import read_processed_csv
 from loading_filter_data_by_timestamp import filter_data
-from loading_write_timestamp import write_timestamp
+from loading_write_timestamp import loading_write_timestamp
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -63,7 +63,7 @@ def lambda_handler(
 
         for table, data in processed_data.items():
             filtered_data = filter_data(data, table)
-            write_timestamp(filtered_data, table)
+            loading_write_timestamp(filtered_data, table)
             processed_data[table] = filtered_data
 
         conn = create_connection(
