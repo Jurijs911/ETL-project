@@ -22,8 +22,11 @@ def create_connection(
 
     conn = pg8000.native.Connection(
         user=db_user,
-
-    )
+        database=db_database,
+        host=db_host,
+        port=db_port,
+        password=db_password
+        )
     return conn
 
 

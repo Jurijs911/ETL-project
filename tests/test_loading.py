@@ -67,61 +67,43 @@ def test_loading_lambda_calls_read_processed_csv(mocker):
         logGroupName="/aws/lambda/loading-lambda",
         logStreamName="lambda-log-stream",
     )
+
     conn.Object(
-        "kp-northcoders-processed-bucket", "address/last_processed.txt"
+        "kp-northcoders-processed-bucket", "dim_location/last_loaded.txt"
     ).put(Body="2023-07-29 15:20:49.962000")
 
     conn.Object(
-        "kp-northcoders-processed-bucket", "counterparty/last_processed.txt"
+        "kp-northcoders-processed-bucket", "dim_counterparty/last_loaded.txt"
     ).put(Body="2023-07-30 15:20:49.962000")
 
     conn.Object(
-        "kp-northcoders-processed-bucket", "currency/last_processed.txt"
+        "kp-northcoders-processed-bucket", "dim_currency/last_loaded.txt"
     ).put(Body="2020-07-30 15:20:49.962000")
 
     conn.Object(
-        "kp-northcoders-processed-bucket", "department/last_processed.txt"
+        "kp-northcoders-processed-bucket", "dim_date/last_loaded.txt"
     ).put(Body="2020-07-30 15:20:49.962000")
 
     conn.Object(
-        "kp-northcoders-processed-bucket", "design/last_processed.txt"
+        "kp-northcoders-processed-bucket", "dim_design/last_loaded.txt"
     ).put(Body="2020-07-30 15:20:49.962000")
 
     conn.Object(
-        "kp-northcoders-processed-bucket", "fact_sales_order/last_processed.txt"
+        "kp-northcoders-processed-bucket", "fact_sales_order/last_loaded.txt"
     ).put(Body="2020-07-30 15:20:49.962000")
 
     conn.Object(
-        "kp-northcoders-processed-bucket", "staff/last_processed.txt"
+        "kp-northcoders-processed-bucket", "dim_staff/last_loaded.txt"
     ).put(Body="2020-07-30 15:20:49.962000")
 
-    conn.Object(
-        "kp-northcoders-processed-bucket", "/address/last_loaded.txt"
-    ).put(Body="2023-07-29 15:20:49.962000")
+    # loading_write_timestamp([["2021-7-25 15:20:49.962000"]], "address")
+    # loading_write_timestamp([["2021-7-25 15:20:49.962000"]], "counterparty")
+    # loading_write_timestamp([["2021-7-25 15:20:49.962000"]], "currency") 
+    # loading_write_timestamp([["2021-7-25 15:20:49.962000"]], "department")
+    # loading_write_timestamp([["2021-7-25 15:20:49.962000"]], "design")
+    # loading_write_timestamp([["2021-7-25 15:20:49.962000"]], "fact_sales_order")
+    # loading_write_timestamp([["2021-7-25 15:20:49.962000"]], "staff")
 
-    conn.Object(
-        "kp-northcoders-processed-bucket", "/counterparty/last_loaded.txt"
-    ).put(Body="2023-07-30 15:20:49.962000")
-
-    conn.Object(
-        "kp-northcoders-processed-bucket", "/currency/last_loaded.txt"
-    ).put(Body="2020-07-30 15:20:49.962000")
-
-    conn.Object(
-        "kp-northcoders-processed-bucket", "/department/last_loaded.txt"
-    ).put(Body="2020-07-30 15:20:49.962000")
-
-    conn.Object(
-        "kp-northcoders-processed-bucket", "/design/last_loaded.txt"
-    ).put(Body="2020-07-30 15:20:49.962000")
-
-    conn.Object(
-        "kp-northcoders-processed-bucket", "/fact_sales_order/last_loaded.txt"
-    ).put(Body="2020-07-30 15:20:49.962000")
-
-    conn.Object(
-        "kp-northcoders-processed-bucket", "/staff/last_loaded.txt"
-    ).put(Body="2020-07-30 15:20:49.962000")
 
     spy = mocker.spy(loading, "read_processed_csv")
 

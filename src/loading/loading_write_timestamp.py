@@ -21,7 +21,7 @@ def loading_write_timestamp(data, table_name):
         f.write(last_processed)
 
     s3_client.upload_file(
-        "last_loaded.txt",
+        "/tmp//last_loaded.txt",
         "kp-northcoders-processed-bucket",
-        f"/tmp//{table_name}/last_loaded.txt",
+        f"{table_name}/last_loaded.txt",
     )

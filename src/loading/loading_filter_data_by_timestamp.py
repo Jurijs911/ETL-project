@@ -7,7 +7,7 @@ def filter_data(data, table_name):
     timestamp = (
         s3_client.get_object(
             Bucket="kp-northcoders-processed-bucket",
-            Key=f"{table_name}/last_processed.txt",
+            Key=f"{table_name}/last_loaded.txt",
         )["Body"]
         .read()
         .decode("utf-8")
