@@ -52,12 +52,13 @@ def lambda_handler(event, context):
             ingested_data["counterparty"], ingested_data["address"]
         )
         formatted_dates = []
+
         for table in ingested_data:
             for row in ingested_data[table]:
                 for item in row:
                     try:
                         if re.search(
-                            r"^\d{4}-\d{1}-\d{2} \d{2}:\d{2}:\d{2}.\d{6}$",
+                            r"^\d{4}-\d{1,2}-\d{2} \d{2}:\d{2}:\d{2}.\d{6}$",
                             item,
                         ):
                             formatted_date = format_dim_date(item)
