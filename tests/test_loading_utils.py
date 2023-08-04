@@ -168,7 +168,17 @@ def test_insert_into_dim_location_missing_columns():
     with pytest.raises(InputValidationError):
         insert_into_dim_location(mock_connection, invalid_location_data)
 
+def test_insert_into_dim_date():
+    mock_connection = Mock()
+    with patch('src.loading.loading_utils.create_connection', return_value=mock_connection):
+        date_data = [
+            ["2023-07-27", 2023, 7, 27, 4, "Thursday", "July", 2],
+            ["2023-07-28", 2023, 7, 28, 5, "Friday", "July", 2],
+        ]
+        mock_connection.run.return_value = date_data
 
+        result = insert_into_dim_date(mock_connection, date_data)
+        assert result == date_data
 
 def test_insert_into_dim_date_invalid_input():
     mock_connection = Mock()
