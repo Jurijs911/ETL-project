@@ -9,6 +9,11 @@ class InputValidationError(Exception):
     pass
 
 def create_connection():
+    """Creates a connection to the PostgreSQL database using the environment variables for credentials.
+
+     :return: A pg8000 Connection object representing the connection to the database.
+    """
+
     DB_SOURCE_USER = os.getenv('DB_SOURCE_USER')
     DB_SOURCE_HOST = os.getenv('DB_SOURCE_HOST')
     DB_SOURCE_NAME = os.getenv('DB_SOURCE_NAME')
@@ -45,6 +50,12 @@ def get_loaded_data(conn, table_name):
 
 
 def is_valid_email(email):
+    """Checks if the given email address is a valid format.
+
+     :param email: The email address to be validated.
+     :return: True if the email address is valid, False otherwise.
+     """
+    
     import re
     pattern = r"[^@]+@[^@]+\.[^@]+"
     return bool(re.match(pattern, email))
