@@ -44,14 +44,17 @@ def read_ingestion_csv(bucket_name="kp-northcoders-ingestion-bucket"):
         "counterparty": [],
         "address": [],
         "department": [],
-        # "purchase_order": [],
-        # "payment_type": [],
-        # "payment": [],
-        # "transaction": [],
+        # "purchase_order": [], MVP
+        # "payment_type": [], MVP
+        # "payment": [], MVP
+        # "transaction": [], MVP
     }
 
     for item in iterate_bucket_items(bucket=bucket_name):
-        if "last_processed" not in item["Key"]:
+        if (
+            "last_processed" not in item["Key"]
+            and "created_at" not in item["Key"]
+        ):
             response = (
                 s3_client.get_object(Bucket=bucket_name, Key=item["Key"])[
                     "Body"
@@ -60,11 +63,15 @@ def read_ingestion_csv(bucket_name="kp-northcoders-ingestion-bucket"):
                 .decode("utf-8")
                 .splitlines()
             )
-            records = csv.reader(response, delimiter="|")
-            next(records)
-            table_data = []
-            for row in records:
-                table_data.append(row)
-            ingested_data[item["Key"].split(".")[0]] = table_data
-    print(ingested_data)
+            if (  # If statement only needed for MVP
+                response != []
+                and item["Key"].split(".")[0] in ingested_data.keys()
+            ):
+                records = csv.reader(response, delimiter="|")
+                next(records)
+                table_data = []
+                for row in records:
+                    if row[0] != "":
+                        table_data.append(row)
+                ingested_data[item["Key"].split(".")[0]] = table_data
     return ingested_data
