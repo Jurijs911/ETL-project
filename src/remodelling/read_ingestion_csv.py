@@ -63,7 +63,7 @@ def read_ingestion_csv(bucket_name="kp-northcoders-ingestion-bucket"):
                 .decode("utf-8")
                 .splitlines()
             )
-            if (  # If statement only needed for MVP
+            if (  # Remove: only needed for MVP
                 response != []
                 and item["Key"].split(".")[0] in ingested_data.keys()
             ):
