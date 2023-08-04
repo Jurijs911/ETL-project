@@ -45,9 +45,9 @@ def read_ingestion_csv(bucket_name="kp-northcoders-ingestion-bucket"):
         "address": [],
         "department": [],
         # "purchase_order": [], MVP
-        # "payment_type": [], MVP
-        # "payment": [], MVP
-        # "transaction": [], MVP
+        # "payment_type": [],
+        # "payment": [],
+        # "transaction": [],
     }
 
     for item in iterate_bucket_items(bucket=bucket_name):
