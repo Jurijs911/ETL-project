@@ -96,17 +96,7 @@ def test_loading_lambda_calls_read_processed_csv(mocker):
         "kp-northcoders-processed-bucket", "dim_staff/last_loaded.txt"
     ).put(Body="2020-07-30 15:20:49.962000")
 
-    # loading_write_timestamp([["2021-7-25 15:20:49.962000"]], "address")
-    # loading_write_timestamp([["2021-7-25 15:20:49.962000"]], "counterparty")
-    # loading_write_timestamp([["2021-7-25 15:20:49.962000"]], "currency") 
-    # loading_write_timestamp([["2021-7-25 15:20:49.962000"]], "department")
-    # loading_write_timestamp([["2021-7-25 15:20:49.962000"]], "design")
-    # loading_write_timestamp([["2021-7-25 15:20:49.962000"]], "fact_sales_order")
-    # loading_write_timestamp([["2021-7-25 15:20:49.962000"]], "staff")
-
-
     spy = mocker.spy(loading, "read_processed_csv")
-
 
     lambda_handler(
         {},
@@ -117,4 +107,59 @@ def test_loading_lambda_calls_read_processed_csv(mocker):
         db_port=test_port,
         db_password=test_password,
     )
-    spy.assert_called()
+
+    spy.assert_called_with("kp-northcoders-processed-bucket")
+
+
+@mock_s3
+def test_loading_lambda_handler_logs_to_cloudwatch(mocker):
+    # Set up the mocked S3 bucket and objects
+    conn = boto3.resource("s3", region_name="eu-west-2")
+    conn.create_bucket(
+        Bucket="kp-northcoders-processed-bucket",
+        CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+    )
+    #
+    # table.txt objects
+    conn.Object(
+        "kp-northcoders-processed-bucket", "dim_location/last_loaded.txt"
+    ).put(Body="1900-07-29 15:20:49.962000")
+
+    conn.Object(
+        "kp-northcoders-processed-bucket", "dim_counterparty/last_loaded.txt"
+    ).put(Body="2023-07-30 15:20:49.962000")
+
+    conn.Object(
+        "kp-northcoders-processed-bucket", "dim_currency/last_loaded.txt"
+    ).put(Body="2020-07-30 15:20:49.962000")
+
+    conn.Object(
+        "kp-northcoders-processed-bucket", "dim_date/last_loaded.txt"
+    ).put(Body="2020-07-30 15:20:49.962000")
+
+    conn.Object(
+        "kp-northcoders-processed-bucket", "dim_design/last_loaded.txt"
+    ).put(Body="2020-07-30 15:20:49.962000")
+
+    conn.Object(
+        "kp-northcoders-processed-bucket", "fact_sales_order/last_loaded.txt"
+    ).put(Body="2020-07-30 15:20:49.962000")
+
+    conn.Object(
+        "kp-northcoders-processed-bucket", "dim_staff/last_loaded.txt"
+    ).put(Body="2020-07-30 15:20:49.962000")
+
+    # Create a spy on the log_to_cloudwatch function
+    spy = mocker.spy(loading, "log_to_cloudwatch")
+
+    # Call the lambda_handler function
+    lambda_handler(
+        {}, {}, test_user, test_database, test_host, test_port, test_password
+    )
+    # Check if the log_to_cloudwatch function was
+    # called with the expected arguments
+    spy.assert_any_call(
+        "Data insertion completed successfully.",
+        "/aws/lambda/loading-lambda",
+        "lambda-log-stream",
+    )

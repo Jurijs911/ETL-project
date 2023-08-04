@@ -100,14 +100,27 @@ def lambda_handler(
                 conn, processed_data["fact_sales_order"]
             ),
         }
-        print("555555", inserted_data)
+
+        if len(inserted_data) > 0:
+            log_to_cloudwatch(
+                str("Data insertion completed successfully."),
+                "/aws/lambda/loading-lambda",
+                "lambda-log-stream",
+            )
+        else:
+            log_to_cloudwatch(
+                str("No new data inserted"),
+                "/aws/lambda/loading-lambda",
+                "lambda-log-stream",
+            )
+
         conn.close()
 
-        logger.info("Data insertion completed successfully.")
+        # logger.info("Data insertion completed successfully.")
         
-        return inserted_data  # ADDED TO FIX FLAKE ISSUE
-        # - decide where inserted_data should be used
-
+        # return inserted_data  # ADDED TO FIX FLAKE ISSUE
+        # # - decide where inserted_data should be used
+        
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
         log_to_cloudwatch(
