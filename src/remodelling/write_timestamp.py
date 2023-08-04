@@ -6,7 +6,14 @@ import os
 def write_timestamp(data, table_name):
     s3_client = boto3.client("s3")
 
-    last_processed = "1900-1-25 15:20:49.962000"
+    last_processed = (
+        s3_client.get_object(
+            Bucket="kp-northcoders-ingestion-bucket",
+            Key=f"{table_name}/last_processed.txt",
+        )["Body"]
+        .read()
+        .decode("utf-8")
+    )
 
     for row in data:
         for column in row:

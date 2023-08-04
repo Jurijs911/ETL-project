@@ -69,17 +69,26 @@ def lambda_handler(event, context):
 
         bucket_name = "kp-northcoders-processed-bucket"
 
-        upload_csv(
-            formatted_sales_orders,
-            "fact_sales_order",
-            bucket_name,
-        )
-        upload_csv(formatted_designs, "dim_design", bucket_name)
-        upload_csv(formatted_staff, "dim_staff", bucket_name)
-        upload_csv(formatted_locations, "dim_location", bucket_name)
-        upload_csv(formatted_currencies, "dim_currency", bucket_name)
-        upload_csv(formatted_counterparties, "dim_counterparty", bucket_name)
-        upload_csv(formatted_dates, "dim_date", bucket_name)
+        if formatted_sales_orders != []:
+            upload_csv(
+                formatted_sales_orders,
+                "fact_sales_order",
+                bucket_name,
+            )
+        if formatted_designs != []:
+            upload_csv(formatted_designs, "dim_design", bucket_name)
+        if formatted_staff != []:
+            upload_csv(formatted_staff, "dim_staff", bucket_name)
+        if formatted_locations != []:
+            upload_csv(formatted_locations, "dim_location", bucket_name)
+        if formatted_currencies != []:
+            upload_csv(formatted_currencies, "dim_currency", bucket_name)
+        if formatted_counterparties != []:
+            upload_csv(
+                formatted_counterparties, "dim_counterparty", bucket_name
+            )
+        if formatted_dates != []:
+            upload_csv(formatted_dates, "dim_date", bucket_name)
 
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
