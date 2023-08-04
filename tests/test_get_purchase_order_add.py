@@ -1,7 +1,7 @@
 from decimal import Decimal
 import os
 from get_purchase_order_add \
-    import get_purchase_order_add
+    import get_purchase_order_add, MissingRequiredEnvironmentVariables
 import pytest
 from unittest.mock import patch
 import datetime
@@ -96,14 +96,14 @@ def test_database_error():
                 db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
 
 
-# def test_missing_environment_variables():
-#     with patch('os.environ', {}):
-#         with pytest.raises(MissingRequiredEnvironmentVariables):
-#             get_address_add(db_user=os.environ.get("test_user"),
-#                             db_database=os.environ.get("test_database"),
-#                             db_host=os.environ.get('test_host'),
-#                             db_port=os.environ.get("test_port"),
-#                             db_password=os.environ.get("test_password"))
+def test_missing_environment_variables():
+    with patch('os.environ', {}):
+        with pytest.raises(MissingRequiredEnvironmentVariables):
+            get_purchase_order_add(db_user=os.environ.get("test_user"),
+                                   db_database=os.environ.get("test_database"),
+                                   db_host=os.environ.get('test_host'),
+                                   db_port=os.environ.get("test_port"),
+                                   db_password=os.environ.get("test_password"))
 
 
 def test_correct_data_returned_by_query():

@@ -20,14 +20,27 @@ resource "aws_iam_role" "lambda_role" {
     EOF
 }
 
+data "aws_iam_policy_document" "sm_document" {
+  statement {
+
+    actions = ["secretsmanager:GetSecretValue"]
+
+    resources = [
+      "*",
+    ]
+  }
+}
+
 data "aws_iam_policy_document" "s3_document" {
   statement {
 
-    actions = ["s3:GetObject", "s3:PutObject"]
+    actions = ["s3:GetObject", "s3:PutObject", "s3:ListBucket"]
 
     resources = [
       "${aws_s3_bucket.ingestion_bucket.arn}/*",
       "${aws_s3_bucket.processed_bucket.arn}/*",
+      "${aws_s3_bucket.ingestion_bucket.arn}",
+      "${aws_s3_bucket.processed_bucket.arn}",
     ]
   }
 }
@@ -62,6 +75,10 @@ data "aws_iam_policy_document" "cw_document" {
 }
 
 
+resource "aws_iam_policy" "sm_policy" {
+  name_prefix = "sm-policy-kp"
+  policy      = data.aws_iam_policy_document.sm_document.json
+}
 
 resource "aws_iam_policy" "s3_policy" {
   name_prefix = "s3-policy-kp"
@@ -82,4 +99,9 @@ resource "aws_iam_role_policy_attachment" "lambda_s3_policy_attachment" {
 resource "aws_iam_role_policy_attachment" "lambda_cw_policy_attachment" {
   role       = aws_iam_role.lambda_role.name
   policy_arn = aws_iam_policy.cw_policy.arn
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_sm_policy_attachment" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.sm_policy.arn
 }

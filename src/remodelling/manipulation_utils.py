@@ -163,10 +163,11 @@ def format_dim_date(date_data):
     table in the data warehouse.
     """
     try:
-        formatted_data = []
-        date_obj = datetime.strptime(date_data, "%Y-%m-%d")
+        date_obj = datetime.date(
+            datetime.strptime(date_data.split(" ")[0], "%Y-%m-%d")
+        )
         formatted_date = {
-            "date_id": date_data,
+            "date_id": date_obj.strftime("%Y-%m-%d"),
             "year": date_obj.year,
             "month": date_obj.month,
             "day": date_obj.day,
@@ -175,10 +176,9 @@ def format_dim_date(date_data):
             "month_name": date_obj.strftime("%B"),
             "quarter": (date_obj.month - 1) // 3 + 1,
         }
-        formatted_data.append(formatted_date)
-        return formatted_data
-    except (ValueError, TypeError):
-        raise InputValidationError
+        return formatted_date
+    except (ValueError, TypeError, AttributeError) as e:
+        raise InputValidationError(e)
 
 
 def format_dim_currency(currency_data):
@@ -216,7 +216,6 @@ def format_dim_counterparty(counterparty_data, location_data):
     Manipulate counterparty data to match the format of the
     dim_counterparty table in the data warehouse.
     """
-    print(counterparty_data, location_data)
     formatted_data = []
     for counterparty in counterparty_data:
         for index, column in enumerate(counterparty):

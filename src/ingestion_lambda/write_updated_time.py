@@ -11,12 +11,12 @@ def write_updated_time(timestamp, table):
 
     updated_time = timestamp
 
-    with open("created_at.txt", "w") as f:
+    with open("/tmp//created_at.txt", "w") as f:
         f.write(updated_time)
 
     try:
         response = s3_resource.Object(bucket_name, key).put(
-            Body=open("created_at.txt", "rb")
+            Body=open("/tmp//created_at.txt", "rb")
         )
 
     except ClientError as e:

@@ -6,7 +6,6 @@ from botocore.exceptions import ClientError
 
 def upload_csv(data, table_name, bucket_name):
     s3_client = boto3.client("s3")
-
     try:
         downloaded_csv = (
             s3_client.get_object(Bucket=bucket_name, Key=f"{table_name}.csv")[
@@ -17,17 +16,26 @@ def upload_csv(data, table_name, bucket_name):
             .split("\r\n")
         )
 
-        with open(f"{table_name}.csv", "w", newline="") as csvfile:
-            writer = csv.writer(csvfile)
-            for row in downloaded_csv:
-                writer.writerow([row])
+        if downloaded_csv != [""]:
+            keys = list(data[0].keys())
+            for idx, row in enumerate(downloaded_csv):
+                if idx > 0:
+                    data.append(
+                        {
+                            keys[idx]: item
+                            for idx, item in enumerate(row.split("|"))
+                        }
+                    )
+
     except ClientError:
         pass
 
-    with open(f"{table_name}.csv", "a", newline="") as csvfile:
+    with open(f"/tmp//{table_name}.csv", "w", newline="") as csvfile:
         if len(data) > 0:
             fieldnames = data[0].keys()
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer = csv.DictWriter(
+                csvfile, fieldnames=fieldnames, delimiter="|"
+            )
 
             writer.writeheader()
 
@@ -37,7 +45,7 @@ def upload_csv(data, table_name, bucket_name):
             pass
 
     s3_client.upload_file(
-        f"{table_name}.csv", bucket_name, f"{table_name}.csv"
+        f"/tmp//{table_name}.csv", bucket_name, f"{table_name}.csv"
     )
 
-    os.remove(f"{table_name}.csv")
+    os.remove(f"/tmp//{table_name}.csv")

@@ -33,7 +33,7 @@ resource "aws_s3_object" "lambda_layer_zip" {
   depends_on = [null_resource.lambda_layer] # triggered only if the zip file is created
 }
 
-resource "aws_lambda_layer_version" "my-lambda-layer" {
+resource "aws_lambda_layer_version" "my_lambda_layer" {
   s3_bucket           = aws_s3_bucket.lambda_layer_bucket.id
   s3_key              = aws_s3_object.lambda_layer_zip.key
   layer_name          = local.layer_name
