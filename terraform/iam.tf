@@ -34,11 +34,13 @@ data "aws_iam_policy_document" "sm_document" {
 data "aws_iam_policy_document" "s3_document" {
   statement {
 
-    actions = ["s3:GetObject", "s3:PutObject"]
+    actions = ["s3:GetObject", "s3:PutObject", "s3:ListBucket"]
 
     resources = [
       "${aws_s3_bucket.ingestion_bucket.arn}/*",
       "${aws_s3_bucket.processed_bucket.arn}/*",
+      "${aws_s3_bucket.ingestion_bucket.arn}",
+      "${aws_s3_bucket.processed_bucket.arn}",
     ]
   }
 }

@@ -80,7 +80,6 @@ class Test_read_ingested_csv:
 
         result = read_processed_csv("processed-bucket")
 
-        print(result)
         assert result == expected
 
         if os.path.exists("sales.csv"):

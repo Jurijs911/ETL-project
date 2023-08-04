@@ -41,8 +41,8 @@ class Test_add_csv:
             .decode("utf-8")
         )
 
-        assert "1,GBP,2023-06-12,2023-06-12" in response
-        assert "2,USD,2022-12-12,2022-12-12" in response
+        assert "1|GBP|2023-06-12|2023-06-12" in response
+        assert "2|USD|2022-12-12|2022-12-12" in response
 
     def test_does_not_overwite_previous_csv_file(self):
         conn = boto3.client("s3", region_name="eu-west-2")
@@ -97,7 +97,7 @@ class Test_add_csv:
             .decode("utf-8")
         )
 
-        assert "1,GBP,2023-06-12,2023-06-12" in response
-        assert "2,USD,2022-12-12,2022-12-12" in response
-        assert "3,EUR,2023-08-03,2023-08-03" in response
-        assert "4,CAD,2022-05-10,2022-05-10" in response
+        assert "1|GBP|2023-06-12|2023-06-12" in response
+        assert "2|USD|2022-12-12|2022-12-12" in response
+        assert "3|EUR|2023-08-03|2023-08-03" in response
+        assert "4|CAD|2022-05-10|2022-05-10" in response

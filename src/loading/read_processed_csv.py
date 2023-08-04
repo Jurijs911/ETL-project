@@ -40,7 +40,7 @@ def read_processed_csv(bucket_name="kp-northcoder-data-bucket"):
             .decode("utf-8")
             .splitlines()
         )
-        records = csv.reader(response)
+        records = csv.reader(response, delimiter="|")
         next(records)
         table_data = []
         for row in records:

@@ -6,6 +6,7 @@ resource "aws_lambda_function" "ingestion_lambda" {
   source_code_hash = data.archive_file.ingestion_lambda_code.output_base64sha256
   runtime          = "python3.9"
   layers           = [aws_lambda_layer_version.my_lambda_layer.arn]
+  timeout          = 120
 }
 
 resource "aws_lambda_function" "remodelling_lambda" {
@@ -16,6 +17,7 @@ resource "aws_lambda_function" "remodelling_lambda" {
   source_code_hash = data.archive_file.remodelling_lambda_code.output_base64sha256
   runtime          = "python3.9"
   layers           = [aws_lambda_layer_version.my_lambda_layer.arn]
+  timeout          = 120
 }
 
 # resource "aws_lambda_function" "loading_lambda" {
