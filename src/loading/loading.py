@@ -20,7 +20,9 @@ logger = logging.getLogger(__name__)
 
 # Add a get secret function to get target db secret
 
-cloudwatch_logs = boto3.client("logs")
+cloudwatch_logs = boto3.client("logs", region_name="eu-west-2")
+log_group_name = "/aws/lambda/loading-lambda"
+log_stream_name = "lambda-log-stream"
 
 
 def log_to_cloudwatch(message, log_group_name, log_stream_name):
