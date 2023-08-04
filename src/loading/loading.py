@@ -27,7 +27,7 @@ log_stream_name = "lambda-log-stream"
 
 def log_to_cloudwatch(message, log_group_name, log_stream_name):
     """Log a message to AWS CloudWatch Logs."""
-    print("11111")
+    print("logs_to_cloudwatch")
     cloudwatch_logs.put_log_events(
         logGroupName=log_group_name,
         logStreamName=log_stream_name,
@@ -62,13 +62,14 @@ def lambda_handler(
         bucket_name = "kp-northcoders-processed-bucket"
 
         processed_data = read_processed_csv(bucket_name)
-        print("22222", processed_data)
+        print("1111", processed_data)
         for table, data in processed_data.items():
             filtered_data = filter_data(data, table)
-            print("44444", filtered_data)
+            print("222222", filtered_data)
             loading_write_timestamp(filtered_data, table)
+            print("33333")
             processed_data[table] = filtered_data
-            print("55555", filtered_data)
+            print("444444", filtered_data)
 
         conn = create_connection(
             db_user,
@@ -99,7 +100,7 @@ def lambda_handler(
                 conn, processed_data["fact_sales_order"]
             ),
         }
-        print("33333", inserted_data)
+        print("555555", inserted_data)
         conn.close()
 
         logger.info("Data insertion completed successfully.")

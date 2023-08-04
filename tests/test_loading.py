@@ -7,7 +7,7 @@ from moto import mock_s3, mock_logs
 import boto3
 from dotenv import load_dotenv
 import pytest
-
+from src.loading import loading
 
 load_dotenv()
 
@@ -68,34 +68,64 @@ def test_loading_lambda_calls_read_processed_csv(mocker):
         logStreamName="lambda-log-stream",
     )
     conn.Object(
-        "kp-northcoders-processed-bucket", "address/last_loaded.txt"
+        "kp-northcoders-processed-bucket", "address/last_processed.txt"
     ).put(Body="2023-07-29 15:20:49.962000")
 
     conn.Object(
-        "kp-northcoders-processed-bucket", "counterparty/last_loaded.txt"
+        "kp-northcoders-processed-bucket", "counterparty/last_processed.txt"
     ).put(Body="2023-07-30 15:20:49.962000")
 
     conn.Object(
-        "kp-northcoders-processed-bucket", "currency/last_loaded.txt"
+        "kp-northcoders-processed-bucket", "currency/last_processed.txt"
     ).put(Body="2020-07-30 15:20:49.962000")
 
     conn.Object(
-        "kp-northcoders-processed-bucket", "department/last_loaded.txt"
+        "kp-northcoders-processed-bucket", "department/last_processed.txt"
     ).put(Body="2020-07-30 15:20:49.962000")
 
     conn.Object(
-        "kp-northcoders-processed-bucket", "design/last_loaded.txt"
+        "kp-northcoders-processed-bucket", "design/last_processed.txt"
     ).put(Body="2020-07-30 15:20:49.962000")
 
     conn.Object(
-        "kp-northcoders-processed-bucket", "fact_sales_order/last_loaded.txt"
+        "kp-northcoders-processed-bucket", "fact_sales_order/last_processed.txt"
     ).put(Body="2020-07-30 15:20:49.962000")
 
     conn.Object(
-        "kp-northcoders-processed-bucket", "staff/last_loaded.txt"
+        "kp-northcoders-processed-bucket", "staff/last_processed.txt"
     ).put(Body="2020-07-30 15:20:49.962000")
 
-    mock_read_processed_csv = mocker.patch("src.loading.read_processed_csv.read_processed_csv")
+    conn.Object(
+        "kp-northcoders-processed-bucket", "/address/last_loaded.txt"
+    ).put(Body="2023-07-29 15:20:49.962000")
+
+    conn.Object(
+        "kp-northcoders-processed-bucket", "/counterparty/last_loaded.txt"
+    ).put(Body="2023-07-30 15:20:49.962000")
+
+    conn.Object(
+        "kp-northcoders-processed-bucket", "/currency/last_loaded.txt"
+    ).put(Body="2020-07-30 15:20:49.962000")
+
+    conn.Object(
+        "kp-northcoders-processed-bucket", "/department/last_loaded.txt"
+    ).put(Body="2020-07-30 15:20:49.962000")
+
+    conn.Object(
+        "kp-northcoders-processed-bucket", "/design/last_loaded.txt"
+    ).put(Body="2020-07-30 15:20:49.962000")
+
+    conn.Object(
+        "kp-northcoders-processed-bucket", "/fact_sales_order/last_loaded.txt"
+    ).put(Body="2020-07-30 15:20:49.962000")
+
+    conn.Object(
+        "kp-northcoders-processed-bucket", "/staff/last_loaded.txt"
+    ).put(Body="2020-07-30 15:20:49.962000")
+
+    spy = mocker.spy(loading, "read_processed_csv")
+
+
     lambda_handler(
         {},
         {},
@@ -105,4 +135,4 @@ def test_loading_lambda_calls_read_processed_csv(mocker):
         db_port=test_port,
         db_password=test_password,
     )
-    mock_read_processed_csv.assert_called()
+    spy.assert_called()
