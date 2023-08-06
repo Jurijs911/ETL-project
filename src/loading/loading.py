@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 cloudwatch_logs = boto3.client("logs")
 
+
 def log_to_cloudwatch(message, log_group_name, log_stream_name):
     """Log a message to AWS CloudWatch Logs."""
 
@@ -85,11 +86,3 @@ def lambda_handler(event, context):
             str(e), "/aws/lambda/loading-lambda", "lambda-log-stream"
         )
         raise  # this triggers the CloudWatch alarm
-
-    # except Exception as e:
-    #     import traceback
-    #     traceback.print_exc()
-    #     logger.error(f"An error occurred: {str(e)}")
-    #     log_to_cloudwatch(str(e), "/aws/lambda/loading-lambda",
-    #     "lambda-log-stream")
-    #     raise  # this triggers the CloudWatch alarm

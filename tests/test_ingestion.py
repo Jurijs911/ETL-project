@@ -492,17 +492,3 @@ def test_lambda_handler_logs_no_data(mocker):
         "/aws/lambda/ingestion-lambda",
         "lambda-log-stream",
     )
-
-
-# def test_raises_exception():
-#     with patch("os.environ", {}):
-#         with pytest.raises(Exception):
-#             lambda_handler(
-#                 {},
-#                 {},
-#                 test_user,
-#                 test_database,
-#                 test_host,
-#                 test_port,
-#                 test_password,
-#             )
