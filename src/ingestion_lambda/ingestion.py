@@ -258,7 +258,7 @@ def lambda_handler(
 
         s3 = boto3.resource("s3")
         s3.Object(
-            "kp-northcoders-ingestion-bucket", "/tmp//last_ingestion.txt"
+            "kp-northcoders-ingestion-bucket", "trigger/last_ingestion.txt"
         ).put(Body=open("/tmp//last_ingestion.txt", "rb"))
 
     except Exception as e:
