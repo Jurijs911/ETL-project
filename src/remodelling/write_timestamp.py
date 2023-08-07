@@ -4,6 +4,22 @@ import os
 
 
 def write_timestamp(data, table_name):
+    """
+    This function takes a list of lists containing timestamp data and a table
+    name as input. It identifies the most recent timestamp from the provided
+    data and records it in a text file. The text file is then uploaded to the
+    S3 bucket, storing the last processed timestamp for that table. The
+    timestamps in the 'data' list are compared using the '%Y-%m-%d %H:%M:%S.%f'
+    format. Invalid timestamps are ignored.
+
+    Parameters:
+        data (list of lists):
+        A list containing rows of timestamp data for a specific table.
+
+        table_name (str):
+        The name of the table to which the data belongs.
+    """
+
     s3_client = boto3.client("s3")
 
     last_processed = "1900-1-25 15:20:49.962000"

@@ -7,6 +7,10 @@ from moto import mock_s3
 @mock_s3
 class Test_Remodelling_Filter:
     def test_filters_data(self):
+        """
+        Test that the filter_data function correctly filters data based on the
+        last processed timestamp.
+        """
         s3_client = boto3.client("s3", region_name="eu-west-2")
 
         s3_client.create_bucket(
@@ -74,6 +78,10 @@ class Test_Remodelling_Filter:
         assert result == expected
 
     def test_does_not_filter_if_unnecessary(self):
+        """
+        Test that the filter_data function does not filter data if all
+        timestamps are equal or later than the last processed timestamp.
+        """
         s3_client = boto3.client("s3", region_name="eu-west-2")
 
         s3_client.create_bucket(
@@ -127,6 +135,10 @@ class Test_Remodelling_Filter:
         assert result == expected
 
     def test_filters_all_data_if_no_new_data(self):
+        """
+        Test that the filter_data function filters all data if there is no new
+        data with timestamps later than the last processed timestamp.
+        """
         s3_client = boto3.client("s3", region_name="eu-west-2")
 
         s3_client.create_bucket(

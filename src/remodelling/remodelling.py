@@ -23,6 +23,13 @@ cloudwatch_logs = boto3.client("logs", region_name="eu-west-2")
 
 
 def log_to_cloudwatch(message, log_group_name, log_stream_name):
+    """
+    Log a message to CloudWatch Logs.
+
+    :param message: The message to be logged.
+    :param log_group_name: The name of the CloudWatch Logs log group.
+    :param log_stream_name: The name of the CloudWatch Logs log stream.
+    """
     cloudwatch_logs.put_log_events(
         logGroupName=log_group_name,
         logStreamName=log_stream_name,
@@ -33,6 +40,19 @@ def log_to_cloudwatch(message, log_group_name, log_stream_name):
 
 
 def lambda_handler(event, context):
+    """
+    AWS Lambda function to process data and insert it into the respective
+    dimension and fact tables.
+
+    This Lambda function reads data from an S3 bucket, filters the data based
+    on timestamps, then formats the data for dimension and fact tables, and
+    uploads the formatted data back to another S3 bucket.
+
+    Raises:
+        Exception: If an error occurs during data processing or insertion,
+        the exception is logged to CloudWatch, and a CloudWatch alarm is
+        triggered to alert on the error.
+    """
     try:
         ingested_data = read_ingestion_csv()
         for table, data in ingested_data.items():

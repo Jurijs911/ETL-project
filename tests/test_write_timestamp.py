@@ -6,6 +6,17 @@ from moto import mock_s3
 
 @mock_s3
 def test_writes_timestamp_to_bucket():
+    """
+    Tests whether the 'write_timestamp' function successfully writes the latest
+    processed timestamp to a text file and uploads it to the correct S3 bucket.
+
+    The function creates a mock S3 bucket, then places a sample timestamp file
+    ('sales_order/last_processed.txt') in the bucket. It calls the
+    'write_timestamp' function with sample timestamp data for the table.
+    Then retrieves the timestamp file from the bucket after the write
+    operation.
+    """
+
     s3_client = boto3.client("s3", region_name="eu-west-2")
 
     s3_client.create_bucket(

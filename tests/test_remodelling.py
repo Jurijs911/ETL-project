@@ -9,6 +9,17 @@ import boto3
 @mock_s3
 class Test_Remodelling:
     def setup_mock(self):
+        """
+        Set up mock S3 buckets and logs for testing.
+
+        This function creates mock S3 buckets, including an ingestion bucket
+        and a processed bucket, and sets up a mock log stream for CloudWatch
+        Logs. It also uploads sample data to the ingestion bucket.
+
+        This function is called automatically before each test function to
+        ensure a clean test environment.
+        """
+
         logs_client = boto3.client("logs", region_name="eu-west-2")
         logs_client.create_log_group(
             logGroupName="/aws/lambda/remodelling-lambda"
@@ -264,6 +275,15 @@ class Test_Remodelling:
                     yield item
 
     def test_remodelling(self):
+        """
+        Test the Lambda function "lambda_handler" that performs data
+        processing and insertion.
+
+        This test sets up mock S3 buckets and logs, uploads sample data
+        to the ingestion bucket, triggers the Lambda function, and checks
+        if the expected formatted data has been written to the processed
+        bucket.
+        """
         self.setup_mock()
 
         s3_client = boto3.client("s3", region_name="eu-west-2")

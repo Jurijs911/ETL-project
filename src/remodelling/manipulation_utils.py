@@ -8,6 +8,10 @@ the final database schema
 
 
 class InputValidationError(Exception):
+    """
+    Custom Exception class to handle input validation errors during data
+    manipulation.
+    """
     pass
 
 
@@ -15,6 +19,18 @@ def format_fact_sales_order(sales_data):
     """
     Manipulate sales data to match the format of the fact_sales_order
     table in the data warehouse.
+
+    Args:
+        sales_data (list[list]):
+        List of sales data as a list of lists.
+
+    Returns:
+        list[dict]:
+        Formatted sales data as a list of dictionaries.
+
+    Raises:
+        InputValidationError:
+        If the input data is not in the expected format/invalid values.
     """
     formatted_data = []
     for sale in sales_data:
@@ -58,6 +74,18 @@ def format_dim_design(design_data):
     """
     Manipulate design data to match the format of the dim_design
     table in the data warehouse.
+
+    Args:
+        design_data (list[list]):
+        List of design data as a list of lists.
+
+    Returns:
+        list[dict]:
+        Formatted design data as a list of dictionaries.
+
+    Raises:
+        InputValidationError:
+        If the input data is not in the expected format/invalid values.
     """
     formatted_data = []
     for design in design_data:
@@ -86,6 +114,21 @@ def format_dim_staff(staff_data, department_data):
     """
     Manipulate staff data to match the format of the dim_staff
     table in the data warehouse.
+
+    Args:
+        staff_data (list[list]):
+        List of staff data as a list of lists.
+
+        department_data (list[list]):
+        List of department data as a list of lists.
+
+    Returns:
+        list[dict]:
+        Formatted staff data as a list of dictionaries.
+
+    Raises:
+        InputValidationError:
+        If the input data is not in the expected format/invalid values.
     """
     formatted_data = []
     for staff in staff_data:
@@ -129,6 +172,18 @@ def format_dim_location(location_data):
     """
     Manipulate location data to match the format of the dim_location
     table in the data warehouse.
+
+    Args:
+        location_data (list[list]):
+        List of location data as a list of lists.
+
+    Returns:
+        list[dict]:
+        Formatted location data as a list of dictionaries.
+
+    Raises:
+        InputValidationError:
+        If the input data is not in the expected format/invalid values.
     """
     formatted_data = []
     for location in location_data:
@@ -161,6 +216,18 @@ def format_dim_date(date_data):
     """
     Manipulate date data to match the format of the dim_date
     table in the data warehouse.
+
+    Args:
+        date_data (str):
+        Date data in the format 'YYYY-MM-DD'.
+
+    Returns:
+        dict:
+        Formatted date data as a dictionary.
+
+    Raises:
+        InputValidationError:
+        If the input data is not in the expected format/invalid values.
     """
     try:
         date_obj = datetime.date(
@@ -185,6 +252,18 @@ def format_dim_currency(currency_data):
     """
     Manipulate currency data to match the format of the dim_currency
     table in the data warehouse.
+
+    Args:
+        currency_data (list[list]):
+        List of currency data as a list of lists.
+
+    Returns:
+        list[dict]:
+        Formatted currency data as a list of dictionaries.
+
+    Raises:
+        InputValidationError:
+        If the input data is not in the expected format/invalid values.
     """
     formatted_data = []
     for currency in currency_data:
@@ -215,6 +294,21 @@ def format_dim_counterparty(counterparty_data, location_data):
     """
     Manipulate counterparty data to match the format of the
     dim_counterparty table in the data warehouse.
+
+    Args:
+        counterparty_data (list[list]):
+        List of counterparty data as a list of lists.
+
+        location_data (list[list]):
+        List of location data as a list of lists.
+
+    Returns:
+        list[dict]:
+        Formatted counterparty data as a list of dictionaries.
+
+    Raises:
+        InputValidationError:
+        If the input data is not in the expected format/invalid values.
     """
     formatted_data = []
     for counterparty in counterparty_data:
