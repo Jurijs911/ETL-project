@@ -254,7 +254,7 @@ def lambda_handler(
             )
 
         with open("/tmp//last_ingestion.txt", "w", newline="") as f:
-            f.write(datetime.now())
+            f.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"))
             s3_client = boto3.client("s3")
             s3_client.put_object(
                 Bucket="kp-northcoders-ingestion-bucket",
