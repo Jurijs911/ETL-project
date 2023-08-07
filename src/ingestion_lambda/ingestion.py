@@ -253,8 +253,10 @@ def lambda_handler(
                 "lambda-log-stream",
             )
 
-        with open("/tmp//last_ingestion.txt", "a+", newline="") as f:
-            f.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"))
+        with open("/tmp//last_ingestion.txt", "ab+") as f:
+            f.write(
+                datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f").encode("utf-8")
+            )
             s3_client = boto3.client("s3")
             s3_client.put_object(
                 Bucket="kp-northcoders-ingestion-bucket",
