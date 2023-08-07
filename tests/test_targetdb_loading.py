@@ -174,15 +174,33 @@ def reset_database(conn):
         agreed_delivery_date date NOT NULL,
         agreed_delivery_location_id int4 NOT NULL,
         CONSTRAINT fact_sales_order_pkey PRIMARY KEY (sales_record_id),
-        CONSTRAINT fact_sales_order_agreed_delivery_date_fkey FOREIGN KEY (agreed_delivery_date) REFERENCES project_team_2.dim_date(date_id),
-        CONSTRAINT fact_sales_order_agreed_delivery_location_id_fkey FOREIGN KEY (agreed_delivery_location_id) REFERENCES project_team_2.dim_location(location_id),
-        CONSTRAINT fact_sales_order_agreed_payment_date_fkey FOREIGN KEY (agreed_payment_date) REFERENCES project_team_2.dim_date(date_id),
-        CONSTRAINT fact_sales_order_counterparty_id_fkey FOREIGN KEY (counterparty_id) REFERENCES project_team_2.dim_counterparty(counterparty_id),
-        CONSTRAINT fact_sales_order_created_date_fkey FOREIGN KEY (created_date) REFERENCES project_team_2.dim_date(date_id),
-        CONSTRAINT fact_sales_order_currency_id_fkey FOREIGN KEY (currency_id) REFERENCES project_team_2.dim_currency(currency_id),
-        CONSTRAINT fact_sales_order_design_id_fkey FOREIGN KEY (design_id) REFERENCES project_team_2.dim_design(design_id),
-        CONSTRAINT fact_sales_order_last_updated_date_fkey FOREIGN KEY (last_updated_date) REFERENCES project_team_2.dim_date(date_id),
-        CONSTRAINT fact_sales_order_sales_staff_id_fkey FOREIGN KEY (sales_staff_id) REFERENCES project_team_2.dim_staff(staff_id)
+        CONSTRAINT fact_sales_order_agreed_delivery_date_fkey
+        FOREIGN KEY (agreed_delivery_date)
+        REFERENCES project_team_2.dim_date(date_id),
+        CONSTRAINT fact_sales_order_agreed_delivery_location_id_fkey
+        FOREIGN KEY (agreed_delivery_location_id)
+        REFERENCES project_team_2.dim_location(location_id),
+        CONSTRAINT fact_sales_order_agreed_payment_date_fkey
+        FOREIGN KEY (agreed_payment_date)
+        REFERENCES project_team_2.dim_date(date_id),
+        CONSTRAINT fact_sales_order_counterparty_id_fkey
+        FOREIGN KEY (counterparty_id)
+        REFERENCES project_team_2.dim_counterparty(counterparty_id),
+        CONSTRAINT fact_sales_order_created_date_fkey
+        FOREIGN KEY (created_date)
+        REFERENCES project_team_2.dim_date(date_id),
+        CONSTRAINT fact_sales_order_currency_id_fkey
+        FOREIGN KEY (currency_id)
+        REFERENCES project_team_2.dim_currency(currency_id),
+        CONSTRAINT fact_sales_order_design_id_fkey
+        FOREIGN KEY (design_id)
+        REFERENCES project_team_2.dim_design(design_id),
+        CONSTRAINT fact_sales_order_last_updated_date_fkey
+        FOREIGN KEY (last_updated_date)
+        REFERENCES project_team_2.dim_date(date_id),
+        CONSTRAINT fact_sales_order_sales_staff_id_fkey
+        FOREIGN KEY (sales_staff_id)
+        REFERENCES project_team_2.dim_staff(staff_id)
     );
     """
     conn.run(query)
