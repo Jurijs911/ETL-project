@@ -94,8 +94,8 @@ def insert_into_dim_design(conn, design_data):
                 file_location=design[2],
                 file_name=design[3],
             )
-
-        return get_loaded_data(conn, "dim_design")
+        return design_data
+        # return get_loaded_data(conn, "dim_design")
 
     except InputValidationError:
         raise
@@ -135,8 +135,8 @@ def insert_into_dim_currency(conn, currency_data):
                 currency_code=currency[1],
                 currency_name=currency[2],
             )
-
-        return get_loaded_data(conn, "dim_currency")
+        return currency_data
+        # return get_loaded_data(conn, "dim_currency")
 
     except InputValidationError:
         raise
@@ -183,8 +183,8 @@ def insert_into_dim_staff(conn, staff_data):
                 location=staff[4],
                 email_address=staff[5],
             )
-
-        return get_loaded_data(conn, "dim_staff")
+        return staff_data
+        # return get_loaded_data(conn, "dim_staff")
 
     except InputValidationError:
         raise
@@ -231,8 +231,8 @@ def insert_into_dim_location(conn, location_data):
                 country=location[6],
                 phone=location[7],
             )
-
-        return get_loaded_data(conn, "dim_location")
+        return location_data
+        # return get_loaded_data(conn, "dim_location")
 
     except InputValidationError:
         raise

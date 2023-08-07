@@ -58,6 +58,14 @@ def lambda_handler(
         and a CloudWatch alarm is triggered to alert on the error.
     """
 
+    conn = create_connection(
+        db_user,
+        db_database,
+        db_host,
+        db_port,
+        db_password
+    )
+
     try:
         bucket_name = "kp-northcoders-processed-bucket"
 
@@ -71,13 +79,7 @@ def lambda_handler(
             processed_data[table] = filtered_data
             print("444444", filtered_data)
 
-        conn = create_connection(
-            db_user,
-            db_database,
-            db_host,
-            db_port,
-            db_password
-        )
+        print("PROCESSED DATA", processed_data)
 
         inserted_data = {
             "dim_design": insert_into_dim_design(
@@ -101,6 +103,7 @@ def lambda_handler(
             ),
         }
 
+        print("INSERTED DATA", inserted_data)
         for table, data in inserted_data.items():
             print(table, data)
             if len(data) > 0:               
