@@ -62,7 +62,7 @@ def lambda_handler(
         bucket_name = "kp-northcoders-processed-bucket"
 
         processed_data = read_processed_csv(bucket_name)
-        print("1111", processed_data)
+        print("1111", len(processed_data))
         for table, data in processed_data.items():
             filtered_data = filter_data(data, table)
             print("222222", filtered_data)
@@ -101,18 +101,33 @@ def lambda_handler(
             ),
         }
 
-        if len(inserted_data) > 0:
-            log_to_cloudwatch(
-                str("Data insertion completed successfully."),
-                "/aws/lambda/loading-lambda",
-                "lambda-log-stream",
-            )
-        else:
-            log_to_cloudwatch(
-                str("No new data inserted"),
-                "/aws/lambda/loading-lambda",
-                "lambda-log-stream",
-            )
+        for table, data in inserted_data.items():
+            print(table, data)
+            if len(data) > 0:               
+                log_to_cloudwatch(
+                    str(f"Data has been inserted into the {table} table."),
+                    "/aws/lambda/loading-lambda",
+                    "lambda-log-stream",
+                        )
+            else:
+                log_to_cloudwatch(
+                    str(f"No data has been inserted into the {table} table."),
+                    "/aws/lambda/loading-lambda",
+                    "lambda-log-stream",
+                        )
+
+        # if len(inserted_data) > 0:
+        #     log_to_cloudwatch(
+        #         str("Data insertion completed successfully."),
+        #         "/aws/lambda/loading-lambda",
+        #         "lambda-log-stream",
+        #     )
+        # else:
+        #     log_to_cloudwatch(
+        #         str("No new data inserted"),
+        #         "/aws/lambda/loading-lambda",
+        #         "lambda-log-stream",
+        #     )
 
         conn.close()
 
