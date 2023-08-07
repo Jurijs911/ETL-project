@@ -1,6 +1,7 @@
 import logging
 import boto3
 import time
+from datetime import datetime
 from get_secret import get_secret
 from get_address_add import get_address_add
 from upload_csv import upload_csv
@@ -250,6 +251,15 @@ def lambda_handler(
                 str("No new staff data returned"),
                 "/aws/lambda/ingestion-lambda",
                 "lambda-log-stream",
+            )
+
+        with open("/tmp//last_ingestion.txt", "w", newline="") as f:
+            f.write(datetime.now())
+            s3_client = boto3.client("s3")
+            s3_client.put_object(
+                Bucket="kp-northcoders-ingestion-bucket",
+                Key="trigger/last_ingestion.txt",
+                Body=f,
             )
 
     except Exception as e:
