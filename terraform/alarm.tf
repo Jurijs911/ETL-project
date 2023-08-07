@@ -1,11 +1,11 @@
 resource "aws_cloudwatch_log_metric_filter" "ingestion_error_alert" {
   name           = "alert_error_metric_filter"
   pattern        = "ERROR"
-  log_group_name = "aws/lambda/${aws_lambda_function.ingestion_lambda.function_name}"
+  log_group_name = "/aws/lambda/ingestion-lambda"
 
   metric_transformation {
     name      = "ErrorCount"
-    namespace = "AWS/EC2"
+    namespace = "Ingestion"
     value     = "1"
   }
 }
@@ -14,11 +14,11 @@ resource "aws_cloudwatch_log_metric_filter" "ingestion_error_alert" {
 resource "aws_cloudwatch_log_metric_filter" "remodelling_error_alert" {
   name           = "alert_error_metric_filter"
   pattern        = "ERROR"
-  log_group_name = "aws/lambda/${aws_lambda_function.remodelling_lambda.function_name}"
+  log_group_name = "/aws/lambda/remodelling-lambda"
 
   metric_transformation {
     name      = "ErrorCount"
-    namespace = "AWS/EC2"
+    namespace = "Remodelling"
     value     = "1"
   }
 }
