@@ -54,9 +54,13 @@ class Test_Ingestion_Departments:
                 assert isinstance(item["department_id"], int)
                 assert isinstance(item["department_name"], str)
                 assert (
-                    isinstance(item["location"], str) or item["location"] is None
+                    isinstance(item["location"], str)
+                    or item["location"] is None
                 )
-                assert isinstance(item["manager"], str) or item["manager"] is None
+                assert (
+                    isinstance(item["manager"], str)
+                    or item["manager"] is None
+                )
                 assert isinstance(item["created_at"], datetime.date)
                 assert isinstance(item["last_updated"], datetime.date)
 

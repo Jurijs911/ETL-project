@@ -60,7 +60,8 @@ class Test_Ingestion_Address:
                     or item["address_line_2"] is None
                 )
                 assert (
-                    isinstance(item["district"], str) or item["district"] is None
+                    isinstance(item["district"], str)
+                    or item["district"] is None
                 )
                 assert isinstance(item["city"], str)
                 assert isinstance(item["postal_code"], str)

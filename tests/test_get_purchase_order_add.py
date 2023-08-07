@@ -31,18 +31,18 @@ class Test_Ingestion_Purchase:
 
             assert isinstance(result, list)
             expected_keys = {"purchase_order_id",
-                            "created_at",
-                            "last_updated",
-                            "staff_id",
-                            "counterparty_id",
-                            "item_code",
-                            "item_quantity",
-                            "item_unit_price",
-                            "currency_id",
-                            "agreed_delivery_date",
-                            "agreed_payment_date",
-                            "agreed_delivery_location_id"
-                            }
+                             "created_at",
+                             "last_updated",
+                             "staff_id",
+                             "counterparty_id",
+                             "item_code",
+                             "item_quantity",
+                             "item_unit_price",
+                             "currency_id",
+                             "agreed_delivery_date",
+                             "agreed_payment_date",
+                             "agreed_delivery_location_id"
+                             }
             assert all(set(item.keys()) == expected_keys for item in result)
 
     def test_get_address_add_has_correct_value_types():

@@ -38,7 +38,6 @@ class Test_Ingestion_Design:
             }
             assert all(set(item.keys()) == expected_keys for item in result)
 
-
     def test_get_design_add_has_correct_value_types():
         with patch(design_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
@@ -59,7 +58,6 @@ class Test_Ingestion_Design:
                 assert isinstance(item['file_location'], str)
                 assert isinstance(item['file_name'], str)
 
-
     def test_get_design_add_calls_get_last_time():
         with patch(design_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
@@ -74,7 +72,6 @@ class Test_Ingestion_Design:
 
             assert mock_get_last_time.call_count == 1
 
-
     def test_database_error():
         with patch('pg8000.native.Connection') as mock_connection:
             mock_connection.side_effect = pg8000.exceptions.DatabaseError(
@@ -87,7 +84,6 @@ class Test_Ingestion_Design:
                     db_port=os.environ.get("TEST_SOURCE_PORT"),
                     db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
 
-
     def test_missing_environment_variables():
         with patch('os.environ', {}):
             with pytest.raises(MissingRequiredEnvironmentVariables):
@@ -97,7 +93,6 @@ class Test_Ingestion_Design:
                     db_host=os.environ.get('test_host'),
                     db_port=os.environ.get("test_port"),
                     db_password=os.environ.get("test_password"))
-
 
     def test_correct_data_returned_by_query():
         with patch(design_get_last_time_path) as mock_get_last_time:

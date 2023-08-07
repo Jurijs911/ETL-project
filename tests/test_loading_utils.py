@@ -234,7 +234,7 @@ class Test_Dim_Staff:
             return_value=mock_connection,
         ):
             staff_data = [
-                [1, "Zenab", "Haider", "Sales", "Manchester", "zenab.email.com"],
+                [1, "Zenab", "Haider", "Sales", "Manchester", "zh.email.com"],
                 [2, "Lisa", "S", "Marketing", "London", "lisa@email.com"],
             ]
             mock_connection.run.return_value = staff_data
@@ -435,7 +435,9 @@ class Test_Dim_Date:
             "src.loading.loading_utils.create_connection",
             return_value=mock_connection,
         ):
-            date_data = [["2023-07-27", False, 7, 27, 4, "Thursday", "July", 2]]
+            date_data = [
+                ["2023-07-27", False, 7, 27, 4, "Thursday", "July", 2]
+                ]
 
             with pytest.raises(InputValidationError):
                 insert_into_dim_date(mock_connection, date_data)

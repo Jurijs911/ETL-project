@@ -87,11 +87,16 @@ class Test_Ingestion_Sales_Order:
     def test_missing_environment_variables():
         with patch('os.environ', {}):
             with pytest.raises(MissingRequiredEnvironmentVariables):
-                get_sales_order_add(db_user=os.environ.get("test_user"),
-                                    db_database=os.environ.get("test_database"),
-                                    db_host=os.environ.get('test_host'),
-                                    db_port=os.environ.get("test_port"),
-                                    db_password=os.environ.get("test_password"))
+                get_sales_order_add(db_user=os.environ.get(
+                                    "test_user"),
+                                    db_database=os.environ.get(
+                                    "test_database"),
+                                    db_host=os.environ.get(
+                                    'test_host'),
+                                    db_port=os.environ.get(
+                                    "test_port"),
+                                    db_password=os.environ.get(
+                                    "test_password"))
 
     def test_correct_data_returned_by_query():
         with patch(sales_order_get_last_time_path) as mock_get_last_time:
