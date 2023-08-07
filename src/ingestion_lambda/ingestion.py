@@ -253,16 +253,15 @@ def lambda_handler(
                 "lambda-log-stream",
             )
 
-        with open("/tmp//last_ingestion.txt", "ab+") as f:
-            f.write(
-                datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f").encode("utf-8")
-            )
-            s3_client = boto3.client("s3")
-            s3_client.put_object(
-                Bucket="kp-northcoders-ingestion-bucket",
-                Key="trigger/last_ingestion.txt",
-                Body=f,
-            )
+        with open("/tmp//last_ingestion.txt", "w") as f:
+            f.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"))
+
+        s3_client = boto3.client("s3")
+        s3_client.put_object(
+            Bucket="kp-northcoders-ingestion-bucket",
+            Key="trigger/last_ingestion.txt",
+            Body="/tmp//last_ingestion.txt",
+        )
 
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
