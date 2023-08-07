@@ -70,16 +70,12 @@ def lambda_handler(
         bucket_name = "kp-northcoders-processed-bucket"
 
         processed_data = read_processed_csv(bucket_name)
+        print("PROCESSED DATA", processed_data)
         print("1111", len(processed_data))
         for table, data in processed_data.items():
             filtered_data = filter_data(data, table)
-            print("222222", filtered_data)
             loading_write_timestamp(filtered_data, table)
-            print("33333")
             processed_data[table] = filtered_data
-            print("444444", filtered_data)
-
-        print("PROCESSED DATA", processed_data)
 
         inserted_data = {
             "dim_design": insert_into_dim_design(
