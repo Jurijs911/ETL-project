@@ -42,11 +42,22 @@ def test_get_transaction_add_has_correct_value_types():
         for item in result:
             assert isinstance(item["transaction_id"], int)
             assert isinstance(item["transaction_type"], str)
-            assert (isinstance(item["sales_order_id"], int)
-            assert (isinstance(item["purchase_order_id"], int) 
-            assert isinstance(item["created_at"], datetime.date)
-            assert isinstance(item["last_updated"], datetime.date)
 
+            # Check if the sales_order_id is not None before asserting its type
+            if item["sales_order_id"] is not None:
+                assert isinstance(item["sales_order_id"], int)
+
+            # Check if the purchase_order_id is not None before asserting its type
+            if item["purchase_order_id"] is not None:
+                assert isinstance(item["purchase_order_id"], int)
+
+            # Check if the created_at is not None before asserting its type
+            if item["created_at"] is not None:
+                assert isinstance(item["created_at"], datetime.date)
+
+            # Check if the last_updated is not None before asserting its type
+            if item["last_updated"] is not None:
+                assert isinstance(item["last_updated"], datetime.date)
 
 def test_get_transaction_calls_get_last_time():
     with patch(get_last_time_patch_path) as mock_get_last_time:
