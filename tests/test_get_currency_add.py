@@ -1,4 +1,4 @@
-from get_currency_add \
+from src.ingestion_lambda.get_currency_add \
     import get_currency_add, MissingRequiredEnvironmentVariables
 from unittest.mock import patch
 import datetime
@@ -14,6 +14,13 @@ currency_get_last_time_path = 'get_currency_add.get_last_time'
 
 class Test_Ingestion_Currency:
     def test_get_currency_add_returns_list_with_correct_keys():
+        """
+        Test that the 'get_currency_add' function returns a list of
+        dictionaries with the correct keys for currency data.
+
+        It uses mocking to simulate the behavior of the 'get_last_time'
+        function.
+        """
         with patch(currency_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
@@ -32,6 +39,13 @@ class Test_Ingestion_Currency:
             assert all(set(item.keys()) == expected_keys for item in result)
 
     def test_get_currency_add_has_correct_value_types():
+        """
+        Test that the 'get_currency_add' function returns currency data with
+        the correct value types.
+
+        It uses mocking to simulate the behavior of the 'get_last_time'
+        function.
+        """
         with patch(currency_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 '2020-07-25 15:20:49.962000', '%Y-%m-%d %H:%M:%S.%f')
@@ -49,6 +63,13 @@ class Test_Ingestion_Currency:
                 assert isinstance(item['last_updated'], datetime.date)
 
     def test_get_currency_add_calls_get_last_time():
+        """
+        Test that the 'get_currency_add' function calls 'get_last_time'
+        exactly once.
+
+        It uses mocking to simulate the behavior of the 'get_last_time'
+        function.
+        """
         with patch(currency_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 '2020-07-25 15:20:49.962000', '%Y-%m-%d %H:%M:%S.%f')
@@ -61,6 +82,15 @@ class Test_Ingestion_Currency:
             assert mock_get_last_time.call_count == 1
 
     def test_database_error():
+        """
+        Test that the 'get_currency_add' function raises an exception with
+        "Database error" message when a DatabaseError occurs during the
+        connection attempt.
+
+        It uses mocking to simulate the behavior of the
+        'pg8000.native.Connection' class and raises a
+        pg8000.exceptions.DatabaseError.
+        """
         with patch('pg8000.native.Connection') as mock_connection:
             mock_connection.side_effect = pg8000.exceptions.DatabaseError(
                 "Database error")
@@ -73,6 +103,15 @@ class Test_Ingestion_Currency:
                     db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
 
     def test_missing_environment_variables():
+        """
+        Test that the 'get_currency_add' function raises 'Missing Required
+        Environment Variables' exception when any of the required environment
+        variables (db_user, db_database, db_host, db_port, db_password) is
+        missing or empty.
+
+        It uses mocking to simulate the behavior of the 'os.environ' dictionary
+        and sets it to an empty dictionary.
+        """
         with patch('os.environ', {}):
             with pytest.raises(MissingRequiredEnvironmentVariables):
                 get_currency_add(
@@ -83,6 +122,13 @@ class Test_Ingestion_Currency:
                     db_password=os.environ.get("test_password"))
 
     def test_correct_data_returned_by_query():
+        """
+        Test that the 'get_currency_add' function returns the correct currency
+        data when querying data created in the last search interval.
+
+        It uses mocking to simulate the behavior of the 'get_last_time'
+        function.
+        """
         with patch(currency_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2023-07-29 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"

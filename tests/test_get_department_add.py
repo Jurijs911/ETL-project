@@ -1,4 +1,4 @@
-from get_department_add \
+from src.ingestion_lambda.get_department_add \
     import get_department_add, MissingRequiredEnvironmentVariables
 from unittest.mock import patch
 import datetime
@@ -15,6 +15,14 @@ department_get_last_time_path = 'get_department_add.get_last_time'
 
 class Test_Ingestion_Departments:
     def test_get_department_add_returns_list_with_correct_keys():
+        """
+        Test if get_department_add() returns a list of dictionaries with
+        correct keys.
+
+        It mocks the get_last_time function to return a datetime value. Then,
+        it calls get_department_add() with test environment variables and
+        asserts that the result is a list of dictionaries with expected keys.
+        """
         with patch(department_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
@@ -39,6 +47,13 @@ class Test_Ingestion_Departments:
             assert all(set(item.keys()) == expected_keys for item in result)
 
     def test_get_department_add_has_correct_value_types():
+        """
+        Test if get_department_add() returns data with correct value types.
+
+        It mocks the get_last_time function to return a datetime value. Then,
+        it calls get_department_add() with test environment variables and
+        asserts that each item in the result has the correct value types.
+        """
         with patch(department_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
@@ -65,6 +80,13 @@ class Test_Ingestion_Departments:
                 assert isinstance(item["last_updated"], datetime.date)
 
     def test_get_department_add_calls_get_last_time():
+        """
+        Test if get_department_add() calls get_last_time function.
+
+        It mocks the get_last_time function to return a datetime value. Then,
+        it calls get_department_add() with test environment variables and
+        asserts that get_last_time function is called once.
+        """
         with patch(department_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
@@ -79,6 +101,14 @@ class Test_Ingestion_Departments:
             assert mock_get_last_time.call_count == 1
 
     def test_database_error():
+        """
+        Test if get_department_add() raises an Exception when there's a
+        DatabaseError.
+
+        It mocks the pg8000.native.Connection to raise a DatabaseError.
+        Then, it calls get_department_add() with test environment variables and
+        asserts that it raises an Exception with "Database error" message.
+        """
         with patch('pg8000.native.Connection') as mock_connection:
             mock_connection.side_effect = pg8000.exceptions.DatabaseError(
                 "Database error")
@@ -91,6 +121,14 @@ class Test_Ingestion_Departments:
                     db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
 
     def test_missing_environment_variables():
+        """
+        Test if get_department_add() raises 'Missing Required Environment
+        Variables' when missing environment variables.
+
+        It mocks the os.environ to return an empty dictionary. Then, it calls
+        get_department_add() with test environment variables and asserts that
+        it raises MissingRequiredEnvironmentVariables.
+        """
         with patch('os.environ', {}):
             with pytest.raises(MissingRequiredEnvironmentVariables):
                 get_department_add(
@@ -101,6 +139,14 @@ class Test_Ingestion_Departments:
                     db_password=os.environ.get("test_password"))
 
     def test_correct_data_returned_by_query():
+        """
+        Tests if get_department_add() returns the correct data based on the
+        query.
+
+        It mocks the get_last_time function to return a fixed datetime value.
+        Then, it calls get_department_add() with test environment variables and
+        asserts that the result is as expected.
+        """
         with patch(department_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2023-07-29 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"

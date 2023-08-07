@@ -1,4 +1,4 @@
-from get_design_add \
+from src.ingestion_lambda.get_design_add \
     import get_design_add, MissingRequiredEnvironmentVariables
 from unittest.mock import patch
 import datetime
@@ -15,6 +15,15 @@ design_get_last_time_path = 'get_design_add.get_last_time'
 
 class Test_Ingestion_Design:
     def test_get_design_add_returns_list_with_correct_keys():
+        """
+        Test whether the `get_design_add` function returns a list of
+        dictionaries with correct keys.
+
+        It mocks the 'get_last_time' function to return a datetime value for
+        the search_interval. Then, it calls the `get_design_add` function with
+        database connection variables, queries the 'design' table, and ensures
+        that each dictionary in the returned list has the expected keys.
+        """
         with patch(design_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
@@ -39,6 +48,15 @@ class Test_Ingestion_Design:
             assert all(set(item.keys()) == expected_keys for item in result)
 
     def test_get_design_add_has_correct_value_types():
+        """
+        Test whether the `get_design_add` function returns values of correct
+        data types.
+
+        It mocks the 'get_last_time' function to return a datetime value for
+        the search_interval. Then, it calls the `get_design_add` function with
+        database connection variables, queries the 'design' table, and ensures
+        that each value in the returned dictionaries has the correct data type.
+        """
         with patch(design_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2020-07-30 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
@@ -59,6 +77,15 @@ class Test_Ingestion_Design:
                 assert isinstance(item['file_name'], str)
 
     def test_get_design_add_calls_get_last_time():
+        """
+        Test whether the `get_design_add` function calls the 'get_last_time'
+        function.
+
+        It mocks the 'get_last_time' function and sets the return value for
+        search_interval. Then, it calls the `get_design_add` function with
+        database connection variables and ensures that the 'get_last_time'
+        function is called exactly once.
+        """
         with patch(design_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
@@ -73,6 +100,15 @@ class Test_Ingestion_Design:
             assert mock_get_last_time.call_count == 1
 
     def test_database_error():
+        """
+        Test whether the `get_design_add` function raises an exception when
+        a DatabaseError is raised.
+
+        It mocks the database connection using 'pg8000.native.Connection' and
+        raises a pg8000.exceptions.DatabaseError. Then, it calls the
+        `get_design_add` function with database connection variables and
+        ensures that it raises an Exception with the expected error message.
+        """
         with patch('pg8000.native.Connection') as mock_connection:
             mock_connection.side_effect = pg8000.exceptions.DatabaseError(
                 "Database error")
@@ -85,6 +121,15 @@ class Test_Ingestion_Design:
                     db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
 
     def test_missing_environment_variables():
+        """
+        Test whether the `get_design_add` function raises 'Missing Required
+        Environment Variables' on missing variables.
+
+        It mocks the environment variables using 'os.environ' and sets it to
+        an empty dictionary. Then, it calls the `get_design_add` function with
+        some database connection variables and ensures that it raises a
+        'MissingRequiredEnvironmentVariables' exception.
+        """
         with patch('os.environ', {}):
             with pytest.raises(MissingRequiredEnvironmentVariables):
                 get_design_add(
@@ -95,6 +140,15 @@ class Test_Ingestion_Design:
                     db_password=os.environ.get("test_password"))
 
     def test_correct_data_returned_by_query():
+        """
+        Test whether the `get_design_add` function returns the correct data.
+
+        It mocks the 'get_last_time' function to return a datetime value for
+        search_interval. Then, it calls the `get_design_add` function with
+        database connection variables from the environment, queries the
+        'design' table, and ensures that the returned data matches the
+        expected result.
+        """
         with patch(design_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2023-07-29 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"

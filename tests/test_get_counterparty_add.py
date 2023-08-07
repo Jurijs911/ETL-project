@@ -1,4 +1,4 @@
-from get_counterparty_add \
+from src.ingestion_lambda.get_counterparty_add \
     import get_counterparty_add, MissingRequiredEnvironmentVariables
 from unittest.mock import patch
 import datetime
@@ -15,6 +15,14 @@ counterparty_get_last_time_path = 'get_counterparty_add.get_last_time'
 
 class Test_Ingestion_Counterparty:
     def test_get_counterparty_add_returns_list_with_correct_keys():
+        """
+        Test to check that the get_counterparty_add function returns a list of
+        dictionaries with the correct keys.
+
+        The function connects to the database, retrieves counterparty data
+        created or updated within the last search interval, and verifies that
+        each dictionary in the result contains all the expected keys.
+        """
         with patch(counterparty_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
@@ -36,6 +44,14 @@ class Test_Ingestion_Counterparty:
             assert all(set(item.keys()) == expected_keys for item in result)
 
     def test_get_counterparty_add_has_correct_value_types():
+        """
+        Test to check that the get_counterparty_add function returns a list of
+        dictionaries with correct value types for each key.
+
+        The function connects to the database, retrieves counterparty data
+        created or updated within the last search interval, and checks that
+        each value in the dictionaries corresponds to the correct data type.
+        """
         with patch(counterparty_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 '2020-07-25 15:20:49.962000', '%Y-%m-%d %H:%M:%S.%f')
@@ -55,6 +71,14 @@ class Test_Ingestion_Counterparty:
                 assert isinstance(item['last_updated'], datetime.date)
 
     def test_get_counterparty_add_calls_get_last_time():
+        """
+        Test case to ensure that the get_counterparty_add function calls the
+        get_last_time function.
+
+        The function connects to the database, retrieves counterparty data
+        created or updated within the last search interval, and verifies that
+        the get_last_time function is called exactly once.
+        """
         with patch(counterparty_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 '2020-07-25 15:20:49.962000', '%Y-%m-%d %H:%M:%S.%f')
@@ -67,6 +91,14 @@ class Test_Ingestion_Counterparty:
             assert mock_get_last_time.call_count == 1
 
     def test_database_error():
+        """
+        Test case to ensure that the get_counterparty_add function raises an
+        Exception when encountering a DatabaseError.
+
+        The function connects to the database and simulates a pg8000
+        DatabaseError to verify that it raises a generic Exception with the
+        message "Database error".
+        """
         with patch('pg8000.native.Connection') as mock_connection:
             mock_connection.side_effect = pg8000.exceptions.DatabaseError(
                 "Database error")
@@ -79,6 +111,14 @@ class Test_Ingestion_Counterparty:
                     db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
 
     def test_missing_environment_variables():
+        """
+        Test case to ensure that the get_counterparty_add function raises a
+        MissingRequiredEnvironmentVariables exception when required
+        environment variables are missing.
+
+        The function simulates an empty environment via os.environ and verifies
+        that it raises the MissingRequiredEnvironmentVariables exception.
+        """
         with patch('os.environ', {}):
             with pytest.raises(MissingRequiredEnvironmentVariables):
                 get_counterparty_add(
@@ -89,6 +129,14 @@ class Test_Ingestion_Counterparty:
                     db_password=os.environ.get("test_password"))
 
     def test_correct_data_returned_by_query():
+        """
+        Test case to ensure that the get_counterparty_add function returns the
+        correct data.
+
+        The function connects to the database, retrieves counterparty data
+        created or updated within the last search interval, and checks that
+        the returned data matches the expected data.
+        """
         with patch(counterparty_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2023-07-29 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"

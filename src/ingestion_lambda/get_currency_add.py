@@ -10,11 +10,14 @@ secret = get_secret()
 
 class MissingRequiredEnvironmentVariables(Exception):
     """
-    Is produced when attempts to connect to DB
-    with variables which do not exist
+    Exception raised when attempts to connect to the database
+    with missing variables.
     """
 
     def __init__(self, db_user, db_database, db_host, db_port, db_password):
+        """
+        Initialize the MissingRequiredEnvironmentVariables exception.
+        """
         self.user = db_user
         self.database = db_database
         self.host = db_host
@@ -29,6 +32,35 @@ def get_currency_add(
     db_port=secret["port"],
     db_password=secret["password"],
 ):
+    """
+    Connects to the database and retrieves currency data created or updated
+    within the last search interval.
+
+    Args:
+        db_user:
+        Database user name. Defaults to the value obtained from secret.
+        db_database:
+        Database name. Defaults to the value obtained from secret.
+        db_host:
+        Database host. Defaults to the value obtained from secret.
+        db_port:
+        Database port. Defaults to the value obtained from secret.
+        db_password:
+        Database password. Defaults to the value obtained from secret.
+
+    Returns:
+        list:
+        A list of dictionaries containing currency data.
+
+    Raises:
+        MissingRequiredEnvironmentVariables:
+        If any required environment variable (db_user, db_database, db_host,
+        db_port, db_password) is missing or empty.
+
+        Exception:
+        If a DatabaseError occurs during the connection attempt.
+    """
+
     """
     CONNECTION
     """
@@ -63,12 +95,9 @@ def get_currency_add(
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
-    #
-    # Set schema search order
+
     conn.run('SET search_path TO "kp-test-source", public;')
 
-    #
-    # Query table
     query = "SELECT * FROM currency WHERE \
         created_at > :search_interval OR last_updated > :search_interval;"
     params = {"search_interval": search_interval}

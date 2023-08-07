@@ -10,11 +10,14 @@ secret = get_secret()
 
 class MissingRequiredEnvironmentVariables(Exception):
     """
-    Is produced when attempts to connect to DB
-    with variables which do not exist
+    Raised when attempts to connect to the database
+    with variables that do not exist.
     """
 
     def __init__(self, db_user, db_database, db_host, db_port, db_password):
+        """
+        Initialize the MissingRequiredEnvironmentVariables exception.
+        """
         self.user = db_user
         self.database = db_database
         self.host = db_host
@@ -29,6 +32,31 @@ def get_counterparty_add(
     db_port=secret["port"],
     db_password=secret["password"],
 ):
+    """
+    Connects to the database and retrieves counterparty data created or updated
+    within the last search interval.
+
+    Args:
+        db_user:
+        Database user name. Defaults to the value obtained from secret.
+        db_database:
+        Database name. Defaults to the value obtained from secret.
+        db_host:
+        Database host. Defaults to the value obtained from secret.
+        db_port:
+        Database port. Defaults to the value obtained from secret.
+        db_password:
+        Database password. Defaults to the value obtained from secret.
+
+    Raises:
+        MissingRequiredEnvironmentVariables:
+        If any required database connection parameters are missing.
+
+    Returns:
+        list:
+        A list of dictionaries, representing counterparty data:
+    """
+
     """
     CONNECTION
     """
@@ -63,12 +91,9 @@ def get_counterparty_add(
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
-    #
-    # Set schema search order
+
     conn.run('SET search_path TO "kp-test-source", public;')
 
-    #
-    # Query table
     query = "SELECT * FROM counterparty WHERE \
         created_at > :search_interval OR last_updated > :search_interval;"
     params = {"search_interval": search_interval}

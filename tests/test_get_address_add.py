@@ -1,5 +1,5 @@
 import os
-from get_address_add \
+from src.ingestion_lambda.get_address_add \
     import get_address_add, MissingRequiredEnvironmentVariables
 import pytest
 from unittest.mock import patch
@@ -14,6 +14,14 @@ address_get_last_time_path = "get_address_add.get_last_time"
 
 class Test_Ingestion_Address:
     def test_get_address_add_returns_list_with_correct_keys():
+        """
+        Test to check the get_address_add function returns a list of
+        dictionaries with the expected keys for each item.
+
+        It mocks the get_last_time function to simulate a specific time and
+        then calls get_address_add with environment variables to connect to
+        the database.
+        """
         with patch(address_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
@@ -42,6 +50,14 @@ class Test_Ingestion_Address:
             assert all(set(item.keys()) == expected_keys for item in result)
 
     def test_get_address_add_has_correct_value_types():
+        """
+        Test whether the get_address_add function returns data with correct
+        value types.
+
+        It mocks the get_last_time function to simulate a specific time and
+        then calls get_address_add with environment variables to connect to
+        the database.
+        """
         with patch(address_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
@@ -71,6 +87,14 @@ class Test_Ingestion_Address:
                 assert isinstance(item["last_updated"], datetime.date)
 
     def test_get_address_calls_get_last_time():
+        """
+        Test whether the get_address_add function calls the get_last_time
+        function.
+
+        It mocks the get_last_time function to simulate a specific time and
+        then calls get_address_add with environment variables to connect to
+        the database.
+        """
         with patch(address_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
@@ -84,6 +108,14 @@ class Test_Ingestion_Address:
             assert mock_get_last_time.call_count == 1
 
     def test_database_error():
+        """
+        Test whether the get_address_add function raises an exception on
+        database error.
+
+        It mocks the pg8000.native.Connection to raise a DatabaseError,and
+        then calls get_address_add with environment variables to connect
+        to the database.
+        """
         with patch('pg8000.native.Connection') as mock_connection:
             mock_connection.side_effect = pg8000.exceptions.DatabaseError(
                 "Database error")
@@ -96,6 +128,14 @@ class Test_Ingestion_Address:
                     db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
 
     def test_missing_environment_variables():
+        """
+        Test whether the get_address_add function raises the exception
+        MissingRequiredEnvironmentVariables when there is missing environment
+        variables.
+
+        It mocks the os.environ dictionary with empty values and then calls
+        get_address_add with missing environment variables.
+        """
         with patch('os.environ', {}):
             with pytest.raises(MissingRequiredEnvironmentVariables):
                 get_address_add(db_user=os.environ.get("test_user"),
@@ -105,6 +145,14 @@ class Test_Ingestion_Address:
                                 db_password=os.environ.get("test_password"))
 
     def test_correct_data_returned_by_query():
+        """
+        Test whether the get_address_add function returns the correct data
+        based on the query.
+
+        It mocks the get_last_time function to simulate a specific time and
+        then calls get_address_add with environment variables to connect to
+        the database.
+        """
         with patch(address_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2023-07-29 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"

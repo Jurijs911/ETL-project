@@ -1,6 +1,6 @@
 from decimal import Decimal
 import os
-from get_purchase_order_add \
+from src.ingestion_lambda.get_purchase_order_add \
     import get_purchase_order_add, MissingRequiredEnvironmentVariables
 import pytest
 from unittest.mock import patch
@@ -17,6 +17,15 @@ purchase_order_get_last_time_path = \
 
 class Test_Ingestion_Purchase:
     def test_get_purchase_order_add_returns_list_with_correct_keys():
+        """
+        Test whether the 'get_purchase_order_add' function returns a list of
+        dictionaries with the correct keys for the 'purchase_order' table.
+
+        The test patches the 'get_last_time' function to provide a date as the
+        search interval. The function is then called with test environment
+        variables to connect to the test database. The retrieved data is
+        verified to contain dictionaries with the expected keys.
+        """
         with patch(purchase_order_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
@@ -46,6 +55,15 @@ class Test_Ingestion_Purchase:
             assert all(set(item.keys()) == expected_keys for item in result)
 
     def test_get_address_add_has_correct_value_types():
+        """
+        Test whether the 'get_purchase_order_add' function returns data with
+        correct value types for the 'purchase_order' table.
+
+        The test patches the 'get_last_time' function to provide a date as the
+        search interval. The function is called with test environment variables
+        to connect to the test database. Test then checks the retrieved data
+        contains dictionaries with the expected value types for each key.
+        """
         with patch(purchase_order_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 '2020-07-25 15:20:49.962000', '%Y-%m-%d %H:%M:%S.%f')
@@ -70,6 +88,14 @@ class Test_Ingestion_Purchase:
                 assert isinstance(item['agreed_delivery_location_id'], int)
 
     def test_get_purchase_order_add_calls_get_last_time():
+        """
+        Test whether the 'get_purchase_order_add' function calls the
+        'get_last_time' function.
+
+        The test patches the 'get_last_time' function to provide a fixed date
+        as the search interval. The function is called with test environment
+        variables to connect to the test database.
+        """
         with patch(purchase_order_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 '2020-07-25 15:20:49.962000', '%Y-%m-%d %H:%M:%S.%f')
@@ -82,6 +108,14 @@ class Test_Ingestion_Purchase:
             assert mock_get_last_time.call_count == 1
 
     def test_database_error():
+        """
+        Test whether the 'get_purchase_order_add' function raises an exception
+        for a database error.
+
+        The test patches the database connection to raise a 'DatabaseError'
+        exception. The function is then called with test environment variables
+        to connect to the test database.
+        """
         with patch('pg8000.native.Connection') as mock_connection:
             mock_connection.side_effect = pg8000.exceptions.DatabaseError(
                 "Database error")
@@ -94,6 +128,14 @@ class Test_Ingestion_Purchase:
                     db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
 
     def test_missing_environment_variables():
+        """
+        Test whether the 'get_purchase_order_add' function raises an exception
+        for missing environment variables.
+
+        The test patches the 'os.environ' dictionary to simulate missing
+        environment variables. The function is called with test environment
+        variables to connect to the test database.
+        """
         with patch('os.environ', {}):
             with pytest.raises(MissingRequiredEnvironmentVariables):
                 get_purchase_order_add(db_user=os.environ.get("test_user"),
@@ -105,6 +147,14 @@ class Test_Ingestion_Purchase:
                                        "test_password"))
 
     def test_correct_data_returned_by_query():
+        """
+        Test whether the 'get_purchase_order_add' function returns the correct
+        data for the 'purchase_order' table.
+
+        The test patches the 'get_last_time' function to provide a date as the
+        search interval. The function is then called with test environment
+        variables to connect to the test database.
+        """
         with patch(purchase_order_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2023-07-29 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"

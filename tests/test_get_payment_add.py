@@ -1,5 +1,5 @@
 from decimal import Decimal
-from get_payment_add \
+from src.ingestion_lambda.get_payment_add \
     import get_payment_add, MissingRequiredEnvironmentVariables
 from unittest.mock import patch
 import datetime
@@ -16,6 +16,15 @@ payment_get_last_time_path = 'get_payment_add.get_last_time'
 
 class Test_Ingestion_Payment:
     def test_get_payment_add_returns_list_with_correct_keys():
+        """
+        Test that the get_payment_add function returns a list of dictionaries
+        with correct keys.
+
+        This test mocks the get_last_time function to return a datetime. It
+        then calls the get_payment_add function with test source environment
+        variables and checks if the returned result is a list of dictionaries,
+        where each dictionary contains the expected keys.
+        """
         with patch(payment_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
@@ -46,6 +55,15 @@ class Test_Ingestion_Payment:
             assert all(set(item.keys()) == expected_keys for item in result)
 
     def test_get_payment_add_has_correct_value_types():
+        """
+        Test that the get_payment_add function returns dictionaries with
+        correct value types.
+
+        This test mocks the get_last_time function to return a datetime. It
+        then calls the get_payment_add function with test source environment
+        variables and checks if the returned dictionaries have the expected
+        value types for each key.
+        """
         with patch(payment_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
@@ -71,6 +89,14 @@ class Test_Ingestion_Payment:
                 assert isinstance(item["counterparty_ac_number"], int)
 
     def test_get_payment_add_calls_get_last_time():
+        """
+        Test that the get_payment_add function calls the get_last_time
+        function.
+
+        This test mocks the get_last_time function to return a datetime. It
+        then calls the get_payment_add function with test source environment
+        variables and checks if the get_last_time function was called once.
+        """
         with patch(payment_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
@@ -84,6 +110,15 @@ class Test_Ingestion_Payment:
             assert mock_get_last_time.call_count == 1
 
     def test_database_error():
+        """
+        Test that the get_payment_add function raises an exception when a
+        database error occurs.
+
+        This test mocks the pg8000.native.Connection class to raise a
+        pg8000.exceptions.DatabaseError. It then calls the get_payment_add
+        function with test source environment variables and checks if the
+        function raises an exception with the message "Database error".
+        """
         with patch('pg8000.native.Connection') as mock_connection:
             mock_connection.side_effect = pg8000.exceptions.DatabaseError(
                 "Database error")
@@ -96,6 +131,15 @@ class Test_Ingestion_Payment:
                     db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
 
     def test_missing_environment_variables():
+        """
+        Test that the get_payment_add function raises 'Missing Required
+        Environment Variables' exception.
+
+        This test mocks the os.environ dictionary to be empty. It then calls
+        the get_payment_add function with test environment variables and
+        checks if the function raises the MissingRequiredEnvironmentVariables
+        exception.
+        """
         with patch('os.environ', {}):
             with pytest.raises(MissingRequiredEnvironmentVariables):
                 get_payment_add(
@@ -106,6 +150,14 @@ class Test_Ingestion_Payment:
                     db_password=os.environ.get("test_password"))
 
     def test_correct_data_returned_by_query():
+        """
+        Test that the get_payment_add function returns the correct data based
+        on the query.
+
+        This test mocks the get_last_time function to return a datetime. It
+        then calls the get_payment_add function with test source environment
+        variables and checks if the returned result matches the expected data.
+        """
         with patch(payment_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
                 "2023-07-29 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
