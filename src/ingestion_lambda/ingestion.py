@@ -256,12 +256,10 @@ def lambda_handler(
         with open("/tmp//last_ingestion.txt", "w") as f:
             f.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"))
 
-        s3_client = boto3.client("s3")
-        s3_client.put_object(
-            Bucket="kp-northcoders-ingestion-bucket",
-            Key="trigger/last_ingestion.txt",
-            Body="/tmp//last_ingestion.txt",
-        )
+        s3 = boto3.resource("s3")
+        s3.Object(
+            "kp-northcoders-ingestion-bucket", "/tmp//last_ingestion.txt"
+        ).put(Body=open("/tmp//last_ingestion.txt", "rb"))
 
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
