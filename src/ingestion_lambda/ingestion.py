@@ -253,7 +253,7 @@ def lambda_handler(
                 "lambda-log-stream",
             )
 
-        with open("/tmp//last_ingestion.txt", "w", newline="") as f:
+        with open("/tmp//last_ingestion.txt", "r+", newline="") as f:
             f.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"))
             s3_client = boto3.client("s3")
             s3_client.put_object(
