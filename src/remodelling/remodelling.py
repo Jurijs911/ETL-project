@@ -37,6 +37,7 @@ def lambda_handler(event, context):
         ingested_data = read_ingestion_csv()
         for table, data in ingested_data.items():
             filtered_data = filter_data(data, table)
+            write_timestamp(filtered_data, table)
             ingested_data[table] = filtered_data
         formatted_sales_orders = format_fact_sales_order(
             ingested_data["sales_order"]
@@ -88,9 +89,6 @@ def lambda_handler(event, context):
             )
         if formatted_dates != []:
             upload_csv(formatted_dates, "dim_date", bucket_name)
-
-        for table, data in ingested_data.items():
-            write_timestamp(filtered_data, table)
 
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
