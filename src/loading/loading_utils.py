@@ -70,7 +70,9 @@ def insert_into_dim_design(conn, design_data):
     try:
         conn.run("SET search_path TO 'project_team_2';")
         for design in design_data:
-            for index, column in enumerate(design):
+            if not isinstance(design[0], int):
+                raise InputValidationError
+            for index, column in enumerate(design[1:], start=1):
                 if not isinstance(column, str):
                     raise InputValidationError
             if len(design) != 4:
@@ -109,7 +111,9 @@ def insert_into_dim_currency(conn, currency_data):
 
     try:
         for currency in currency_data:
-            for index, column in enumerate(currency):
+            if not isinstance(currency[0], int):
+                raise InputValidationError
+            for index, column in enumerate(currency[1:], start=1):
                 if not isinstance(column, str):
                     raise InputValidationError
             if len(currency) != 3:
@@ -146,10 +150,12 @@ def insert_into_dim_staff(conn, staff_data):
 
     try:
         for staff in staff_data:
+            if not isinstance(staff[0], int):
+                raise InputValidationError("staff[0] is not an int")
             if not is_valid_email(staff[5]):
                 raise InputValidationError("Invalid email address format.")
 
-            for index, column in enumerate(staff):
+            for index, column in enumerate(staff[1:-1], start=1):
                 if not isinstance(column, str):
                     raise InputValidationError("Should be a string")
 
@@ -192,7 +198,10 @@ def insert_into_dim_location(conn, location_data):
     """
     try:
         for location in location_data:
-            for index, column in enumerate(location):
+            if not isinstance(location[0], int):
+                raise InputValidationError
+
+            for index, column in enumerate(location[1:], start=1):
                 if not isinstance(column, str):
                     raise InputValidationError
 
@@ -273,7 +282,10 @@ def insert_into_dim_counterparty(conn, counterparty_data):
 
     try:
         for counterparty in counterparty_data:
-            for index, column in enumerate(counterparty):
+            if not isinstance(counterparty[0], int):
+                raise InputValidationError
+
+            for index, column in enumerate(counterparty[1:]):
                 if not isinstance(column, str):
                     raise InputValidationError
 
@@ -325,12 +337,27 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
 
     try:
         for sale in fact_sales_order_data:
+            expected_data_types = [
+                int,
+                str,
+                str,
+                str,
+                str,
+                int,
+                int,
+                int,
+                float,
+                int,
+                int,
+                str,
+                str,
+                int,
+            ]
             for index, value in enumerate(sale):
-                if not isinstance(value, str):
+                if not isinstance(value, expected_data_types[index]):
                     raise InputValidationError
 
             try:
-                print("sale", sale)
                 datetime.strptime(sale[1], "%Y-%m-%d")
 
                 # Remove milliseconds from the time strings before parsing
@@ -340,6 +367,9 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
 
                 # Remove milliseconds from the time strings before parsing
                 datetime.strptime(sale[4].split(".")[0], "%H:%M:%S")
+
+                datetime.strptime(sale[11], "%Y-%m-%d")
+                datetime.strptime(sale[12], "%Y-%m-%d")
 
             except ValueError:
                 raise InputValidationError
