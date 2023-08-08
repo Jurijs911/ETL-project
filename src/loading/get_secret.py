@@ -4,7 +4,7 @@ from botocore.exceptions import ClientError
 
 
 def get_secret():
-    secret_name = "Target_DB_access"
+    secret_name = "arn:aws:secretsmanager:eu-west-2:124301163178:secret:Target_DB_Access-CLApPX"
     region_name = "eu-west-2"
 
     client = boto3.client(
