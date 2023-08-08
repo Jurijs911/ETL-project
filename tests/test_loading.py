@@ -1,7 +1,6 @@
 from src.loading.loading import lambda_handler
 from src.loading import loading
 import os
-import pytest
 from unittest.mock import patch
 from moto import mock_s3, mock_logs
 import boto3
@@ -24,7 +23,6 @@ test_password = os.environ.get("TEST_TARGET_PASSWORD")
 
 @mock_s3
 @mock_logs
-@pytest.fixture
 def test_loading_lambda_calls_read_processed_csv(mocker):
     conn = boto3.resource("s3", region_name="eu-west-2")
     conn.create_bucket(
@@ -215,7 +213,6 @@ def test_loading_lambda_calls_read_processed_csv(mocker):
 
 @mock_logs
 @mock_s3
-@pytest.fixture
 def test_loading_lambda_handler_logs_no_new_data(mocker):
     client = boto3.client("logs", region_name="eu-west-2")
     client.create_log_group(logGroupName="/aws/lambda/loading-lambda")
