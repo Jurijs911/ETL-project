@@ -27,14 +27,13 @@ log_stream_name = "lambda-log-stream"
 
 def log_to_cloudwatch(message, log_group_name, log_stream_name):
     """Log a message to AWS CloudWatch Logs."""
-    print("logs_to_cloudwatch")
     if message:
-        print("logs_to_cloudwatch")
         cloudwatch_logs.put_log_events(
             logGroupName=log_group_name,
             logStreamName=log_stream_name,
             logEvents=[
-                {"timestamp": int(round(time.time() * 1000)), "message": message},
+                {"timestamp": int(round(time.time() * 1000)),
+                 "message": message},
             ],
         )
 
@@ -72,8 +71,7 @@ def lambda_handler(
         bucket_name = "kp-northcoders-processed-bucket"
 
         processed_data = read_processed_csv(bucket_name)
-        print("PROCESSED DATA", processed_data)
-        print("1111", len(processed_data))
+
         for table, data in processed_data.items():
             filtered_data = filter_data(data, table)
             loading_write_timestamp(filtered_data, table)
@@ -101,10 +99,8 @@ def lambda_handler(
             ),
         }
 
-        print("INSERTED DATA", inserted_data)
         for table, data in inserted_data.items():
-            print(table, data)
-            if len(data) > 0:               
+            if len(data) > 0:
                 log_to_cloudwatch(
                     str(f"Data has been inserted into the {table} table."),
                     "/aws/lambda/loading-lambda",
@@ -117,37 +113,11 @@ def lambda_handler(
                     "lambda-log-stream",
                         )
 
-        # if len(inserted_data) > 0:
-        #     log_to_cloudwatch(
-        #         str("Data insertion completed successfully."),
-        #         "/aws/lambda/loading-lambda",
-        #         "lambda-log-stream",
-        #     )
-        # else:
-        #     log_to_cloudwatch(
-        #         str("No new data inserted"),
-        #         "/aws/lambda/loading-lambda",
-        #         "lambda-log-stream",
-        #     )
-
         conn.close()
 
-        # logger.info("Data insertion completed successfully.")
-        
-        # return inserted_data  # ADDED TO FIX FLAKE ISSUE
-        # # - decide where inserted_data should be used
-        
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
         log_to_cloudwatch(
             str(e), "/aws/lambda/loading-lambda", "lambda-log-stream"
         )
-        raise  # this triggers the CloudWatch alarm
-
-    # except Exception as e:
-    #     import traceback
-    #     traceback.print_exc()
-    #     logger.error(f"An error occurred: {str(e)}")
-    #     log_to_cloudwatch(str(e), "/aws/lambda/loading-lambda",
-    #     "lambda-log-stream")
-    #     raise  # this triggers the CloudWatch alarm
+        raise

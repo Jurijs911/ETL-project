@@ -344,8 +344,24 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
 
     try:
         for sale in fact_sales_order_data:
+            expected_data_types = [
+                int,
+                str,
+                str,
+                str,
+                str,
+                int,
+                int,
+                int,
+                float,
+                int,
+                int,
+                str,
+                str,
+                int,
+            ]
             for index, value in enumerate(sale):
-                if not isinstance(value, str):
+                if not isinstance(value, expected_data_types[index]):
                     raise InputValidationError
 
             try:
