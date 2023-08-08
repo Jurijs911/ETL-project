@@ -75,7 +75,6 @@ def test_loading_lambda_calls_read_processed_csv(mocker):
     spy.assert_called_with("kp-northcoders-processed-bucket")
 
 
-
 @mock_logs
 @mock_s3
 def test_loading_lambda_handler_logs_no_new_data(mocker):
@@ -122,17 +121,18 @@ def test_loading_lambda_handler_logs_no_new_data(mocker):
 
     spy = mocker.spy(loading, "log_to_cloudwatch")
 
-    with patch("src.loading.loading.read_processed_csv") as\
-         mock_read_processed_csv:
+    with patch(
+        "src.loading.loading.read_processed_csv"
+    ) as mock_read_processed_csv:
         mock_read_processed_csv.return_value = {
-                'fact_sales_order': [],
-                'dim_date': [],
-                'dim_staff': [],
-                'dim_location': [],
-                'dim_currency': [],
-                'dim_design': [],
-                'dim_counterparty': []
-                }
+            "fact_sales_order": [],
+            "dim_date": [],
+            "dim_staff": [],
+            "dim_location": [],
+            "dim_currency": [],
+            "dim_design": [],
+            "dim_counterparty": [],
+        }
 
         lambda_handler(
             {},
@@ -235,23 +235,23 @@ def test_loading_lambda_handler_logs_to_cloudwatch(mocker):
     spy = mocker.spy(loading, "log_to_cloudwatch")
 
     # Call the lambda_handler function
-    with patch("src.loading.loading.read_processed_csv") as\
-         mock_read_processed_csv,\
-         patch("src.loading.loading.insert_into_dim_design") as\
-            mocked_insert_into_dim_design,\
-         patch("src.loading.loading.insert_into_dim_currency") as\
-            mocked_insert_into_dim_currency,\
-         patch("src.loading.loading.insert_into_dim_staff") as\
-            mocked_insert_into_dim_staff,\
-         patch("src.loading.loading.insert_into_dim_location") as\
-            mocked_insert_into_dim_location,\
-         patch("src.loading.loading.insert_into_dim_date") as\
-            mocked_insert_into_dim_date,\
-         patch("src.loading.loading.insert_into_dim_counterparty") as\
-            mocked_insert_into_dim_counterparty,\
-         patch("src.loading.loading.insert_into_dim_fact_sales_order") as\
-            mocked_insert_into_dim_fact_sales_order:
-
+    with patch(
+        "src.loading.loading.read_processed_csv"
+    ) as mock_read_processed_csv, patch(
+        "src.loading.loading.insert_into_dim_design"
+    ) as mocked_insert_into_dim_design, patch(
+        "src.loading.loading.insert_into_dim_currency"
+    ) as mocked_insert_into_dim_currency, patch(
+        "src.loading.loading.insert_into_dim_staff"
+    ) as mocked_insert_into_dim_staff, patch(
+        "src.loading.loading.insert_into_dim_location"
+    ) as mocked_insert_into_dim_location, patch(
+        "src.loading.loading.insert_into_dim_date"
+    ) as mocked_insert_into_dim_date, patch(
+        "src.loading.loading.insert_into_dim_counterparty"
+    ) as mocked_insert_into_dim_counterparty, patch(
+        "src.loading.loading.insert_into_dim_fact_sales_order"
+    ) as mocked_insert_into_dim_fact_sales_order:
         mocked_insert_into_dim_design.return_value = [1, 2, 3]
         mocked_insert_into_dim_currency.return_value = [1, 2, 3]
         mocked_insert_into_dim_staff.return_value = [1, 2, 3]
@@ -270,14 +270,14 @@ def test_loading_lambda_handler_logs_to_cloudwatch(mocker):
             "dim_counterparty": [],
         }
         lambda_handler(
-         {},
-         {},
-         test_user,
-         test_database,
-         test_host,
-         test_port,
-         test_password
-         )
+            {},
+            {},
+            test_user,
+            test_database,
+            test_host,
+            test_port,
+            test_password,
+        )
 
     # Check if the log_to_cloudwatch function was called
     # with the expected arguments
@@ -292,5 +292,11 @@ def test_loading_lambda_handler_logs_to_cloudwatch(mocker):
 def test_loading_lambda_handler_raises_exception():
     with pytest.raises(Exception):
         lambda_handler(
-                {}, {}, test_user, test_database,
-                test_host, test_port, test_password)
+            {},
+            {},
+            test_user,
+            test_database,
+            test_host,
+            test_port,
+            test_password,
+        )
