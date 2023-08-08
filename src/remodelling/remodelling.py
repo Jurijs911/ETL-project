@@ -11,6 +11,7 @@ from read_ingestion_csv import read_ingestion_csv
 from filter_data_by_timestamp import filter_data
 from write_timestamp import write_timestamp
 from upload_csv import upload_csv
+from datetime import datetime
 import logging
 import boto3
 import time
@@ -89,6 +90,14 @@ def lambda_handler(event, context):
             )
         if formatted_dates != []:
             upload_csv(formatted_dates, "dim_date", bucket_name)
+
+        with open("/tmp//last_remodel.txt", "w") as f:
+            f.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"))
+
+        s3 = boto3.resource("s3")
+        s3.Object(
+            "kp-northcoders-processed-bucket", "trigger/last_remodel.txt"
+        ).put(Body=open("/tmp//last_remodel.txt", "rb"))
 
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")

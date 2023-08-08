@@ -14,11 +14,12 @@ from loading_utils import (
 from read_processed_csv import read_processed_csv
 from loading_filter_data_by_timestamp import filter_data
 from loading_write_timestamp import loading_write_timestamp
+from get_secret import get_secret
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Add a get secret function to get target db secret
+secret = get_secret()
 
 cloudwatch_logs = boto3.client("logs", region_name="eu-west-2")
 log_group_name = "/aws/lambda/loading-lambda"
@@ -41,13 +42,12 @@ def log_to_cloudwatch(message, log_group_name, log_stream_name):
 def lambda_handler(
     event,
     context,
-    db_user="username",
-    db_database="dbname",
-    db_host="host",
-    db_port="port",
-    db_password="password"
+    db_user=secret["username"],
+    db_database=secret["dbname"],
+    db_host=secret["host"],
+    db_port=secret["port"],
+    db_password=secret["password"],
 ):
-
     """AWS Lambda function to process data and insert it into
     the respective dimension and fact tables.
 
@@ -60,11 +60,7 @@ def lambda_handler(
     """
 
     conn = create_connection(
-        db_user,
-        db_database,
-        db_host,
-        db_port,
-        db_password
+        db_user, db_database, db_host, db_port, db_password
     )
 
     try:
@@ -105,13 +101,13 @@ def lambda_handler(
                     str(f"Data has been inserted into the {table} table."),
                     "/aws/lambda/loading-lambda",
                     "lambda-log-stream",
-                        )
+                )
             else:
                 log_to_cloudwatch(
                     str(f"No data has been inserted into the {table} table."),
                     "/aws/lambda/loading-lambda",
                     "lambda-log-stream",
-                        )
+                )
 
         conn.close()
 
@@ -120,4 +116,5 @@ def lambda_handler(
         log_to_cloudwatch(
             str(e), "/aws/lambda/loading-lambda", "lambda-log-stream"
         )
+
         raise

@@ -285,6 +285,7 @@ class Test_Remodelling:
                 "dim_location.csv",
                 "dim_staff.csv",
                 "fact_sales_order.csv",
+                "trigger/last_remodel.txt",
             )
 
         for idx, item in enumerate(

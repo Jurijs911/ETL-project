@@ -1,11 +1,11 @@
 from src.loading.loading import lambda_handler
+from src.loading import loading
 import os
 from unittest.mock import patch
 from moto import mock_s3, mock_logs
 import boto3
 import pytest
 from dotenv import load_dotenv
-from src.loading import loading
 
 
 load_dotenv()
@@ -75,6 +75,7 @@ def test_loading_lambda_calls_read_processed_csv(mocker):
     spy.assert_called_with("kp-northcoders-processed-bucket")
 
 
+
 @mock_logs
 @mock_s3
 def test_loading_lambda_handler_logs_no_new_data(mocker):
@@ -140,7 +141,7 @@ def test_loading_lambda_handler_logs_no_new_data(mocker):
             test_database,
             test_host,
             test_port,
-            test_password
+            test_password,
         )
         spy.assert_any_call(
             "No data has been inserted into the dim_design table.",
