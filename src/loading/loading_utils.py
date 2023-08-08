@@ -9,22 +9,9 @@ class InputValidationError(Exception):
     pass
 
 
-<<<<<<< HEAD
-def create_connection():
-    """
-    Create a connection to the PostgreSQL database
-    using the environment variables.
-    """
-    DB_SOURCE_USER = os.getenv("DB_SOURCE_USER")
-    DB_SOURCE_HOST = os.getenv("DB_SOURCE_HOST")
-    DB_SOURCE_NAME = os.getenv("DB_SOURCE_NAME")
-    DB_SOURCE_PORT = os.getenv("DB_SOURCE_PORT")
-    DB_SOURCE_PASSWORD = os.getenv("DB_SOURCE_PASSWORD")
-=======
 def create_connection(db_user, db_database, db_host, db_port, db_password):
     """Create a connection to the PostgreSQL database
     using the passed connection variables."""
->>>>>>> main
 
     conn = pg8000.native.Connection(
         user=db_user,
