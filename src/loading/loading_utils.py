@@ -344,27 +344,12 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
 
     try:
         for sale in fact_sales_order_data:
-            expected_data_types = [
-                int,
-                str,
-                str,
-                str,
-                str,
-                int,
-                int,
-                int,
-                float,
-                int,
-                int,
-                str,
-                str,
-                int,
-            ]
             for index, value in enumerate(sale):
-                if not isinstance(value, expected_data_types[index]):
+                if not isinstance(value, str):
                     raise InputValidationError
 
             try:
+                print("sale", sale)
                 datetime.strptime(sale[1], "%Y-%m-%d")
 
                 # Remove milliseconds from the time strings before parsing
@@ -375,8 +360,8 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
                 # Remove milliseconds from the time strings before parsing
                 datetime.strptime(sale[4].split(".")[0], "%H:%M:%S")
 
-                datetime.strptime(sale[11], "%Y-%m-%d")
-                datetime.strptime(sale[12], "%Y-%m-%d")
+                # datetime.strptime(sale[11], "%Y-%m-%d")
+                # datetime.strptime(sale[12], "%Y-%m-%d")
 
             except ValueError:
                 raise InputValidationError

@@ -28,13 +28,15 @@ log_stream_name = "lambda-log-stream"
 def log_to_cloudwatch(message, log_group_name, log_stream_name):
     """Log a message to AWS CloudWatch Logs."""
     print("logs_to_cloudwatch")
-    cloudwatch_logs.put_log_events(
-        logGroupName=log_group_name,
-        logStreamName=log_stream_name,
-        logEvents=[
-            {"timestamp": int(round(time.time() * 1000)), "message": message},
-        ],
-    )
+    if message:
+        print("logs_to_cloudwatch")
+        cloudwatch_logs.put_log_events(
+            logGroupName=log_group_name,
+            logStreamName=log_stream_name,
+            logEvents=[
+                {"timestamp": int(round(time.time() * 1000)), "message": message},
+            ],
+        )
 
 
 def lambda_handler(
