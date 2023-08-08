@@ -287,7 +287,6 @@ def test_lambda_handler_calls_utils():
 
 
 @mock_s3
-@pytest.fixture
 def test_lambda_handler_logs(mocker):
     # Set up the mocked S3 bucket and objects
     conn = boto3.resource("s3", region_name="eu-west-2")
@@ -391,7 +390,6 @@ def test_lambda_handler_logs(mocker):
 
 
 @mock_s3
-@pytest.fixture
 def test_lambda_handler_logs_no_data(mocker):
     # Set up the mocked S3 bucket and objects
     conn = boto3.resource("s3", region_name="eu-west-2")
