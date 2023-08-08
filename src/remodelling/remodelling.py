@@ -59,7 +59,7 @@ def lambda_handler(event, context):
                 for item in row:
                     try:
                         if re.search(
-                            r"^\d{4}-\d{1,2}-\d{2} \d{2}:\d{2}:\d{2}.\d{6}$",
+                            r"^\d{4}-\d{1,2}-\d{2}",
                             item,
                         ):
                             formatted_date = format_dim_date(item)
