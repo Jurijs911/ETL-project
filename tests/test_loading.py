@@ -3,6 +3,7 @@ import os
 from unittest.mock import patch
 from moto import mock_s3, mock_logs
 import boto3
+import pytest
 from dotenv import load_dotenv
 from src.loading import loading
 
@@ -284,3 +285,11 @@ def test_loading_lambda_handler_logs_to_cloudwatch(mocker):
         "/aws/lambda/loading-lambda",
         "lambda-log-stream",
     )
+
+
+@mock_logs
+def test_loading_lambda_handler_raises_exception():
+    with pytest.raises(Exception):
+        lambda_handler(
+                {}, {}, test_user, test_database,
+                test_host, test_port, test_password)
