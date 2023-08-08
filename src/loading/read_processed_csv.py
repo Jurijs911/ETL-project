@@ -6,8 +6,11 @@ def iterate_bucket_items(bucket):
     """
     Generator that iterates over all objects in a given s3 bucket
 
-    :param bucket: name of s3 bucket
-    :return: dict of metadata for an object
+    Parameters:
+    bucket: name of s3 bucket
+
+    Returns:
+    dict of metadata for an object
     """
 
     client = boto3.client("s3")

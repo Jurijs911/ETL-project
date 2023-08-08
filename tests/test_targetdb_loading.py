@@ -33,8 +33,10 @@ def create_test_connection():
 
 
 def cleanup_test_data(conn, table_name):
-    # Cleanup tables after test so it returns back to empty
-    # original state to verify data has been loaded
+    """
+    Cleanup tables after test so it returns back to empty original state to
+    verify data has been loaded.
+    """
     tables_to_cleanup = [
         "dim_design",
         "dim_currency",

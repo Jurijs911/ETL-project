@@ -21,7 +21,19 @@ cloudwatch_logs = boto3.client("logs")
 
 
 def log_to_cloudwatch(message, log_group_name, log_stream_name):
-    """Log a message to AWS CloudWatch Logs."""
+    """
+    Log a message to CloudWatch Logs.
+
+    Args:
+    message:
+    The message to be logged.
+
+    log_group_name:
+    The name of the CloudWatch Logs log group.
+    log_stream_name:
+
+    The name of the CloudWatch Logs log stream.
+    """
 
     cloudwatch_logs.put_log_events(
         logGroupName=log_group_name,
@@ -33,15 +45,15 @@ def log_to_cloudwatch(message, log_group_name, log_stream_name):
 
 
 def lambda_handler(event, context):
-    """AWS Lambda function to process data and insert it into
-    the respective dimension and fact tables.
-
-
+    """
+    AWS Lambda function to process data and insert it into the respective
+    dimension and fact tables.
 
     Raises:
-        Exception: If an error occurs during data processing or insertion,
-        the exception is logged to CloudWatch,
-        and a CloudWatch alarm is triggered to alert on the error.
+        Exception:
+        If an error occurs during data processing or insertion, the exception
+        is logged to CloudWatch, and a CloudWatch alarm is triggered to alert
+        on the error.
     """
 
     try:
@@ -77,12 +89,11 @@ def lambda_handler(event, context):
 
         logger.info("Data insertion completed successfully.")
 
-        return inserted_data  # ADDED TO FIX FLAKE ISSUE
-        # - decide where inserted_data should be used
+        return inserted_data
 
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
         log_to_cloudwatch(
             str(e), "/aws/lambda/loading-lambda", "lambda-log-stream"
         )
-        raise  # this triggers the CloudWatch alarm
+        raise
