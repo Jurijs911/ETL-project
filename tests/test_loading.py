@@ -1,10 +1,11 @@
 from src.loading.loading import lambda_handler
+from src.loading import loading
 import os
+import pytest
 from unittest.mock import patch
 from moto import mock_s3, mock_logs
 import boto3
 from dotenv import load_dotenv
-from src.loading import loading
 
 load_dotenv()
 
@@ -23,6 +24,7 @@ test_password = os.environ.get("TEST_TARGET_PASSWORD")
 
 @mock_s3
 @mock_logs
+@pytest.fixture
 def test_loading_lambda_calls_read_processed_csv(mocker):
     conn = boto3.resource("s3", region_name="eu-west-2")
     conn.create_bucket(
@@ -78,140 +80,142 @@ def test_loading_lambda_calls_read_processed_csv(mocker):
 
     spy.assert_called_with("kp-northcoders-processed-bucket")
 
+
 # RANCH TO FIX THIS ISSUE OF NOT LOGGING WHEN DATA PASSED
 # @mock_logs
 # @mock_s3
 # def test_loading_lambda_handler_logs_to_cloudwatch(mocker):
-    # client = boto3.client("logs", region_name="eu-west-2")
-    # client.create_log_group(logGroupName="/aws/lambda/loading-lambda")
-    # client.create_log_stream(
-    #     logGroupName="/aws/lambda/loading-lambda",
-    #     logStreamName="lambda-log-stream",
-    # )
-    # # Set up the mocked S3 bucket and objects
-    # conn = boto3.resource("s3", region_name="eu-west-2")
-    # conn.create_bucket(
-    #     Bucket="kp-northcoders-processed-bucket",
-    #     CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
-    # )
-    # #
-    # # table.txt objects
-    # conn.Object(
-    #     "kp-northcoders-processed-bucket", "dim_location/last_loaded.txt"
-    # ).put(Body="1900-07-29 15:20:49.962000")
+# client = boto3.client("logs", region_name="eu-west-2")
+# client.create_log_group(logGroupName="/aws/lambda/loading-lambda")
+# client.create_log_stream(
+#     logGroupName="/aws/lambda/loading-lambda",
+#     logStreamName="lambda-log-stream",
+# )
+# # Set up the mocked S3 bucket and objects
+# conn = boto3.resource("s3", region_name="eu-west-2")
+# conn.create_bucket(
+#     Bucket="kp-northcoders-processed-bucket",
+#     CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+# )
+# #
+# # table.txt objects
+# conn.Object(
+#     "kp-northcoders-processed-bucket", "dim_location/last_loaded.txt"
+# ).put(Body="1900-07-29 15:20:49.962000")
 
-    # conn.Object(
-    #     "kp-northcoders-processed-bucket", "dim_counterparty/last_loaded.txt"
-    # ).put(Body="2020-07-30 15:20:49.962000")
+# conn.Object(
+#     "kp-northcoders-processed-bucket", "dim_counterparty/last_loaded.txt"
+# ).put(Body="2020-07-30 15:20:49.962000")
 
-    # conn.Object(
-    #     "kp-northcoders-processed-bucket", "dim_currency/last_loaded.txt"
-    # ).put(Body="2020-07-30 15:20:49.962000")
+# conn.Object(
+#     "kp-northcoders-processed-bucket", "dim_currency/last_loaded.txt"
+# ).put(Body="2020-07-30 15:20:49.962000")
 
-    # conn.Object(
-    #     "kp-northcoders-processed-bucket", "dim_date/last_loaded.txt"
-    # ).put(Body="2020-07-30 15:20:49.962000")
+# conn.Object(
+#     "kp-northcoders-processed-bucket", "dim_date/last_loaded.txt"
+# ).put(Body="2020-07-30 15:20:49.962000")
 
-    # conn.Object(
-    #     "kp-northcoders-processed-bucket", "dim_design/last_loaded.txt"
-    # ).put(Body="2020-07-30 15:20:49.962000")
+# conn.Object(
+#     "kp-northcoders-processed-bucket", "dim_design/last_loaded.txt"
+# ).put(Body="2020-07-30 15:20:49.962000")
 
-    # conn.Object(
-    #     "kp-northcoders-processed-bucket", "fact_sales_order/last_loaded.txt"
-    # ).put(Body="2020-07-30 15:20:49.962000")
+# conn.Object(
+#     "kp-northcoders-processed-bucket", "fact_sales_order/last_loaded.txt"
+# ).put(Body="2020-07-30 15:20:49.962000")
 
-    # conn.Object(
-    #     "kp-northcoders-processed-bucket", "dim_staff/last_loaded.txt"
-    # ).put(Body="2020-07-30 15:20:49.962000")
+# conn.Object(
+#     "kp-northcoders-processed-bucket", "dim_staff/last_loaded.txt"
+# ).put(Body="2020-07-30 15:20:49.962000")
 
-    # # Create a spy on the log_to_cloudwatch function
-    # spy = mocker.spy(loading, "log_to_cloudwatch")
+# # Create a spy on the log_to_cloudwatch function
+# spy = mocker.spy(loading, "log_to_cloudwatch")
 
-    # # Call the lambda_handler function
-    # with patch("src.loading.loading.read_processed_csv")\
-    #      as mock_processed_data:
-    #     mock_processed_data.return_value = {
-    #         "fact_sales_order": [
-    #             [
-    #                 2,
-    #                 "2023-07-25",
-    #                 "15:20:49:962000",
-    #                 "2023-07-25",
-    #                 "15:20:49:962000",
-    #                 100,
-    #                 200,
-    #                 2000,
-    #                 20.65,
-    #                 5,
-    #                 1,
-    #                 "2023-7-30",
-    #                 "2023-8-12",
-    #                 2,
-    #             ],
-    #         ],
-    #         "dim_date": [],
-    #         "dim_staff": [],
-    #         "dim_location": [],
-    #         "dim_currency": [],
-    #         "dim_design": [],
-    #         "dim_counterparty": [],
-    #     }
+# # Call the lambda_handler function
+# with patch("src.loading.loading.read_processed_csv")\
+#      as mock_processed_data:
+#     mock_processed_data.return_value = {
+#         "fact_sales_order": [
+#             [
+#                 2,
+#                 "2023-07-25",
+#                 "15:20:49:962000",
+#                 "2023-07-25",
+#                 "15:20:49:962000",
+#                 100,
+#                 200,
+#                 2000,
+#                 20.65,
+#                 5,
+#                 1,
+#                 "2023-7-30",
+#                 "2023-8-12",
+#                 2,
+#             ],
+#         ],
+#         "dim_date": [],
+#         "dim_staff": [],
+#         "dim_location": [],
+#         "dim_currency": [],
+#         "dim_design": [],
+#         "dim_counterparty": [],
+#     }
 
-    #     lambda_handler(
-    #         {},
-    #         {},
-    #         test_user,
-    #         test_database,
-    #         test_host,
-    #         test_port,
-    #         test_password
-    #     )
-    # Check if the log_to_cloudwatch function was
-    # called with the expected arguments
-    # spy.assert_any_call(
-    #     "Data has been inserted into the dim_design table.",
-    #     "/aws/lambda/loading-lambda",
-    #     "lambda-log-stream",
-    # )
-    # spy.assert_any_call(
-    #     "Data has been inserted into the dim_currency table.",
-    #     "/aws/lambda/loading-lambda",
-    #     "lambda-log-stream",
-    # )
+#     lambda_handler(
+#         {},
+#         {},
+#         test_user,
+#         test_database,
+#         test_host,
+#         test_port,
+#         test_password
+#     )
+# Check if the log_to_cloudwatch function was
+# called with the expected arguments
+# spy.assert_any_call(
+#     "Data has been inserted into the dim_design table.",
+#     "/aws/lambda/loading-lambda",
+#     "lambda-log-stream",
+# )
+# spy.assert_any_call(
+#     "Data has been inserted into the dim_currency table.",
+#     "/aws/lambda/loading-lambda",
+#     "lambda-log-stream",
+# )
 
-    # spy.assert_any_call(
-    #     "Data has been inserted into the dim_staff table.",
-    #     "/aws/lambda/loading-lambda",
-    #     "lambda-log-stream",
-    # )
+# spy.assert_any_call(
+#     "Data has been inserted into the dim_staff table.",
+#     "/aws/lambda/loading-lambda",
+#     "lambda-log-stream",
+# )
 
-    # spy.assert_any_call(
-    #     "Data has been inserted into the dim_location table.",
-    #     "/aws/lambda/loading-lambda",
-    #     "lambda-log-stream",
-    # )
+# spy.assert_any_call(
+#     "Data has been inserted into the dim_location table.",
+#     "/aws/lambda/loading-lambda",
+#     "lambda-log-stream",
+# )
 
-    # spy.assert_any_call(
-    #     "Data has been inserted into the dim_date table.",
-    #     "/aws/lambda/loading-lambda",
-    #     "lambda-log-stream",
-    # )
+# spy.assert_any_call(
+#     "Data has been inserted into the dim_date table.",
+#     "/aws/lambda/loading-lambda",
+#     "lambda-log-stream",
+# )
 
-    # spy.assert_any_call(
-    #     "Data has been inserted into the dim_counterparty table.",
-    #     "/aws/lambda/loading-lambda",
-    #     "lambda-log-stream",
-    # )
+# spy.assert_any_call(
+#     "Data has been inserted into the dim_counterparty table.",
+#     "/aws/lambda/loading-lambda",
+#     "lambda-log-stream",
+# )
 
-    # spy.assert_any_call(
-    #     "Data has been inserted into the fact_sales_order table.",
-    #     "/aws/lambda/loading-lambda",
-    #     "lambda-log-stream",
-    # )
+# spy.assert_any_call(
+#     "Data has been inserted into the fact_sales_order table.",
+#     "/aws/lambda/loading-lambda",
+#     "lambda-log-stream",
+# )
 
 
 @mock_logs
 @mock_s3
+@pytest.fixture
 def test_loading_lambda_handler_logs_no_new_data(mocker):
     client = boto3.client("logs", region_name="eu-west-2")
     client.create_log_group(logGroupName="/aws/lambda/loading-lambda")
@@ -258,8 +262,7 @@ def test_loading_lambda_handler_logs_no_new_data(mocker):
     # Create a spy on the log_to_cloudwatch function
     spy = mocker.spy(loading, "log_to_cloudwatch")
 
-    with patch("src.loading.loading.filter_data") as\
-         mock_filtered_data:
+    with patch("src.loading.loading.filter_data") as mock_filtered_data:
         mock_filtered_data.return_value = []
 
         # Call the lambda_handler function
@@ -270,7 +273,7 @@ def test_loading_lambda_handler_logs_no_new_data(mocker):
             test_database,
             test_host,
             test_port,
-            test_password
+            test_password,
         )
         # Check if the log_to_cloudwatch function was
         # called with the expected arguments
