@@ -46,7 +46,7 @@ def filter_data(data, table_name):
             try:
                 if datetime.strptime(
                     field, "%Y-%m-%d %H:%M:%S.%f"
-                ) < datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f"):
+                ) <= datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f"):
                     delete = True
             except ValueError:
                 pass

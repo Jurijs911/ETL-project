@@ -11,6 +11,7 @@ from read_ingestion_csv import read_ingestion_csv
 from filter_data_by_timestamp import filter_data
 from write_timestamp import write_timestamp
 from upload_csv import upload_csv
+from datetime import datetime
 import logging
 import boto3
 import time
@@ -79,12 +80,13 @@ def lambda_handler(event, context):
             ingested_data["counterparty"], ingested_data["address"]
         )
         formatted_dates = []
+
         for table in ingested_data:
             for row in ingested_data[table]:
                 for item in row:
                     try:
                         if re.search(
-                            r"^\d{4}-\d{1}-\d{2} \d{2}:\d{2}:\d{2}.\d{6}$",
+                            r"^\d{4}-\d{1,2}-\d{2} \d{2}:\d{2}:\d{2}.\d{6}$",
                             item,
                         ):
                             formatted_date = format_dim_date(item)
@@ -95,17 +97,34 @@ def lambda_handler(event, context):
 
         bucket_name = "kp-northcoders-processed-bucket"
 
-        upload_csv(
-            formatted_sales_orders,
-            "fact_sales_order",
-            bucket_name,
-        )
-        upload_csv(formatted_designs, "dim_design", bucket_name)
-        upload_csv(formatted_staff, "dim_staff", bucket_name)
-        upload_csv(formatted_locations, "dim_location", bucket_name)
-        upload_csv(formatted_currencies, "dim_currency", bucket_name)
-        upload_csv(formatted_counterparties, "dim_counterparty", bucket_name)
-        upload_csv(formatted_dates, "dim_date", bucket_name)
+        if formatted_sales_orders != []:
+            upload_csv(
+                formatted_sales_orders,
+                "fact_sales_order",
+                bucket_name,
+            )
+        if formatted_designs != []:
+            upload_csv(formatted_designs, "dim_design", bucket_name)
+        if formatted_staff != []:
+            upload_csv(formatted_staff, "dim_staff", bucket_name)
+        if formatted_locations != []:
+            upload_csv(formatted_locations, "dim_location", bucket_name)
+        if formatted_currencies != []:
+            upload_csv(formatted_currencies, "dim_currency", bucket_name)
+        if formatted_counterparties != []:
+            upload_csv(
+                formatted_counterparties, "dim_counterparty", bucket_name
+            )
+        if formatted_dates != []:
+            upload_csv(formatted_dates, "dim_date", bucket_name)
+
+        with open("/tmp//last_remodel.txt", "w") as f:
+            f.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"))
+
+        s3 = boto3.resource("s3")
+        s3.Object(
+            "kp-northcoders-processed-bucket", "trigger/last_remodel.txt"
+        ).put(Body=open("/tmp//last_remodel.txt", "rb"))
 
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")

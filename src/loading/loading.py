@@ -12,12 +12,18 @@ from loading_utils import (
     create_connection,
 )
 from read_processed_csv import read_processed_csv
+from loading_filter_data_by_timestamp import filter_data
+from loading_write_timestamp import loading_write_timestamp
+from get_secret import get_secret
 
 logging.basicConfig(level=logging.INFO)
-
 logger = logging.getLogger(__name__)
 
-cloudwatch_logs = boto3.client("logs")
+secret = get_secret()
+
+cloudwatch_logs = boto3.client("logs", region_name="eu-west-2")
+log_group_name = "/aws/lambda/loading-lambda"
+log_stream_name = "lambda-log-stream"
 
 
 def log_to_cloudwatch(message, log_group_name, log_stream_name):
@@ -44,7 +50,15 @@ def log_to_cloudwatch(message, log_group_name, log_stream_name):
     )
 
 
-def lambda_handler(event, context):
+def lambda_handler(
+    event,
+    context,
+    db_user=secret["username"],
+    db_database=secret["dbname"],
+    db_host=secret["host"],
+    db_port=secret["port"],
+    db_password=secret["password"],
+):
     """
     AWS Lambda function to process data and insert it into the respective
     dimension and fact tables.
@@ -56,12 +70,19 @@ def lambda_handler(event, context):
         on the error.
     """
 
+    conn = create_connection(
+        db_user, db_database, db_host, db_port, db_password
+    )
+
     try:
-        bucket_name = "kp-northcoder-data-bucket"
+        bucket_name = "kp-northcoders-processed-bucket"
 
         processed_data = read_processed_csv(bucket_name)
 
-        conn = create_connection()
+        for table, data in processed_data.items():
+            filtered_data = filter_data(data, table)
+            loading_write_timestamp(filtered_data, table)
+            processed_data[table] = filtered_data
 
         inserted_data = {
             "dim_design": insert_into_dim_design(
@@ -84,6 +105,20 @@ def lambda_handler(event, context):
                 conn, processed_data["fact_sales_order"]
             ),
         }
+
+        for table, data in inserted_data.items():
+            if len(data) > 0:
+                log_to_cloudwatch(
+                    str(f"Data has been inserted into the {table} table."),
+                    "/aws/lambda/loading-lambda",
+                    "lambda-log-stream",
+                )
+            else:
+                log_to_cloudwatch(
+                    str(f"No data has been inserted into the {table} table."),
+                    "/aws/lambda/loading-lambda",
+                    "lambda-log-stream",
+                )
 
         conn.close()
 

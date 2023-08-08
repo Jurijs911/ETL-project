@@ -14,9 +14,8 @@ data "archive_file" "remodelling_lambda_code" {
   source_dir  = "${path.module}/../src/remodelling"
 }
 
-# data "archive_file" "loading_lambda_code" {
-#   type        = "zip"
-#   output_path = "${path.module}/../loading.zip"
-#   source_dir  = "${path.module}/../src/loading"
-#   depends_on  = [null_resource.install_dependencies]
-# }
+data "archive_file" "loading_lambda_code" {
+  type        = "zip"
+  output_path = "${path.module}/../loading.zip"
+  source_dir  = "${path.module}/../src/loading"
+}

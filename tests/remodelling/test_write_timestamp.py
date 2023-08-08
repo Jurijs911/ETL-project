@@ -1,5 +1,6 @@
 from src.remodelling.write_timestamp import write_timestamp
 from src.remodelling.filter_data_by_timestamp import filter_data
+import os
 import boto3
 from moto import mock_s3
 
@@ -29,7 +30,14 @@ def test_writes_timestamp_to_bucket():
         Key="sales_order/last_processed.txt",
     )
 
-    write_timestamp([["2020-7-25 15:20:49.962000"]], "sales_order")
+    with open("last_processed.txt", "w") as f:
+        f.write("2020-7-25 15:20:49.962000")
+
+    s3_client.upload_file(
+        "last_processed.txt",
+        "kp-northcoders-ingestion-bucket",
+        "sales_order/last_processed.txt",
+    )
 
     sample_data = [
         [
@@ -76,3 +84,5 @@ def test_writes_timestamp_to_bucket():
     )
 
     assert s3_response == "2023-7-25 15:20:49.962000"
+
+    os.remove("last_processed.txt")

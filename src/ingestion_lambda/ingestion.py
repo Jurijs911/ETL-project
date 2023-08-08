@@ -1,6 +1,7 @@
 import logging
 import boto3
 import time
+from datetime import datetime
 from get_secret import get_secret
 from get_address_add import get_address_add
 from upload_csv import upload_csv
@@ -289,6 +290,14 @@ def lambda_handler(
                 "/aws/lambda/ingestion-lambda",
                 "lambda-log-stream",
             )
+
+        with open("/tmp//last_ingestion.txt", "w") as f:
+            f.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"))
+
+        s3 = boto3.resource("s3")
+        s3.Object(
+            "kp-northcoders-ingestion-bucket", "trigger/last_ingestion.txt"
+        ).put(Body=open("/tmp//last_ingestion.txt", "rb"))
 
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
