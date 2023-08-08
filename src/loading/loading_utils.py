@@ -366,7 +366,7 @@ def insert_into_dim_counterparty(conn, counterparty_data):
                     counterparty_id,
                     counterparty_legal_name,
                     counterparty_legal_address_line_1,
-                    counterparty_legal_address_line2,
+                    counterparty_legal_address_line_2,
                     counterparty_legal_district,
                     counterparty_legal_city,
                     counterparty_legal_postal_code,
@@ -376,7 +376,7 @@ def insert_into_dim_counterparty(conn, counterparty_data):
                     :counterparty_id,
                     :counterparty_legal_name,
                     :counterparty_legal_address_line_1,
-                    :counterparty_legal_address_line2,
+                    :counterparty_legal_address_line_2,
                     :counterparty_legal_district,
                     :counterparty_legal_city,
                     :counterparty_legal_postal_code,
@@ -387,8 +387,8 @@ def insert_into_dim_counterparty(conn, counterparty_data):
                         counterparty_legal_name = :counterparty_legal_name,
                         counterparty_legal_address_line_1 = \
                             :counterparty_legal_address_line_1,
-                        counterparty_legal_address_line2 = \
-                            :counterparty_legal_address_line2,
+                        counterparty_legal_address_line_2 = \
+                            :counterparty_legal_address_line_2,
                         counterparty_legal_district = \
                             :counterparty_legal_district,
                         counterparty_legal_city = :counterparty_legal_city,
@@ -401,7 +401,7 @@ def insert_into_dim_counterparty(conn, counterparty_data):
                 counterparty_id=counterparty[0],
                 counterparty_legal_name=counterparty[1],
                 counterparty_legal_address_line_1=counterparty[2],
-                counterparty_legal_address_line2=counterparty[3],
+                counterparty_legal_address_line_2=counterparty[3],
                 counterparty_legal_district=counterparty[4],
                 counterparty_legal_city=counterparty[5],
                 counterparty_legal_postal_code=counterparty[6],
