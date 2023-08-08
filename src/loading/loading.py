@@ -33,8 +33,10 @@ def log_to_cloudwatch(message, log_group_name, log_stream_name):
             logGroupName=log_group_name,
             logStreamName=log_stream_name,
             logEvents=[
-                {"timestamp": int(round(time.time() * 1000)),
-                 "message": message},
+                {
+                    "timestamp": int(round(time.time() * 1000)),
+                    "message": message,
+                },
             ],
         )
 

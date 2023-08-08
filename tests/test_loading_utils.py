@@ -26,8 +26,8 @@ class Test_Dim_Design:
             return_value=mock_connection,
         ):
             design_data = [
-                [5, "Design 5", "location5", "file5"],
-                [6, "Design 6", "location6", "file6"],
+                ["5", "Design 5", "location5", "file5"],
+                ["6", "Design 6", "location6", "file6"],
             ]
             mock_connection.run.side_effect = (
                 lambda query, **params: design_data
@@ -88,8 +88,8 @@ class Test_Dim_Currency:
             return_value=mock_connection,
         ):
             currency_data = [
-                [1, "USD", "US Dollar"],
-                [2, "GBP", "GB Pound"],
+                ["1", "USD", "US Dollar"],
+                ["2", "GBP", "GB Pound"],
             ]
             mock_connection.run.return_value = currency_data
 
@@ -109,8 +109,8 @@ class Test_Dim_Currency:
     def test_insert_missing_columns(self):
         mock_connection = Mock()
         invalid_currency_data = [
-            [1, "USD"],
-            [2],
+            ["1", "USD"],
+            ["2"],
         ]
 
         with pytest.raises(InputValidationError):
@@ -130,8 +130,8 @@ def test_read_inserted_dim_staff_data():
         return_value=mock_connection,
     ):
         staff_data = [
-            [1, "Zenab", "Haider", "Sales", "Manchester", "zenab.email.com"],
-            [2, "Lisa", "S", "Marketing", "London", "lisa@email.com"],
+            ["1", "Zenab", "Haider", "Sales", "Manchester", "zenab.email.com"],
+            ["2", "Lisa", "S", "Marketing", "London", "lisa@email.com"],
         ]
         mock_connection.run.return_value = staff_data
 
@@ -143,15 +143,15 @@ def test_insert_into_dim_staff_invalid_input():
     mock_connection = Mock()
     invalid_staff_data = [
         [
-            1,
+            "1",
             "Invalid",
             "Staff1",
-            123,
+            "123",
             "Invalid Location",
             "email1@example.com",
         ],
         [
-            2,
+            "2",
             "Staff2",
             456,
             "Invalid Department",
@@ -172,10 +172,10 @@ def test_insert_into_dim_staff_missing_columns():
     ):
         staff_data_with_missing_columns = [
             # Missing last two columns
-            [1, "Lisa", "Sco", "Sales", "London", "lisa@example.com"],
+            ["1", "Lisa", "Sco", "Sales", "London", "lisa@example.com"],
             # Extra column
             [
-                2,
+                "2",
                 "Zenab",
                 "Haider",
                 "Marketing",
@@ -186,7 +186,7 @@ def test_insert_into_dim_staff_missing_columns():
             ],
             # Too many columns
             [
-                3,
+                "3",
                 "Cam",
                 "P",
                 "GOD",
@@ -217,7 +217,7 @@ def test_insert_into_dim_location():
     ):
         location_data = [
             [
-                1,
+                "1",
                 "address_line_1",
                 "address_line_2",
                 "district",
@@ -227,7 +227,7 @@ def test_insert_into_dim_location():
                 "phone",
             ],
             [
-                2,
+                "2",
                 "123 apple street",
                 "address_line_2",
                 "apple",
@@ -247,7 +247,7 @@ def test_insert_into_dim_location_invalid_input():
     mock_connection = Mock()
     invalid_location_data = [
         [
-            1,
+            "1",
             "Address 1",
             123,
             "Invalid District",
@@ -257,7 +257,7 @@ def test_insert_into_dim_location_invalid_input():
             "555-123-4567",
         ],
         [
-            2,
+            "2",
             "123 Main St",
             "Apt 4",
             "Central District",
@@ -276,7 +276,7 @@ def test_insert_into_dim_location_missing_columns():
     mock_connection = Mock()
     invalid_location_data = [
         [
-            1,
+            "1",
             "Address 1",
             "District",
             "Cityville",
@@ -285,7 +285,7 @@ def test_insert_into_dim_location_missing_columns():
             "555-123-4567",
         ],
         [
-            2,
+            "2",
             "123 Main St",
             "Apt 4",
             "Central District",
@@ -350,7 +350,7 @@ def test_insert_into_dim_counterparty():
     ):
         counterparty_data = [
             [
-                1,
+                "1",
                 "counterparty_legal_name",
                 "counterparty_legal_address_line_1",
                 "counterparty_legal_address_line_2",
@@ -379,7 +379,7 @@ def test_insert_into_dim_counterparty_invalid_input():
     ):
         counterparty_data = [
             [
-                1,
+                "1",
                 "Counterparty 1",
                 "Address 1",
                 "Address 2",
@@ -403,7 +403,7 @@ def test_insert_into_dim_counterparty_invalid_currency_id():
     ):
         counterparty_data = [
             [
-                1,
+                "1",
                 "Counterparty 1",
                 "Address 1",
                 "Address 2",
@@ -419,7 +419,7 @@ def test_insert_into_dim_counterparty_invalid_currency_id():
                 "Invalid Address",
                 "Invalid District",
                 "Invalid City",
-                "12345",
+                12345,
                 "Invalid Country",
                 "Invalid Phone",
             ],
@@ -444,21 +444,21 @@ def test_insert_into_dim_fact_sales_order():
     ):
         sales_data = [
             [
-                1,
-                1,
+                "1",
+                "1",
                 "2023-07-27",
                 "15:20:49.962000",
                 "2023-07-27",
                 "15:20:49.962000",
-                10,
-                12,
-                115,
-                20.20,
-                15,
-                16,
+                "10",
+                "12",
+                "115",
+                "20.20",
+                "15",
+                "16",
                 "2023-07-30",
                 "2023-08-05",
-                18,
+                "18",
             ]
         ]
         with pytest.raises(InputValidationError):
@@ -514,38 +514,38 @@ def test_insert_into_dim_fact_sales_order_invalid_date_format():
     mock_connection = Mock()
     invalid_fact_sales_order_data = [
         [
-            1,
-            1001,
+            "1",
+            "1001",
             "2023-07-28",
             "08:30:00.000000",
             "2023-07-28",
             "10:15:00.000000",
             "Invalid Sales Staff",
             501,
-            10,
-            50.0,
-            401,
-            201,
+            "10",
+            "50.0",
+            "401",
+            "201",
             "2023-08-15",
             "2023-08-20",
-            302,
+            "302",
         ],
         [
-            2,
+            "2",
             "Invalid Order ID",
             "28-07-2023",
             "09:45:00.000000",
             "2023-07-28",
             "11:30:00.000000",
-            102,
-            502,
-            5,
+            "102",
+            "502",
+            "5",
             "Invalid Unit Price",
-            402,
-            202,
+            "402",
+            "202",
             "2023-08-16",
             "2023-08-21",
-            301,
+            "301",
         ],
     ]
 

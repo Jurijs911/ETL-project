@@ -237,6 +237,11 @@ def test_insert_into_dim_design():
     """
 
     test_design_data = [
+        ["1", "Design1", "File1", "File1.jpg"],
+        ["2", "Design2", "File2", "File2.jpg"],
+    ]
+
+    expected = [
         [1, "Design1", "File1", "File1.jpg"],
         [2, "Design2", "File2", "File2.jpg"],
     ]
@@ -244,11 +249,9 @@ def test_insert_into_dim_design():
     conn = create_test_connection()
     reset_database(conn)
     conn.run('SET search_path TO "project_team_2", public;')
-    insert_into_dim_design(conn, test_design_data)
+    inserted_data = insert_into_dim_design(conn, test_design_data)
 
-    table_contents = conn.run('SELECT * FROM "dim_design";')
-
-    assert table_contents == test_design_data
+    assert inserted_data == expected
 
 
 def test_insert_into_dim_currency():
@@ -258,6 +261,11 @@ def test_insert_into_dim_currency():
     and return the inserted data.
     """
     test_currency_data = [
+        ["1", "USD", "US Dollar"],
+        ["2", "GBP", "GB Pound"],
+    ]
+
+    expected = [
         [1, "USD", "US Dollar"],
         [2, "GBP", "GB Pound"],
     ]
@@ -268,7 +276,7 @@ def test_insert_into_dim_currency():
 
     table_contents = conn.run('SELECT * FROM "dim_currency";')
 
-    assert table_contents == test_currency_data
+    assert table_contents == expected
 
 
 def test_insert_into_dim_staff():
@@ -278,6 +286,12 @@ def test_insert_into_dim_staff():
     return the inserted data.
     """
     test_staff_data = [
+        ["101", "Zenab", "Haider", "Sales", "Manchester", "zenab@email.com"],
+        ["2", "Lisa", "Sco", "Coding", "Birmingham", "lisa.sco@email.com"],
+        ["102", "Cameron", "P", "Coding", "London", "cameron@example.com"],
+    ]
+
+    expected = [
         [101, "Zenab", "Haider", "Sales", "Manchester", "zenab@email.com"],
         [2, "Lisa", "Sco", "Coding", "Birmingham", "lisa.sco@email.com"],
         [102, "Cameron", "P", "Coding", "London", "cameron@example.com"],
@@ -287,10 +301,7 @@ def test_insert_into_dim_staff():
     conn.run('SET search_path TO "project_team_2", public;')
     inserted_data = insert_into_dim_staff(conn, test_staff_data)
 
-    table_contents = conn.run('SELECT * FROM "dim_staff";')
-
-    assert inserted_data == test_staff_data
-    assert table_contents == test_staff_data
+    assert inserted_data == expected
 
 
 def test_insert_into_dim_date():
@@ -328,6 +339,31 @@ def test_insert_into_dim_counterparty():
 
     test_counterparty_data = [
         [
+            "201",
+            "Business Name",
+            "123 Apple St",
+            "",
+            "District 1",
+            "Manchester",
+            "12345",
+            "UK",
+            "123-456-7890",
+        ],
+        [
+            "202",
+            "Business Name",
+            "123 Apple St",
+            "",
+            "District 1",
+            "Manchester",
+            "12345",
+            "UK",
+            "123-456-7890",
+        ],
+    ]
+
+    expected = [
+        [
             201,
             "Business Name",
             "123 Apple St",
@@ -358,7 +394,7 @@ def test_insert_into_dim_counterparty():
     table_contents = conn.run('SELECT * FROM "dim_counterparty";')
 
     assert inserted_data == test_counterparty_data
-    assert table_contents == test_counterparty_data
+    assert table_contents == expected
 
 
 def test_insert_into_dim_location():
@@ -368,6 +404,29 @@ def test_insert_into_dim_location():
     and return the inserted data.
     """
     test_location_data = [
+        [
+            "301",
+            "Location Name",
+            "Location Address",
+            "Location Address 2",
+            "City",
+            "State",
+            "Country",
+            "Postal Code",
+        ],
+        [
+            "302",
+            "Location Name",
+            "Location Address",
+            "Location Address 2",
+            "City",
+            "State",
+            "Country",
+            "Postal Code",
+        ],
+    ]
+
+    expected = [
         [
             301,
             "Location Name",
@@ -394,10 +453,7 @@ def test_insert_into_dim_location():
     conn.run('SET search_path TO "project_team_2", public;')
     inserted_data = insert_into_dim_location(conn, test_location_data)
 
-    table_contents = conn.run("SELECT * FROM dim_location")
-
-    assert inserted_data == test_location_data
-    assert table_contents == test_location_data
+    assert inserted_data == expected
 
 
 def test_insert_into_fact_sales_order():
@@ -408,36 +464,36 @@ def test_insert_into_fact_sales_order():
     """
     test_fact_sales_order_data = [
         [
-            100,
+            "100",
             "2023-07-01",
             "12:34:56.789000",
             "2023-07-24",
             "15:45:30.123000",
-            101,
-            201,
-            10,
-            100.0,
-            1,
-            1,
+            "101",
+            "201",
+            "10",
+            "100.0",
+            "1",
+            "1",
             "2023-07-30",
             "2023-08-05",
-            301,
+            "301",
         ],
         [
-            200,
+            "200",
             "2023-08-15",
             "09:12:45.678000",
             "2023-07-24",
             "09:12:45.678000",
-            102,
-            202,
-            5,
-            50.0,
-            2,
-            2,
+            "102",
+            "202",
+            "5",
+            "50.0",
+            "2",
+            "2",
             "2023-07-28",
             "2023-08-02",
-            302,
+            "302",
         ],
     ]
 
