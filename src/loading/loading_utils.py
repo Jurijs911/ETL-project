@@ -79,9 +79,21 @@ def insert_into_dim_design(conn, design_data):
                 raise InputValidationError
             print("In the try block")
             conn.run(
-                "INSERT INTO dim_design(design_id, design_name, file_location,\
-                file_name) VALUES (:design_id, :design_name, :file_location, \
-                :file_name)",
+                """INSERT INTO dim_design(
+                    design_id,
+                    design_name,
+                    file_location,
+                    file_name
+                ) VALUES (
+                    :design_id,
+                    :design_name,
+                    :file_location,
+                    :file_name
+                ) ON CONFLICT (design_id) DO UPDATE
+                    SET design_id = :design_id,
+                        design_name = :design_name,
+                        file_location = :file_location,
+                        file_name = :file_name;""",
                 design_id=design[0],
                 design_name=design[1],
                 file_location=design[2],
@@ -120,9 +132,18 @@ def insert_into_dim_currency(conn, currency_data):
                 raise InputValidationError
 
             conn.run(
-                "INSERT INTO dim_currency (currency_id, currency_code, \
-                currency_name) VALUES (:currency_id, :currency_code, \
-                :currency_name)",
+                """INSERT INTO dim_currency (
+                    currency_id,
+                    currency_code,
+                    currency_name
+                ) VALUES (
+                    :currency_id,
+                    :currency_code,
+                    :currency_name
+                ) ON CONFLICT (currency_id) DO UPDATE
+                    SET currency_id = :currency_id,
+                        currency_code = :currency_code,
+                        currency_name = :currency_name;""",
                 currency_id=currency[0],
                 currency_code=currency[1],
                 currency_name=currency[2],
@@ -163,10 +184,27 @@ def insert_into_dim_staff(conn, staff_data):
                 raise InputValidationError
 
             conn.run(
-                "INSERT INTO dim_staff (staff_id, first_name, last_name, \
-                department_name, location, email_address) VALUES (:staff_id, \
-                :first_name, :last_name, :department_name, :location, \
-                :email_address)",
+                """INSERT INTO dim_staff (
+                    staff_id,
+                    first_name,
+                    last_name,
+                    department_name,
+                    location,
+                    email_address
+                ) VALUES (
+                    :staff_id,
+                    :first_name,
+                    :last_name,
+                    :department_name,
+                    :location,
+                    :email_address
+                ) ON CONFLICT (staff_id) DO UPDATE
+                    SET staff_id = :staff_id,
+                        first_name = :first_name,
+                        last_name = :last_name,
+                        department_name = :department_name,
+                        location = :location,
+                        email_address = :email_address;""",
                 staff_id=staff[0],
                 first_name=staff[1],
                 last_name=staff[2],
@@ -209,10 +247,33 @@ def insert_into_dim_location(conn, location_data):
                 raise InputValidationError
 
             conn.run(
-                "INSERT INTO dim_location (location_id, address_line_1, \
-                address_line_2, district, city, postal_code, country, phone) \
-                VALUES (:location_id, :address_line_1, :address_line_2, \
-                :district, :city, :postal_code, :country, :phone)",
+                """INSERT INTO dim_location (
+                    location_id,
+                    address_line_1,
+                    address_line_2,
+                    district,
+                    city,
+                    postal_code,
+                    country,
+                    phone
+                ) VALUES (
+                    :location_id,
+                    :address_line_1,
+                    :address_line_2,
+                    :district,
+                    :city,
+                    :postal_code,
+                    :country,
+                    :phone
+                ) ON CONFLICT (location_id) DO UPDATE
+                    SET location_id = :location_id,
+                        address_line_1 = :address_line_1,
+                        address_line_2 = :address_line_2,
+                        district = :district,
+                        city = :city,
+                        postal_code = :postal_code,
+                        country = :country,
+                        phone = :phone;""",
                 location_id=location[0],
                 address_line_1=location[1],
                 address_line_2=location[2],
@@ -248,10 +309,33 @@ def insert_into_dim_date(conn, date_data):
             if False in date:  # CHANGE THIS
                 raise InputValidationError
             conn.run(
-                "INSERT INTO dim_date (date_id, year, month, day, day_of_week,\
-                day_name, month_name, quarter) "
-                "VALUES (:date_id, :year, :month, :day, :day_of_week,\
-                :day_name, :month_name, :quarter)",
+                """INSERT INTO dim_date (
+                    date_id,
+                    year,
+                    month,
+                    day,
+                    day_of_week,
+                    day_name,
+                    month_name,
+                    quarter
+                ) VALUES (
+                    :date_id,
+                    :year,
+                    :month,
+                    :day,
+                    :day_of_week,
+                    :day_name,
+                    :month_name,
+                    :quarter
+                ) ON CONFLICT (date_id) DO UPDATE
+                    SET date_id = :date_id,
+                        year = :year,
+                        month = :month,
+                        day = :day,
+                        day_of_week = :day_of_week,
+                        day_name = :day_name,
+                        month_name = :month_name,
+                        quarter = :quarter;""",
                 date_id=date[0],
                 year=date[1],
                 month=date[2],
@@ -290,19 +374,42 @@ def insert_into_dim_counterparty(conn, counterparty_data):
                     raise InputValidationError
 
             conn.run(
-                "INSERT INTO dim_counterparty (counterparty_id, \
-                counterparty_legal_name, counterparty_legal_address_line_1\
-                , counterparty_legal_address_line2, \
-                counterparty_legal_district, counterparty_legal_city, \
-                counterparty_legal_postal_code, counterparty_legal_country\
-                , counterparty_legal_phone_number) VALUES \
-                (:counterparty_id, :counterparty_legal_name, \
-                :counterparty_legal_address_line_1, \
-                :counterparty_legal_address_line2, \
-                :counterparty_legal_district, :counterparty_legal_city, \
-                :counterparty_legal_postal_code, \
-                :counterparty_legal_country, \
-                :counterparty_legal_phone_number)",
+                """INSERT INTO dim_counterparty (
+                    counterparty_id,
+                    counterparty_legal_name,
+                    counterparty_legal_address_line_1,
+                    counterparty_legal_address_line2,
+                    counterparty_legal_district,
+                    counterparty_legal_city,
+                    counterparty_legal_postal_code,
+                    counterparty_legal_country,
+                    counterparty_legal_phone_number
+                ) VALUES (
+                    :counterparty_id,
+                    :counterparty_legal_name,
+                    :counterparty_legal_address_line_1,
+                    :counterparty_legal_address_line2,
+                    :counterparty_legal_district,
+                    :counterparty_legal_city,
+                    :counterparty_legal_postal_code,
+                    :counterparty_legal_country,
+                    :counterparty_legal_phone_number
+                ) ON CONFLICT (counterparty_id) DO UPDATE
+                    SET counterparty_id = :counterparty_id,
+                        counterparty_legal_name = :counterparty_legal_name,
+                        counterparty_legal_address_line_1 = \
+                            :counterparty_legal_address_line_1,
+                        counterparty_legal_address_line2 = \
+                            :counterparty_legal_address_line2,
+                        counterparty_legal_district = \
+                            :counterparty_legal_district,
+                        counterparty_legal_city = :counterparty_legal_city,
+                        counterparty_legal_postal_code = \
+                            :counterparty_legal_postal_code,
+                        counterparty_legal_country = \
+                            :counterparty_legal_country,
+                        counterparty_legal_phone_number = \
+                            :counterparty_legal_phone_number;""",
                 counterparty_id=counterparty[0],
                 counterparty_legal_name=counterparty[1],
                 counterparty_legal_address_line_1=counterparty[2],
@@ -375,16 +482,36 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
                 raise InputValidationError
 
             conn.run(
-                "INSERT INTO fact_sales_order(sales_order_id, created_date, \
-                created_time, last_updated_date, last_updated_time, \
-                sales_staff_id, counterparty_id, units_sold, unit_price, \
-                currency_id, design_id, agreed_payment_date, \
-                agreed_delivery_date, agreed_delivery_location_id) VALUES \
-                (:sales_order_id, :created_date, :created_time, \
-                :last_updated_date, :last_updated_time, :sales_staff_id, \
-                :counterparty_id, :units_sold, :unit_price, :currency_id, \
-                :design_id, :agreed_payment_date, :agreed_delivery_date, \
-                :agreed_delivery_location_id)",
+                """INSERT INTO fact_sales_order(
+                    sales_order_id, created_date,
+                    created_time,
+                    last_updated_date,
+                    last_updated_time,
+                    sales_staff_id,
+                    counterparty_id,
+                    units_sold,
+                    unit_price,
+                    currency_id,
+                    design_id,
+                    agreed_payment_date,
+                    agreed_delivery_date,
+                    agreed_delivery_location_id
+                ) VALUES (
+                    :sales_order_id,
+                    :created_date,
+                    :created_time,
+                    :last_updated_date,
+                    :last_updated_time,
+                    :sales_staff_id,
+                    :counterparty_id,
+                    :units_sold,
+                    :unit_price,
+                    :currency_id,
+                    :design_id,
+                    :agreed_payment_date,
+                    :agreed_delivery_date,
+                    :agreed_delivery_location_id
+                );""",
                 sales_order_id=sale[0],
                 created_date=sale[1],
                 created_time=sale[2],
