@@ -65,8 +65,7 @@ def lambda_handler(
         bucket_name = "kp-northcoders-processed-bucket"
 
         processed_data = read_processed_csv(bucket_name)
-        print("PROCESSED DATA", processed_data)
-        print("1111", len(processed_data))
+
         for table, data in processed_data.items():
             filtered_data = filter_data(data, table)
             loading_write_timestamp(filtered_data, table)
@@ -94,9 +93,7 @@ def lambda_handler(
             ),
         }
 
-        print("INSERTED DATA", inserted_data)
         for table, data in inserted_data.items():
-            print(table, data)
             if len(data) > 0:
                 log_to_cloudwatch(
                     str(f"Data has been inserted into the {table} table."),
