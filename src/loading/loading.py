@@ -71,9 +71,10 @@ def lambda_handler(
         processed_data = read_processed_csv(bucket_name)
 
         for table, data in processed_data.items():
-            filtered_data = filter_data(data, table)
-            loading_write_timestamp(filtered_data, table)
-            processed_data[table] = filtered_data
+            if "trigger" not in table:
+                filtered_data = filter_data(data, table)
+                loading_write_timestamp(filtered_data, table)
+                processed_data[table] = filtered_data
 
         inserted_data = {
             "dim_design": insert_into_dim_design(
