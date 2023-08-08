@@ -26,9 +26,15 @@ def log_to_cloudwatch(message, log_group_name, log_stream_name):
     """
     Log a message to CloudWatch Logs.
 
-    :param message: The message to be logged.
-    :param log_group_name: The name of the CloudWatch Logs log group.
-    :param log_stream_name: The name of the CloudWatch Logs log stream.
+    Args:
+    message:
+    The message to be logged.
+
+    log_group_name:
+    The name of the CloudWatch Logs log group.
+    log_stream_name:
+
+    The name of the CloudWatch Logs log stream.
     """
     cloudwatch_logs.put_log_events(
         logGroupName=log_group_name,
@@ -49,7 +55,8 @@ def lambda_handler(event, context):
     uploads the formatted data back to another S3 bucket.
 
     Raises:
-        Exception: If an error occurs during data processing or insertion,
+        Exception:
+        If an error occurs during data processing or insertion,
         the exception is logged to CloudWatch, and a CloudWatch alarm is
         triggered to alert on the error.
     """

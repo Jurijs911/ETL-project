@@ -23,12 +23,24 @@ secret = get_secret()
 
 cloudwatch_logs = boto3.client("logs", region_name="eu-west-2")
 
-# Set log group and log stream names
 log_group_name = "/aws/lambda/ingestion-lambda"
 log_stream_name = "lambda-log-stream"
 
 
 def log_to_cloudwatch(message, log_group_name, log_stream_name):
+    """
+    Log a message to CloudWatch Logs.
+
+    Args:
+    message:
+    The message to be logged.
+
+    log_group_name:
+    The name of the CloudWatch Logs log group.
+    log_stream_name:
+
+    The name of the CloudWatch Logs log stream.
+    """
     cloudwatch_logs.put_log_events(
         logGroupName="/aws/lambda/ingestion-lambda",
         logStreamName="lambda-log-stream",
@@ -47,6 +59,32 @@ def lambda_handler(
     db_port=secret["port"],
     db_password=secret["password"],
 ):
+    """
+    AWS Lambda function handler to fetch data from different sources,
+    upload it to S3, and log relevant information to CloudWatch.
+
+    Args:
+    event:
+    The event data passed to the Lambda function.
+    context:
+    The runtime context of the Lambda function.
+    db_user:
+    The username for the database connection.
+    db_database:
+    The name of the database to connect to.
+    db_host:
+    The host address for the database connection.
+    db_port:
+    The port number for the database connection.
+    db_password:
+    The password for the database connection.
+
+    Raises:
+        Exception:
+        If an error occurs during data processing or insertion,
+        the exception is logged to CloudWatch, and a CloudWatch alarm is
+        triggered to alert on the error.
+    """
     try:
         address_data = get_address_add(
             db_user, db_database, db_host, db_port, db_password
@@ -257,4 +295,4 @@ def lambda_handler(
         log_to_cloudwatch(
             str(e), "/aws/lambda/ingestion-lambda", "lambda-log-stream"
         )
-        raise  # this triggers the CloudWatch alarm
+        raise

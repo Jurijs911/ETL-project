@@ -16,7 +16,7 @@ class MissingRequiredEnvironmentVariables (Exception):
 
     def __init__(self, db_user, db_database, db_host, db_port, db_password):
         """
-        Initialize the MissingRequiredEnvironmentVariables exception.
+        Initialise the MissingRequiredEnvironmentVariables exception.
         """
         self.user = db_user
         self.database = db_database

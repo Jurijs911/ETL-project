@@ -10,11 +10,14 @@ secret = get_secret()
 
 class MissingRequiredEnvironmentVariables (Exception):
     """
-        Is produced when attempts to connect to DB
-        with variables which do not exist
+    Exception raised when attempts to connect to the database with missing
+    required variables.
     """
 
     def __init__(self, db_user, db_database, db_host, db_port, db_password):
+        """
+        Initialises the MissingRequiredEnvironmentVariables exception.
+        """
         self.user = db_user
         self.database = db_database
         self.host = db_host
@@ -29,6 +32,37 @@ def get_staff_add(
     db_port=secret["port"],
     db_password=secret["password"],
 ):
+    """
+    It retrieves the necessary database credentials from the secrets and
+    establishes a connection to the database. It then determines the search
+    interval using the 'get_last_time' function for the 'staff' table,
+    queries the table for data created or updated in that interval, and
+    returns the result as a list of dictionaries.
+
+    Args:
+    db_user:
+    The username for the database connection.
+    db_database:
+    The name of the database to connect to.
+    db_host:
+    The host address for the database connection.
+    db_port:
+    The port number for the database connection.
+    db_password:
+    The password for the database connection.
+
+    Raises:
+    MissingRequiredEnvironmentVariables:
+    If any of the required database connection variables is missing or invalid.
+
+    Exception:
+    If there's a DatabaseError during the connection.
+
+    Returns:
+    list:
+    A list of dictionaries containing data for the 'design' table.
+    """
+
     """
     CONNECTION
     """
@@ -62,12 +96,9 @@ def get_staff_add(
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
-    #
-    # Set schema search order
+
     conn.run('SET search_path TO "kp-test-source", public;')
 
-    #
-    # Query table
     query = "SELECT * FROM staff WHERE \
         created_at > :search_interval OR last_updated > :search_interval;"
     params = {"search_interval": search_interval}

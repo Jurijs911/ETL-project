@@ -39,7 +39,8 @@ class Test_Ingestion_Purchase:
                 db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
 
             assert isinstance(result, list)
-            expected_keys = {"purchase_order_id",
+            expected_keys = {
+                             "purchase_order_id",
                              "created_at",
                              "last_updated",
                              "staff_id",
