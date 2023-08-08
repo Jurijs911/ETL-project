@@ -365,6 +365,7 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
                     raise InputValidationError
 
             try:
+                print("sale", sale)
                 datetime.strptime(sale[1], "%Y-%m-%d")
 
                 # Remove milliseconds from the time strings before parsing
@@ -375,8 +376,8 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
                 # Remove milliseconds from the time strings before parsing
                 datetime.strptime(sale[4].split(".")[0], "%H:%M:%S")
 
-                datetime.strptime(sale[11], "%Y-%m-%d")
-                datetime.strptime(sale[12], "%Y-%m-%d")
+                # datetime.strptime(sale[11], "%Y-%m-%d")
+                # datetime.strptime(sale[12], "%Y-%m-%d")
 
             except ValueError:
                 raise InputValidationError

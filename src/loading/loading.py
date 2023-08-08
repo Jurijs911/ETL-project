@@ -28,13 +28,15 @@ log_stream_name = "lambda-log-stream"
 
 def log_to_cloudwatch(message, log_group_name, log_stream_name):
     """Log a message to AWS CloudWatch Logs."""
-    cloudwatch_logs.put_log_events(
-        logGroupName=log_group_name,
-        logStreamName=log_stream_name,
-        logEvents=[
-            {"timestamp": int(round(time.time() * 1000)), "message": message},
-        ],
-    )
+    if message:
+        cloudwatch_logs.put_log_events(
+            logGroupName=log_group_name,
+            logStreamName=log_stream_name,
+            logEvents=[
+                {"timestamp": int(round(time.time() * 1000)),
+                 "message": message},
+            ],
+        )
 
 
 def lambda_handler(
@@ -107,37 +109,12 @@ def lambda_handler(
                     "lambda-log-stream",
                 )
 
-        # if len(inserted_data) > 0:
-        #     log_to_cloudwatch(
-        #         str("Data insertion completed successfully."),
-        #         "/aws/lambda/loading-lambda",
-        #         "lambda-log-stream",
-        #     )
-        # else:
-        #     log_to_cloudwatch(
-        #         str("No new data inserted"),
-        #         "/aws/lambda/loading-lambda",
-        #         "lambda-log-stream",
-        #     )
-
         conn.close()
-
-        # logger.info("Data insertion completed successfully.")
-
-        # return inserted_data  # ADDED TO FIX FLAKE ISSUE
-        # # - decide where inserted_data should be used
 
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
         log_to_cloudwatch(
             str(e), "/aws/lambda/loading-lambda", "lambda-log-stream"
         )
-        raise  # this triggers the CloudWatch alarm
 
-    # except Exception as e:
-    #     import traceback
-    #     traceback.print_exc()
-    #     logger.error(f"An error occurred: {str(e)}")
-    #     log_to_cloudwatch(str(e), "/aws/lambda/loading-lambda",
-    #     "lambda-log-stream")
-    #     raise  # this triggers the CloudWatch alarm
+        raise
