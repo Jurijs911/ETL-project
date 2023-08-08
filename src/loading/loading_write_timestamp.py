@@ -7,7 +7,7 @@ def loading_write_timestamp(data, table_name):
 
     last_loaded = (
         s3_client.get_object(
-            Bucket="kp-northcoders-ingestion-bucket",
+            Bucket="kp-northcoders-processed-bucket",
             Key=f"{table_name}/last_loaded.txt",
         )["Body"]
         .read()
