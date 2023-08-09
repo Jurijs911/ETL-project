@@ -24,7 +24,7 @@ def filter_data(data, table_name):
                 ) < datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f"):
                     delete = True
             except ValueError:
-                raise Exception("ValueError")
+                pass
         if delete is True:
             continue
         else:

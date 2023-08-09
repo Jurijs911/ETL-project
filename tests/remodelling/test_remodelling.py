@@ -72,10 +72,10 @@ class Test_Remodelling:
             {
                 "design_id": "1",
                 "created_at": "2023-7-25 15:20:49.962000",
-                "last_updated": "2023-7-25 15:20:49.962000",
                 "design_name": "design 1",
                 "file_location": "./design.jpg",
                 "file_name": "design.jpg",
+                "last_updated": "2023-7-25 15:20:49.962000",
             },
         ]
 
