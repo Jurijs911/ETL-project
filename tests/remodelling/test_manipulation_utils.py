@@ -15,6 +15,7 @@ class Test_Format_Fact_Sales_Order:
     """
     Test cases for the format_fact_sales_order function.
     """
+
     def test_formats_data_correctly(self):
         """
         Test if the function formats sales data correctly to match the
@@ -137,6 +138,7 @@ class Test_Format_Dim_Design:
     """
     Test cases for the format_dim_design function.
     """
+
     def test_formats_data_correctly(self):
         """
         Test if the function formats design data correctly to match the
@@ -146,10 +148,10 @@ class Test_Format_Dim_Design:
             [
                 "1",
                 "2023-06-12 15:20:49.962000",
-                "2023-06-12 15:20:49.962000",
                 "design 1",
                 "./design.jpg",
                 "design.jpg",
+                "2023-06-12 15:20:49.962000",
             ],
         ]
 
@@ -175,10 +177,10 @@ class Test_Format_Dim_Design:
             [
                 "1",
                 "2023-06-12 15:20:49.962000",
-                "2023-06-12 15:20:49.962000",
                 None,
                 "./design.jpg",
                 "design.jpg",
+                "2023-06-12 15:20:49.962000",
             ],
         ]
 
@@ -196,10 +198,10 @@ class Test_Format_Dim_Design:
             [
                 "letters",
                 "2023-06-12 15:20:49.962000",
-                "2023-06-12 15:20:49.962000",
                 "design 1",
                 "./design.jpg",
                 "design.jpg",
+                "2023-06-12 15:20:49.962000",
             ],
         ]
 
@@ -228,6 +230,7 @@ class Test_Format_Dim_Staff:
     """
     Test cases for the format_dim_staff function.
     """
+
     def test_format_dim_staff(self):
         """
         Test if the function formats staff data correctly to match the
@@ -368,6 +371,7 @@ class Test_Format_Dim_Location:
     """
     Test cases for the format_dim_location function.
     """
+
     def test_format_dim_location(self):
         """
         Test if the function formats location data correctly to match the
@@ -479,6 +483,7 @@ class Test_Format_Dim_Date:
     """
     Test cases for the format_dim_date function.
     """
+
     def test_format_dim_date(self):
         """
         Test if the function formats date data correctly to match the
@@ -528,6 +533,7 @@ class Test_Format_Dim_Currency:
     """
     Test cases for the format_dim_currency function.
     """
+
     def test_format_dim_currency(self):
         """
         Test if the function formats currency data correctly to match the
@@ -631,6 +637,7 @@ class Test_Format_Dim_Counterparty:
     """
     Test cases for the format_dim_counterparty function.
     """
+
     def test_format_dim_counterparty(self):
         """
         Test if the function formats counterparty data correctly to match the
