@@ -19,7 +19,7 @@ def get_last_time(table_name):
     "YYYY-MM-DD HH:MM:SS.MS".
     """
     s3_client = boto3.client("s3")
-    print("here")
+
     bucket_name = "kp-northcoders-ingestion-bucket"
     key = f"{table_name}/created_at.txt"
 
