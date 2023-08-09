@@ -515,4 +515,4 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
     except Exception:
         raise
 
-    return get_loaded_data(conn, "fact_sales_order")
+    return fact_sales_order_data
