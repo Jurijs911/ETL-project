@@ -14,7 +14,7 @@ staff_get_last_time_path = "get_staff_add.get_last_time"
 
 
 class Test_Ingestion_Staff:
-    def test_get_staff_add_returns_list_with_correct_keys():
+    def test_get_staff_add_returns_list_with_correct_keys(self):
         """
         Test whether the 'get_staff_add' function returns a list of
         dictionaries with the correct keys for the 'staff' table.
@@ -47,7 +47,7 @@ class Test_Ingestion_Staff:
             }
             assert all(set(item.keys()) == expected_keys for item in result)
 
-    def test_get_staff_add_has_correct_value_types():
+    def test_get_staff_add_has_correct_value_types(self):
         """
         Test whether the 'get_staff_add' function returns data with
         correct value types for the 'staff' table.
@@ -76,7 +76,7 @@ class Test_Ingestion_Staff:
                 assert isinstance(item["created_at"], datetime.date)
                 assert isinstance(item["last_updated"], datetime.date)
 
-    def test_get_staff_add_calls_get_last_time():
+    def test_get_staff_add_calls_get_last_time(self):
         """
         Test whether the 'get_staff_add' function calls the
         'get_last_time' function.
@@ -97,7 +97,7 @@ class Test_Ingestion_Staff:
                 db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
             assert mock_get_last_time.call_count == 1
 
-    def test_database_error():
+    def test_database_error(self):
         """
         Test whether the 'get_staff_add' function raises an exception
         for a database error.
@@ -117,7 +117,7 @@ class Test_Ingestion_Staff:
                     db_port=os.environ.get("TEST_SOURCE_PORT"),
                     db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
 
-    def test_missing_environment_variables():
+    def test_missing_environment_variables(self):
         """
         Test whether the 'get_staff_add' function raises an exception
         for missing environment variables.
@@ -134,7 +134,7 @@ class Test_Ingestion_Staff:
                               db_port=os.environ.get("test_port"),
                               db_password=os.environ.get("test_password"))
 
-    def test_correct_data_returned_by_query():
+    def test_correct_data_returned_by_query(self):
         """
         Test whether the 'get_staff_add' function returns the correct
         data for the 'staff' table.

@@ -14,7 +14,7 @@ department_get_last_time_path = 'get_department_add.get_last_time'
 
 
 class Test_Ingestion_Departments:
-    def test_get_department_add_returns_list_with_correct_keys():
+    def test_get_department_add_returns_list_with_correct_keys(self):
         """
         Test if get_department_add() returns a list of dictionaries with
         correct keys.
@@ -46,7 +46,7 @@ class Test_Ingestion_Departments:
             }
             assert all(set(item.keys()) == expected_keys for item in result)
 
-    def test_get_department_add_has_correct_value_types():
+    def test_get_department_add_has_correct_value_types(self):
         """
         Test if get_department_add() returns data with correct value types.
 
@@ -79,7 +79,7 @@ class Test_Ingestion_Departments:
                 assert isinstance(item["created_at"], datetime.date)
                 assert isinstance(item["last_updated"], datetime.date)
 
-    def test_get_department_add_calls_get_last_time():
+    def test_get_department_add_calls_get_last_time(self):
         """
         Test if get_department_add() calls get_last_time function.
 
@@ -100,7 +100,7 @@ class Test_Ingestion_Departments:
 
             assert mock_get_last_time.call_count == 1
 
-    def test_database_error():
+    def test_database_error(self):
         """
         Test if get_department_add() raises an Exception when there's a
         DatabaseError.
@@ -120,7 +120,7 @@ class Test_Ingestion_Departments:
                     db_port=os.environ.get("TEST_SOURCE_PORT"),
                     db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
 
-    def test_missing_environment_variables():
+    def test_missing_environment_variables(self):
         """
         Test if get_department_add() raises 'Missing Required Environment
         Variables' when missing environment variables.
@@ -138,7 +138,7 @@ class Test_Ingestion_Departments:
                     db_port=os.environ.get("test_port"),
                     db_password=os.environ.get("test_password"))
 
-    def test_correct_data_returned_by_query():
+    def test_correct_data_returned_by_query(self):
         """
         Tests if get_department_add() returns the correct data based on the
         query.

@@ -13,7 +13,7 @@ currency_get_last_time_path = 'get_currency_add.get_last_time'
 
 
 class Test_Ingestion_Currency:
-    def test_get_currency_add_returns_list_with_correct_keys():
+    def test_get_currency_add_returns_list_with_correct_keys(self):
         """
         Test that the 'get_currency_add' function returns a list of
         dictionaries with the correct keys for currency data.
@@ -38,7 +38,7 @@ class Test_Ingestion_Currency:
                 "currency_id", "currency_code", "created_at", "last_updated"}
             assert all(set(item.keys()) == expected_keys for item in result)
 
-    def test_get_currency_add_has_correct_value_types():
+    def test_get_currency_add_has_correct_value_types(self):
         """
         Test that the 'get_currency_add' function returns currency data with
         the correct value types.
@@ -62,7 +62,7 @@ class Test_Ingestion_Currency:
                 assert isinstance(item['created_at'], datetime.date)
                 assert isinstance(item['last_updated'], datetime.date)
 
-    def test_get_currency_add_calls_get_last_time():
+    def test_get_currency_add_calls_get_last_time(self):
         """
         Test that the 'get_currency_add' function calls 'get_last_time'
         exactly once.
@@ -81,7 +81,7 @@ class Test_Ingestion_Currency:
                 db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
             assert mock_get_last_time.call_count == 1
 
-    def test_database_error():
+    def test_database_error(self):
         """
         Test that the 'get_currency_add' function raises an exception with
         "Database error" message when a DatabaseError occurs during the
@@ -102,7 +102,7 @@ class Test_Ingestion_Currency:
                     db_port=os.environ.get("TEST_SOURCE_PORT"),
                     db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
 
-    def test_missing_environment_variables():
+    def test_missing_environment_variables(self):
         """
         Test that the 'get_currency_add' function raises 'Missing Required
         Environment Variables' exception when any of the required environment
@@ -121,7 +121,7 @@ class Test_Ingestion_Currency:
                     db_port=os.environ.get("test_port"),
                     db_password=os.environ.get("test_password"))
 
-    def test_correct_data_returned_by_query():
+    def test_correct_data_returned_by_query(self):
         """
         Test that the 'get_currency_add' function returns the correct currency
         data when querying data created in the last search interval.

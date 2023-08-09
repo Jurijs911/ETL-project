@@ -121,7 +121,7 @@ class Test_Dim_Currency:
         with pytest.raises(InputValidationError):
             insert_into_dim_currency(mock_connection, invalid_currency_data)
 
-    def test_insert_into_dim_counterparty():
+    def test_insert_into_dim_counterparty(self):
         """
         Insert the given counterparty data into the dimension table
         for counterparties.
@@ -157,7 +157,7 @@ class Test_Dim_Currency:
             )
             assert result == counterparty_data
 
-    def test_insert_into_dim_counterparty_invalid_input():
+    def test_insert_into_dim_counterparty_invalid_input(self):
         mock_connection = Mock()
         # Return an empty list to mirror no data in the table
         mock_connection.run.return_value = []
@@ -183,7 +183,7 @@ class Test_Dim_Currency:
                 insert_into_dim_counterparty(
                     mock_connection, counterparty_data)
 
-    def test_insert_into_dim_counterparty_invalid_currency_id():
+    def test_insert_into_dim_counterparty_invalid_currency_id(self):
         mock_connection = Mock()
         with patch(
             "src.loading.loading_utils.create_connection",
@@ -218,7 +218,7 @@ class Test_Dim_Currency:
 
 
 class Test_Dim_Staff:
-    def test_read_inserted_dim_staff_data():
+    def test_read_inserted_dim_staff_data(self):
         """
         Insert the given staff data into the dimension table for staff members.
 
@@ -242,7 +242,7 @@ class Test_Dim_Staff:
             with pytest.raises(InputValidationError):
                 insert_into_dim_staff(mock_connection, staff_data)
 
-    def test_insert_into_dim_staff_invalid_input():
+    def test_insert_into_dim_staff_invalid_input(self):
         mock_connection = Mock()
         invalid_staff_data = [
             [
@@ -266,7 +266,7 @@ class Test_Dim_Staff:
         with pytest.raises(InputValidationError):
             insert_into_dim_staff(mock_connection, invalid_staff_data)
 
-    def test_insert_into_dim_staff_missing_columns():
+    def test_insert_into_dim_staff_missing_columns(self):
         mock_connection = Mock()
         with patch(
             "src.loading.loading_utils.create_connection",
@@ -306,7 +306,7 @@ class Test_Dim_Staff:
 
 
 class Test_Dim_Location:
-    def test_insert_into_dim_location():
+    def test_insert_into_dim_location(self):
         """
         Insert the given location data into the dimension table for locations.
 
@@ -348,7 +348,7 @@ class Test_Dim_Location:
             result = insert_into_dim_location(mock_connection, location_data)
             assert result == location_data
 
-    def test_insert_into_dim_location_invalid_input():
+    def test_insert_into_dim_location_invalid_input(self):
         mock_connection = Mock()
         invalid_location_data = [
             [
@@ -376,7 +376,7 @@ class Test_Dim_Location:
         with pytest.raises(InputValidationError):
             insert_into_dim_location(mock_connection, invalid_location_data)
 
-    def test_insert_into_dim_location_missing_columns():
+    def test_insert_into_dim_location_missing_columns(self):
         mock_connection = Mock()
         invalid_location_data = [
             [
@@ -406,7 +406,7 @@ class Test_Dim_Location:
 
 
 class Test_Dim_Date:
-    def test_insert_into_dim_date_invalid_input():
+    def test_insert_into_dim_date_invalid_input(self):
         """Insert the given date data into the dimension table for dates.
 
         Raises:
@@ -429,7 +429,7 @@ class Test_Dim_Date:
                 insert_into_dim_date(
                     mock_connection, date_data_with_invalid_input)
 
-    def test_insert_into_dim_date_invalid_date_format():
+    def test_insert_into_dim_date_invalid_date_format(self):
         mock_connection = Mock()
         with patch(
             "src.loading.loading_utils.create_connection",
@@ -444,7 +444,7 @@ class Test_Dim_Date:
 
 
 class Test_Fact_Sales_Order:
-    def test_insert_into_dim_fact_sales_order():
+    def test_insert_into_dim_fact_sales_order(self):
         """
         Insert the given sales order data into the fact table for sales orders.
 
@@ -483,7 +483,7 @@ class Test_Fact_Sales_Order:
             with pytest.raises(InputValidationError):
                 insert_into_dim_fact_sales_order(mock_connection, sales_data)
 
-    def test_insert_into_dim_fact_sales_order_invalid_input():
+    def test_insert_into_dim_fact_sales_order_invalid_input(self):
         mock_connection = Mock()
         invalid_fact_sales_order_data = [
             [
@@ -527,7 +527,7 @@ class Test_Fact_Sales_Order:
                 mock_connection, invalid_fact_sales_order_data
             )
 
-    def test_insert_into_dim_fact_sales_order_invalid_date_format():
+    def test_insert_into_dim_fact_sales_order_invalid_date_format(self):
         mock_connection = Mock()
         invalid_fact_sales_order_data = [
             [

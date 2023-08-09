@@ -14,7 +14,7 @@ counterparty_get_last_time_path = 'get_counterparty_add.get_last_time'
 
 
 class Test_Ingestion_Counterparty:
-    def test_get_counterparty_add_returns_list_with_correct_keys():
+    def test_get_counterparty_add_returns_list_with_correct_keys(self):
         """
         Test to check that the get_counterparty_add function returns a list of
         dictionaries with the correct keys.
@@ -43,7 +43,7 @@ class Test_Ingestion_Counterparty:
                 "last_updated"}
             assert all(set(item.keys()) == expected_keys for item in result)
 
-    def test_get_counterparty_add_has_correct_value_types():
+    def test_get_counterparty_add_has_correct_value_types(self):
         """
         Test to check that the get_counterparty_add function returns a list of
         dictionaries with correct value types for each key.
@@ -70,7 +70,7 @@ class Test_Ingestion_Counterparty:
                 assert isinstance(item['created_at'], datetime.date)
                 assert isinstance(item['last_updated'], datetime.date)
 
-    def test_get_counterparty_add_calls_get_last_time():
+    def test_get_counterparty_add_calls_get_last_time(self):
         """
         Test case to ensure that the get_counterparty_add function calls the
         get_last_time function.
@@ -90,7 +90,7 @@ class Test_Ingestion_Counterparty:
                 db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
             assert mock_get_last_time.call_count == 1
 
-    def test_database_error():
+    def test_database_error(self):
         """
         Test case to ensure that the get_counterparty_add function raises an
         Exception when encountering a DatabaseError.
@@ -110,7 +110,7 @@ class Test_Ingestion_Counterparty:
                     db_port=os.environ.get("TEST_SOURCE_PORT"),
                     db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
 
-    def test_missing_environment_variables():
+    def test_missing_environment_variables(self):
         """
         Test case to ensure that the get_counterparty_add function raises a
         MissingRequiredEnvironmentVariables exception when required
@@ -128,7 +128,7 @@ class Test_Ingestion_Counterparty:
                     db_port=os.environ.get("test_port"),
                     db_password=os.environ.get("test_password"))
 
-    def test_correct_data_returned_by_query():
+    def test_correct_data_returned_by_query(self):
         """
         Test case to ensure that the get_counterparty_add function returns the
         correct data.
