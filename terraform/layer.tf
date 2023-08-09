@@ -30,7 +30,7 @@ resource "aws_s3_object" "lambda_layer_zip" {
   bucket     = aws_s3_bucket.lambda_layer_bucket.id
   key        = "lambda_layers/${local.layer_name}/${local.layer_zip_path}"
   source     = local.layer_zip_path
-  depends_on = [null_resource.lambda_layer] # triggered only if the zip file is created
+  depends_on = [null_resource.lambda_layer]
 }
 
 resource "aws_lambda_layer_version" "my_lambda_layer" {
@@ -39,5 +39,5 @@ resource "aws_lambda_layer_version" "my_lambda_layer" {
   layer_name          = local.layer_name
   compatible_runtimes = ["python3.9"]
   skip_destroy        = true
-  depends_on          = [aws_s3_object.lambda_layer_zip] # triggered only if the zip file is uploaded to the bucket
+  depends_on          = [aws_s3_object.lambda_layer_zip]
 }

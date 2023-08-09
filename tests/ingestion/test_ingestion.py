@@ -308,12 +308,14 @@ def test_lambda_handler_logs(mocker):
     The test uses a spy to check if the log_to_cloudwatch function is called
     with the expected messages.
     """
+    # Set up the mocked S3 bucket and objects
     conn = boto3.resource("s3", region_name="eu-west-2")
     conn.create_bucket(
         Bucket="kp-northcoders-ingestion-bucket",
         CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
     )
-
+    #
+    # table.txt objects
     conn.Object(
         "kp-northcoders-ingestion-bucket", "address/created_at.txt"
     ).put(Body="2023-07-29 15:20:49.962000")
@@ -350,12 +352,16 @@ def test_lambda_handler_logs(mocker):
         Body="2020-07-30 15:20:49.962000"
     )
 
+    # Create a spy on the log_to_cloudwatch function
     spy = mocker.spy(ingestion, "log_to_cloudwatch")
 
+    # Call the lambda_handler function
     lambda_handler(
         {}, {}, test_user, test_database, test_host, test_port, test_password
     )
 
+    # Check if the log_to_cloudwatch function was
+    # called with the expected arguments
     spy.assert_any_call(
         "New address data returned",
         "/aws/lambda/ingestion-lambda",
@@ -416,12 +422,14 @@ def test_lambda_handler_logs_no_data(mocker):
     variables. The test uses a spy to check if the log_to_cloudwatch function
     is called with the expected messages.
     """
+    # Set up the mocked S3 bucket and objects
     conn = boto3.resource("s3", region_name="eu-west-2")
     conn.create_bucket(
         Bucket="kp-northcoders-ingestion-bucket",
         CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
     )
-
+    #
+    # table.txt objects
     conn.Object(
         "kp-northcoders-ingestion-bucket", "address/created_at.txt"
     ).put(Body="2024-07-29 15:20:49.962000")
@@ -458,12 +466,16 @@ def test_lambda_handler_logs_no_data(mocker):
         Body="2024-07-30 15:20:49.962000"
     )
 
+    # Create a spy on the log_to_cloudwatch function
     spy = mocker.spy(ingestion, "log_to_cloudwatch")
 
+    # Call the lambda_handler function
     lambda_handler(
         {}, {}, test_user, test_database, test_host, test_port, test_password
     )
 
+    # Check if the log_to_cloudwatch function was
+    # called with the expected arguments
     spy.assert_any_call(
         "No new address data returned",
         "/aws/lambda/ingestion-lambda",
@@ -509,3 +521,17 @@ def test_lambda_handler_logs_no_data(mocker):
         "/aws/lambda/ingestion-lambda",
         "lambda-log-stream",
     )
+
+
+# def test_raises_exception():
+#     with patch("os.environ", {}):
+#         with pytest.raises(Exception):
+#             lambda_handler(
+#                 {},
+#                 {},
+#                 test_user,
+#                 test_database,
+#                 test_host,
+#                 test_port,
+#                 test_password,
+#             )

@@ -8,7 +8,7 @@ load_dotenv()
 secret = get_secret()
 
 
-class MissingRequiredEnvironmentVariables (Exception):
+class MissingRequiredEnvironmentVariables(Exception):
     """
     Exception raised when attempts to connect to the database with missing
     required variables.
@@ -68,7 +68,8 @@ def get_staff_add(
     """
     if not all([db_user, db_database, db_host, db_port, db_password]):
         raise MissingRequiredEnvironmentVariables(
-            db_user, db_database, db_host, db_port, db_password)
+            db_user, db_database, db_host, db_port, db_password
+        )
 
     try:
         conn = pg8000.native.Connection(
@@ -92,7 +93,6 @@ def get_staff_add(
     DETERMINE SEARCH INTERVAL
     """
     search_interval = get_last_time("staff")
-
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """

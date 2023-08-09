@@ -1,5 +1,4 @@
 import pg8000.native
-import os
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -10,23 +9,18 @@ class InputValidationError(Exception):
     pass
 
 
-def create_connection():
+def create_connection(db_user, db_database, db_host, db_port, db_password):
     """
     Create a connection to the PostgreSQL database
     using the environment variables.
     """
-    DB_SOURCE_USER = os.getenv("DB_SOURCE_USER")
-    DB_SOURCE_HOST = os.getenv("DB_SOURCE_HOST")
-    DB_SOURCE_NAME = os.getenv("DB_SOURCE_NAME")
-    DB_SOURCE_PORT = os.getenv("DB_SOURCE_PORT")
-    DB_SOURCE_PASSWORD = os.getenv("DB_SOURCE_PASSWORD")
 
     conn = pg8000.native.Connection(
-        user=DB_SOURCE_USER,
-        host=DB_SOURCE_HOST,
-        database=DB_SOURCE_NAME,
-        port=DB_SOURCE_PORT,
-        password=DB_SOURCE_PASSWORD,
+        user=db_user,
+        database=db_database,
+        host=db_host,
+        port=db_port,
+        password=db_password,
     )
     return conn
 
@@ -88,24 +82,33 @@ def insert_into_dim_design(conn, design_data):
     try:
         conn.run("SET search_path TO 'project_team_2';")
         for design in design_data:
-            if not isinstance(design[0], int):
-                raise InputValidationError
-            for index, column in enumerate(design[1:], start=1):
+            for index, column in enumerate(design):
                 if not isinstance(column, str):
                     raise InputValidationError
             if len(design) != 4:
                 raise InputValidationError
             print("In the try block")
             conn.run(
-                "INSERT INTO dim_design(design_id, design_name, file_location,\
-                file_name) VALUES (:design_id, :design_name, :file_location, \
-                :file_name)",
+                """INSERT INTO dim_design(
+                    design_id,
+                    design_name,
+                    file_location,
+                    file_name
+                ) VALUES (
+                    :design_id,
+                    :design_name,
+                    :file_location,
+                    :file_name
+                ) ON CONFLICT (design_id) DO UPDATE
+                    SET design_id = :design_id,
+                        design_name = :design_name,
+                        file_location = :file_location,
+                        file_name = :file_name;""",
                 design_id=design[0],
                 design_name=design[1],
                 file_location=design[2],
                 file_name=design[3],
             )
-
         return get_loaded_data(conn, "dim_design")
 
     except InputValidationError:
@@ -130,23 +133,29 @@ def insert_into_dim_currency(conn, currency_data):
 
     try:
         for currency in currency_data:
-            if not isinstance(currency[0], int):
-                raise InputValidationError
-            for index, column in enumerate(currency[1:], start=1):
+            for index, column in enumerate(currency):
                 if not isinstance(column, str):
                     raise InputValidationError
             if len(currency) != 3:
                 raise InputValidationError
 
             conn.run(
-                "INSERT INTO dim_currency (currency_id, currency_code, \
-                currency_name) VALUES (:currency_id, :currency_code, \
-                :currency_name)",
+                """INSERT INTO dim_currency (
+                    currency_id,
+                    currency_code,
+                    currency_name
+                ) VALUES (
+                    :currency_id,
+                    :currency_code,
+                    :currency_name
+                ) ON CONFLICT (currency_id) DO UPDATE
+                    SET currency_id = :currency_id,
+                        currency_code = :currency_code,
+                        currency_name = :currency_name;""",
                 currency_id=currency[0],
                 currency_code=currency[1],
                 currency_name=currency[2],
             )
-
         return get_loaded_data(conn, "dim_currency")
 
     except InputValidationError:
@@ -170,12 +179,10 @@ def insert_into_dim_staff(conn, staff_data):
 
     try:
         for staff in staff_data:
-            if not isinstance(staff[0], int):
-                raise InputValidationError("staff[0] is not an int")
             if not is_valid_email(staff[5]):
                 raise InputValidationError("Invalid email address format.")
 
-            for index, column in enumerate(staff[1:-1], start=1):
+            for index, column in enumerate(staff):
                 if not isinstance(column, str):
                     raise InputValidationError("Should be a string")
 
@@ -183,10 +190,27 @@ def insert_into_dim_staff(conn, staff_data):
                 raise InputValidationError
 
             conn.run(
-                "INSERT INTO dim_staff (staff_id, first_name, last_name, \
-                department_name, location, email_address) VALUES (:staff_id, \
-                :first_name, :last_name, :department_name, :location, \
-                :email_address)",
+                """INSERT INTO dim_staff (
+                    staff_id,
+                    first_name,
+                    last_name,
+                    department_name,
+                    location,
+                    email_address
+                ) VALUES (
+                    :staff_id,
+                    :first_name,
+                    :last_name,
+                    :department_name,
+                    :location,
+                    :email_address
+                ) ON CONFLICT (staff_id) DO UPDATE
+                    SET staff_id = :staff_id,
+                        first_name = :first_name,
+                        last_name = :last_name,
+                        department_name = :department_name,
+                        location = :location,
+                        email_address = :email_address;""",
                 staff_id=staff[0],
                 first_name=staff[1],
                 last_name=staff[2],
@@ -218,10 +242,7 @@ def insert_into_dim_location(conn, location_data):
     """
     try:
         for location in location_data:
-            if not isinstance(location[0], int):
-                raise InputValidationError
-
-            for index, column in enumerate(location[1:], start=1):
+            for index, column in enumerate(location):
                 if not isinstance(column, str):
                     raise InputValidationError
 
@@ -229,10 +250,33 @@ def insert_into_dim_location(conn, location_data):
                 raise InputValidationError
 
             conn.run(
-                "INSERT INTO dim_location (location_id, address_line_1, \
-                address_line_2, district, city, postal_code, country, phone) \
-                VALUES (:location_id, :address_line_1, :address_line_2, \
-                :district, :city, :postal_code, :country, :phone)",
+                """INSERT INTO dim_location (
+                    location_id,
+                    address_line_1,
+                    address_line_2,
+                    district,
+                    city,
+                    postal_code,
+                    country,
+                    phone
+                ) VALUES (
+                    :location_id,
+                    :address_line_1,
+                    :address_line_2,
+                    :district,
+                    :city,
+                    :postal_code,
+                    :country,
+                    :phone
+                ) ON CONFLICT (location_id) DO UPDATE
+                    SET location_id = :location_id,
+                        address_line_1 = :address_line_1,
+                        address_line_2 = :address_line_2,
+                        district = :district,
+                        city = :city,
+                        postal_code = :postal_code,
+                        country = :country,
+                        phone = :phone;""",
                 location_id=location[0],
                 address_line_1=location[1],
                 address_line_2=location[2],
@@ -268,10 +312,33 @@ def insert_into_dim_date(conn, date_data):
             if False in date:  # CHANGE THIS
                 raise InputValidationError
             conn.run(
-                "INSERT INTO dim_date (date_id, year, month, day, day_of_week,\
-                day_name, month_name, quarter) "
-                "VALUES (:date_id, :year, :month, :day, :day_of_week,\
-                :day_name, :month_name, :quarter)",
+                """INSERT INTO dim_date (
+                    date_id,
+                    year,
+                    month,
+                    day,
+                    day_of_week,
+                    day_name,
+                    month_name,
+                    quarter
+                ) VALUES (
+                    :date_id,
+                    :year,
+                    :month,
+                    :day,
+                    :day_of_week,
+                    :day_name,
+                    :month_name,
+                    :quarter
+                ) ON CONFLICT (date_id) DO UPDATE
+                    SET date_id = :date_id,
+                        year = :year,
+                        month = :month,
+                        day = :day,
+                        day_of_week = :day_of_week,
+                        day_name = :day_name,
+                        month_name = :month_name,
+                        quarter = :quarter;""",
                 date_id=date[0],
                 year=date[1],
                 month=date[2],
@@ -285,7 +352,7 @@ def insert_into_dim_date(conn, date_data):
     except Exception:
         raise
 
-    return date_data
+    return get_loaded_data(conn, "dim_date")
 
 
 def insert_into_dim_counterparty(conn, counterparty_data):
@@ -302,31 +369,51 @@ def insert_into_dim_counterparty(conn, counterparty_data):
 
     try:
         for counterparty in counterparty_data:
-            if not isinstance(counterparty[0], int):
-                raise InputValidationError
-
-            for index, column in enumerate(counterparty[1:]):
+            for index, column in enumerate(counterparty):
                 if not isinstance(column, str):
                     raise InputValidationError
 
             conn.run(
-                "INSERT INTO dim_counterparty (counterparty_id, \
-                counterparty_legal_name, counterparty_legal_address_line_1\
-                , counterparty_legal_address_line2, \
-                counterparty_legal_district, counterparty_legal_city, \
-                counterparty_legal_postal_code, counterparty_legal_country\
-                , counterparty_legal_phone_number) VALUES \
-                (:counterparty_id, :counterparty_legal_name, \
-                :counterparty_legal_address_line_1, \
-                :counterparty_legal_address_line2, \
-                :counterparty_legal_district, :counterparty_legal_city, \
-                :counterparty_legal_postal_code, \
-                :counterparty_legal_country, \
-                :counterparty_legal_phone_number)",
+                """INSERT INTO dim_counterparty (
+                    counterparty_id,
+                    counterparty_legal_name,
+                    counterparty_legal_address_line_1,
+                    counterparty_legal_address_line_2,
+                    counterparty_legal_district,
+                    counterparty_legal_city,
+                    counterparty_legal_postal_code,
+                    counterparty_legal_country,
+                    counterparty_legal_phone_number
+                ) VALUES (
+                    :counterparty_id,
+                    :counterparty_legal_name,
+                    :counterparty_legal_address_line_1,
+                    :counterparty_legal_address_line_2,
+                    :counterparty_legal_district,
+                    :counterparty_legal_city,
+                    :counterparty_legal_postal_code,
+                    :counterparty_legal_country,
+                    :counterparty_legal_phone_number
+                ) ON CONFLICT (counterparty_id) DO UPDATE
+                    SET counterparty_id = :counterparty_id,
+                        counterparty_legal_name = :counterparty_legal_name,
+                        counterparty_legal_address_line_1 = \
+                            :counterparty_legal_address_line_1,
+                        counterparty_legal_address_line_2 = \
+                            :counterparty_legal_address_line_2,
+                        counterparty_legal_district = \
+                            :counterparty_legal_district,
+                        counterparty_legal_city = :counterparty_legal_city,
+                        counterparty_legal_postal_code = \
+                            :counterparty_legal_postal_code,
+                        counterparty_legal_country = \
+                            :counterparty_legal_country,
+                        counterparty_legal_phone_number = \
+                            :counterparty_legal_phone_number;""",
                 counterparty_id=counterparty[0],
                 counterparty_legal_name=counterparty[1],
                 counterparty_legal_address_line_1=counterparty[2],
-                counterparty_legal_address_line2=counterparty[3],
+                counterparty_legal_address_line_2=counterparty[3],
                 counterparty_legal_district=counterparty[4],
                 counterparty_legal_city=counterparty[5],
                 counterparty_legal_postal_code=counterparty[6],
@@ -357,24 +444,8 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
 
     try:
         for sale in fact_sales_order_data:
-            expected_data_types = [
-                int,
-                str,
-                str,
-                str,
-                str,
-                int,
-                int,
-                int,
-                float,
-                int,
-                int,
-                str,
-                str,
-                int,
-            ]
             for index, value in enumerate(sale):
-                if not isinstance(value, expected_data_types[index]):
+                if not isinstance(value, str):
                     raise InputValidationError
 
             try:
@@ -388,23 +459,40 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
                 # Remove milliseconds from the time strings before parsing
                 datetime.strptime(sale[4].split(".")[0], "%H:%M:%S")
 
-                datetime.strptime(sale[11], "%Y-%m-%d")
-                datetime.strptime(sale[12], "%Y-%m-%d")
-
             except ValueError:
                 raise InputValidationError
 
             conn.run(
-                "INSERT INTO fact_sales_order(sales_order_id, created_date, \
-                created_time, last_updated_date, last_updated_time, \
-                sales_staff_id, counterparty_id, units_sold, unit_price, \
-                currency_id, design_id, agreed_payment_date, \
-                agreed_delivery_date, agreed_delivery_location_id) VALUES \
-                (:sales_order_id, :created_date, :created_time, \
-                :last_updated_date, :last_updated_time, :sales_staff_id, \
-                :counterparty_id, :units_sold, :unit_price, :currency_id, \
-                :design_id, :agreed_payment_date, :agreed_delivery_date, \
-                :agreed_delivery_location_id)",
+                """INSERT INTO fact_sales_order(
+                    sales_order_id, created_date,
+                    created_time,
+                    last_updated_date,
+                    last_updated_time,
+                    sales_staff_id,
+                    counterparty_id,
+                    units_sold,
+                    unit_price,
+                    currency_id,
+                    design_id,
+                    agreed_payment_date,
+                    agreed_delivery_date,
+                    agreed_delivery_location_id
+                ) VALUES (
+                    :sales_order_id,
+                    :created_date,
+                    :created_time,
+                    :last_updated_date,
+                    :last_updated_time,
+                    :sales_staff_id,
+                    :counterparty_id,
+                    :units_sold,
+                    :unit_price,
+                    :currency_id,
+                    :design_id,
+                    :agreed_payment_date,
+                    :agreed_delivery_date,
+                    :agreed_delivery_location_id
+                );""",
                 sales_order_id=sale[0],
                 created_date=sale[1],
                 created_time=sale[2],
@@ -427,4 +515,4 @@ def insert_into_dim_fact_sales_order(conn, fact_sales_order_data):
     except Exception:
         raise
 
-    return fact_sales_order_data
+    return get_loaded_data(conn, "fact_sales_order")

@@ -1,7 +1,8 @@
 from src.remodelling.filter_data_by_timestamp import filter_data
-from src.remodelling.write_timestamp import write_timestamp
+import os
 import boto3
 from moto import mock_s3
+import pytest
 
 
 @mock_s3
@@ -23,7 +24,14 @@ class Test_Remodelling_Filter:
             Key="sales_order/last_processed.txt",
         )
 
-        write_timestamp([["2020-06-12 15:20:49.962000"]], "sales_order")
+        with open("last_processed.txt", "w") as f:
+            f.write("2020-7-25 15:20:49.962000")
+
+        s3_client.upload_file(
+            "last_processed.txt",
+            "kp-northcoders-ingestion-bucket",
+            "sales_order/last_processed.txt",
+        )
 
         sample_data = [
             [
@@ -76,6 +84,8 @@ class Test_Remodelling_Filter:
         result = filter_data(sample_data, "sales_order")
 
         assert result == expected
+
+        os.remove("last_processed.txt")
 
     def test_does_not_filter_if_unnecessary(self):
         """
@@ -94,7 +104,14 @@ class Test_Remodelling_Filter:
             Key="sales_order/last_processed.txt",
         )
 
-        write_timestamp([["2020-06-12 15:20:49.962000"]], "sales_order")
+        with open("last_processed.txt", "w") as f:
+            f.write("2020-7-25 15:20:49.962000")
+
+        s3_client.upload_file(
+            "last_processed.txt",
+            "kp-northcoders-ingestion-bucket",
+            "sales_order/last_processed.txt",
+        )
 
         sample_data = [
             [
@@ -134,6 +151,8 @@ class Test_Remodelling_Filter:
 
         assert result == expected
 
+        os.remove("last_processed.txt")
+
     def test_filters_all_data_if_no_new_data(self):
         """
         Test that the filter_data function filters all data if there is no new
@@ -151,7 +170,14 @@ class Test_Remodelling_Filter:
             Key="sales_order/last_processed.txt",
         )
 
-        write_timestamp([["2020-06-12 15:20:49.962000"]], "sales_order")
+        with open("last_processed.txt", "w") as f:
+            f.write("2020-7-25 15:20:49.962000")
+
+        s3_client.upload_file(
+            "last_processed.txt",
+            "kp-northcoders-ingestion-bucket",
+            "sales_order/last_processed.txt",
+        )
 
         sample_data = [
             [
@@ -175,3 +201,9 @@ class Test_Remodelling_Filter:
         result = filter_data(sample_data, "sales_order")
 
         assert result == expected
+
+        os.remove("last_processed.txt")
+
+    def test_raises_exception(self):
+        with pytest.raises(Exception):
+            filter_data()

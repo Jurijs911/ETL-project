@@ -1,6 +1,7 @@
 from src.remodelling.upload_csv import upload_csv
 import boto3
 from moto import mock_s3
+import pytest
 
 
 @mock_s3
@@ -121,3 +122,8 @@ class Test_add_csv:
         assert "2|USD|2022-12-12|2022-12-12" in response
         assert "3|EUR|2023-08-03|2023-08-03" in response
         assert "4|CAD|2022-05-10|2022-05-10" in response
+
+
+def test_upload_csv_raises_exception():
+    with pytest.raises(Exception):
+        upload_csv("test_data", "currency", "test_bucket")

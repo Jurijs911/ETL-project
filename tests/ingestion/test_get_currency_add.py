@@ -1,5 +1,7 @@
-from src.ingestion_lambda.get_currency_add \
-    import get_currency_add, MissingRequiredEnvironmentVariables
+from src.ingestion_lambda.get_currency_add import (
+    get_currency_add,
+    MissingRequiredEnvironmentVariables,
+)
 from unittest.mock import patch
 import datetime
 import pytest
@@ -9,7 +11,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-currency_get_last_time_path = 'get_currency_add.get_last_time'
+currency_get_last_time_path = (
+    "src.ingestion_lambda.get_currency_add.get_last_time"
+)
 
 
 class Test_Ingestion_Currency:
@@ -31,11 +35,16 @@ class Test_Ingestion_Currency:
                 db_database=os.environ.get("TEST_SOURCE_DATABASE"),
                 db_host=os.environ.get("TEST_SOURCE_HOST"),
                 db_port=os.environ.get("TEST_SOURCE_PORT"),
-                db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+                db_password=os.environ.get("TEST_SOURCE_PASSWORD"),
+            )
 
             assert isinstance(result, list)
             expected_keys = {
-                "currency_id", "currency_code", "created_at", "last_updated"}
+                "currency_id",
+                "currency_code",
+                "created_at",
+                "last_updated",
+            }
             assert all(set(item.keys()) == expected_keys for item in result)
 
     def test_get_currency_add_has_correct_value_types(self):
@@ -48,19 +57,21 @@ class Test_Ingestion_Currency:
         """
         with patch(currency_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
-                '2020-07-25 15:20:49.962000', '%Y-%m-%d %H:%M:%S.%f')
+                "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
+            )
             result = get_currency_add(
                 db_user=os.environ.get("TEST_SOURCE_USER"),
                 db_database=os.environ.get("TEST_SOURCE_DATABASE"),
                 db_host=os.environ.get("TEST_SOURCE_HOST"),
                 db_port=os.environ.get("TEST_SOURCE_PORT"),
-                db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+                db_password=os.environ.get("TEST_SOURCE_PASSWORD"),
+            )
 
             for item in result:
-                assert isinstance(item['currency_id'], int)
-                assert isinstance(item['currency_code'], str)
-                assert isinstance(item['created_at'], datetime.date)
-                assert isinstance(item['last_updated'], datetime.date)
+                assert isinstance(item["currency_id"], int)
+                assert isinstance(item["currency_code"], str)
+                assert isinstance(item["created_at"], datetime.date)
+                assert isinstance(item["last_updated"], datetime.date)
 
     def test_get_currency_add_calls_get_last_time(self):
         """
@@ -72,13 +83,15 @@ class Test_Ingestion_Currency:
         """
         with patch(currency_get_last_time_path) as mock_get_last_time:
             mock_get_last_time.return_value = datetime.datetime.strptime(
-                '2020-07-25 15:20:49.962000', '%Y-%m-%d %H:%M:%S.%f')
+                "2020-07-25 15:20:49.962000", "%Y-%m-%d %H:%M:%S.%f"
+            )
             get_currency_add(
                 db_user=os.environ.get("TEST_SOURCE_USER"),
                 db_database=os.environ.get("TEST_SOURCE_DATABASE"),
                 db_host=os.environ.get("TEST_SOURCE_HOST"),
                 db_port=os.environ.get("TEST_SOURCE_PORT"),
-                db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+                db_password=os.environ.get("TEST_SOURCE_PASSWORD"),
+            )
             assert mock_get_last_time.call_count == 1
 
     def test_database_error(self):
@@ -91,16 +104,18 @@ class Test_Ingestion_Currency:
         'pg8000.native.Connection' class and raises a
         pg8000.exceptions.DatabaseError.
         """
-        with patch('pg8000.native.Connection') as mock_connection:
+        with patch("pg8000.native.Connection") as mock_connection:
             mock_connection.side_effect = pg8000.exceptions.DatabaseError(
-                "Database error")
+                "Database error"
+            )
             with pytest.raises(Exception, match="Database error"):
                 get_currency_add(
                     db_user=os.environ.get("TEST_SOURCE_USER"),
                     db_database=os.environ.get("TEST_SOURCE_DATABASE"),
                     db_host=os.environ.get("TEST_SOURCE_HOST"),
                     db_port=os.environ.get("TEST_SOURCE_PORT"),
-                    db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+                    db_password=os.environ.get("TEST_SOURCE_PASSWORD"),
+                )
 
     def test_missing_environment_variables(self):
         """
@@ -112,14 +127,15 @@ class Test_Ingestion_Currency:
         It uses mocking to simulate the behavior of the 'os.environ' dictionary
         and sets it to an empty dictionary.
         """
-        with patch('os.environ', {}):
+        with patch("os.environ", {}):
             with pytest.raises(MissingRequiredEnvironmentVariables):
                 get_currency_add(
                     db_user=os.environ.get("test_user"),
                     db_database=os.environ.get("test_database"),
-                    db_host=os.environ.get('test_host'),
+                    db_host=os.environ.get("test_host"),
                     db_port=os.environ.get("test_port"),
-                    db_password=os.environ.get("test_password"))
+                    db_password=os.environ.get("test_password"),
+                )
 
     def test_correct_data_returned_by_query(self):
         """
@@ -138,11 +154,18 @@ class Test_Ingestion_Currency:
                 db_database=os.environ.get("TEST_SOURCE_DATABASE"),
                 db_host=os.environ.get("TEST_SOURCE_HOST"),
                 db_port=os.environ.get("TEST_SOURCE_PORT"),
-                db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+                db_password=os.environ.get("TEST_SOURCE_PASSWORD"),
+            )
 
             assert result == [
-                {'currency_id': 3, 'currency_code': 'THB',
-                 'created_at': datetime.datetime(
-                    2023, 7, 31, 12, 1, 49, 175474),
-                 'last_updated': datetime.datetime(
-                    2023, 7, 31, 12, 1, 49, 175474)}]
+                {
+                    "currency_id": 3,
+                    "currency_code": "THB",
+                    "created_at": datetime.datetime(
+                        2023, 7, 31, 12, 1, 49, 175474
+                    ),
+                    "last_updated": datetime.datetime(
+                        2023, 7, 31, 12, 1, 49, 175474
+                    ),
+                }
+            ]

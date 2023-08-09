@@ -50,7 +50,7 @@ def upload_csv(data, table_name, bucket_name):
                     )
 
     except ClientError:
-        pass
+        raise Exception("ClientError")
 
     with open(f"/tmp//{table_name}.csv", "w", newline="") as csvfile:
         if len(data) > 0:

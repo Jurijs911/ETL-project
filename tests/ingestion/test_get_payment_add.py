@@ -1,6 +1,8 @@
 from decimal import Decimal
-from src.ingestion_lambda.get_payment_add \
-    import get_payment_add, MissingRequiredEnvironmentVariables
+from src.ingestion_lambda.get_payment_add import (
+    get_payment_add,
+    MissingRequiredEnvironmentVariables,
+)
 from unittest.mock import patch
 import datetime
 import pytest
@@ -11,7 +13,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-payment_get_last_time_path = 'get_payment_add.get_last_time'
+payment_get_last_time_path = (
+    "src.ingestion_lambda.get_payment_add.get_last_time"
+)
 
 
 class Test_Ingestion_Payment:
@@ -35,7 +39,8 @@ class Test_Ingestion_Payment:
                 db_database=os.environ.get("TEST_SOURCE_DATABASE"),
                 db_host=os.environ.get("TEST_SOURCE_HOST"),
                 db_port=os.environ.get("TEST_SOURCE_PORT"),
-                db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+                db_password=os.environ.get("TEST_SOURCE_PASSWORD"),
+            )
 
             assert isinstance(result, list)
             expected_keys = {
@@ -73,7 +78,8 @@ class Test_Ingestion_Payment:
                 db_database=os.environ.get("TEST_SOURCE_DATABASE"),
                 db_host=os.environ.get("TEST_SOURCE_HOST"),
                 db_port=os.environ.get("TEST_SOURCE_PORT"),
-                db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+                db_password=os.environ.get("TEST_SOURCE_PASSWORD"),
+            )
             for item in result:
                 assert isinstance(item["payment_id"], int)
                 assert isinstance(item["created_at"], datetime.date)
@@ -106,7 +112,8 @@ class Test_Ingestion_Payment:
                 db_database=os.environ.get("TEST_SOURCE_DATABASE"),
                 db_host=os.environ.get("TEST_SOURCE_HOST"),
                 db_port=os.environ.get("TEST_SOURCE_PORT"),
-                db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+                db_password=os.environ.get("TEST_SOURCE_PASSWORD"),
+            )
             assert mock_get_last_time.call_count == 1
 
     def test_database_error(self):
@@ -119,16 +126,18 @@ class Test_Ingestion_Payment:
         function with test source environment variables and checks if the
         function raises an exception with the message "Database error".
         """
-        with patch('pg8000.native.Connection') as mock_connection:
+        with patch("pg8000.native.Connection") as mock_connection:
             mock_connection.side_effect = pg8000.exceptions.DatabaseError(
-                "Database error")
+                "Database error"
+            )
             with pytest.raises(Exception, match="Database error"):
                 get_payment_add(
                     db_user=os.environ.get("TEST_SOURCE_USER"),
                     db_database=os.environ.get("TEST_SOURCE_DATABASE"),
                     db_host=os.environ.get("TEST_SOURCE_HOST"),
                     db_port=os.environ.get("TEST_SOURCE_PORT"),
-                    db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+                    db_password=os.environ.get("TEST_SOURCE_PASSWORD"),
+                )
 
     def test_missing_environment_variables(self):
         """
@@ -140,14 +149,15 @@ class Test_Ingestion_Payment:
         checks if the function raises the MissingRequiredEnvironmentVariables
         exception.
         """
-        with patch('os.environ', {}):
+        with patch("os.environ", {}):
             with pytest.raises(MissingRequiredEnvironmentVariables):
                 get_payment_add(
                     db_user=os.environ.get("test_user"),
                     db_database=os.environ.get("test_database"),
-                    db_host=os.environ.get('test_host'),
+                    db_host=os.environ.get("test_host"),
                     db_port=os.environ.get("test_port"),
-                    db_password=os.environ.get("test_password"))
+                    db_password=os.environ.get("test_password"),
+                )
 
     def test_correct_data_returned_by_query(self):
         """
@@ -167,15 +177,26 @@ class Test_Ingestion_Payment:
                 db_database=os.environ.get("TEST_SOURCE_DATABASE"),
                 db_host=os.environ.get("TEST_SOURCE_HOST"),
                 db_port=os.environ.get("TEST_SOURCE_PORT"),
-                db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+                db_password=os.environ.get("TEST_SOURCE_PASSWORD"),
+            )
 
             assert result == [
-                {'payment_id': 1, 'created_at': datetime.datetime(
-                    2023, 8, 1, 12, 39, 34, 942457),
-                 'last_updated': datetime.datetime(
-                    2023, 8, 1, 12, 39, 34, 942457),
-                 'transaction_id': 1, 'counterparty_id': 1,
-                 'payment_amount': Decimal('12.59'),
-                 'currency_id': 1, 'payment_type_id': 1, 'paid': True,
-                 'payment_date': 'Today', 'company_ac_number': 123,
-                 'counterparty_ac_number': 123}]
+                {
+                    "payment_id": 1,
+                    "created_at": datetime.datetime(
+                        2023, 8, 1, 12, 39, 34, 942457
+                    ),
+                    "last_updated": datetime.datetime(
+                        2023, 8, 1, 12, 39, 34, 942457
+                    ),
+                    "transaction_id": 1,
+                    "counterparty_id": 1,
+                    "payment_amount": Decimal("12.59"),
+                    "currency_id": 1,
+                    "payment_type_id": 1,
+                    "paid": True,
+                    "payment_date": "Today",
+                    "company_ac_number": 123,
+                    "counterparty_ac_number": 123,
+                }
+            ]

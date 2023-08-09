@@ -23,7 +23,7 @@ def iterate_bucket_items(bucket):
                 yield item
 
 
-def read_processed_csv(bucket_name="kp-northcoder-data-bucket"):
+def read_processed_csv(bucket_name="kp-northcoders-processed-bucket"):
     s3_client = boto3.client("s3")
 
     processed_data = {
@@ -37,17 +37,21 @@ def read_processed_csv(bucket_name="kp-northcoder-data-bucket"):
     }
 
     for item in iterate_bucket_items(bucket=bucket_name):
-        response = (
-            s3_client.get_object(Bucket=bucket_name, Key=item["Key"])["Body"]
-            .read()
-            .decode("utf-8")
-            .splitlines()
-        )
-        records = csv.reader(response, delimiter="|")
-        next(records)
-        table_data = []
-        for row in records:
-            table_data.append(row)
-        processed_data[item["Key"].split(".")[0]] = table_data
+        if "last_loaded.txt" not in item["Key"]:
+            response = (
+                s3_client.get_object(Bucket=bucket_name, Key=item["Key"])[
+                    "Body"
+                ]
+                .read()
+                .decode("utf-8")
+                .splitlines()
+            )
+            records = csv.reader(response, delimiter="|")
+            next(records)
+            table_data = []
+            for row in records:
+                if row[0] != "":
+                    table_data.append(row)
+            processed_data[item["Key"].split(".")[0]] = table_data
 
     return processed_data

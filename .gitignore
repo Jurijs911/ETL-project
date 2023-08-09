@@ -18,4 +18,3 @@ venv/
 **/.terraform*
 **/*tfstate*
 .env
-created_at.txt

@@ -12,7 +12,7 @@ load_dotenv()
 
 
 purchase_order_get_last_time_path = \
-    'get_purchase_order_add.get_last_time'
+    'src.ingestion_lambda.get_purchase_order_add.get_last_time'
 
 
 class Test_Ingestion_Purchase:

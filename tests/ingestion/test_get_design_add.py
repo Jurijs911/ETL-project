@@ -1,5 +1,7 @@
-from src.ingestion_lambda.get_design_add \
-    import get_design_add, MissingRequiredEnvironmentVariables
+from src.ingestion_lambda.get_design_add import (
+    get_design_add,
+    MissingRequiredEnvironmentVariables,
+)
 from unittest.mock import patch
 import datetime
 import pytest
@@ -10,7 +12,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-design_get_last_time_path = 'get_design_add.get_last_time'
+design_get_last_time_path = "src.ingestion_lambda.get_design_add.get_last_time"
 
 
 class Test_Ingestion_Design:
@@ -34,7 +36,8 @@ class Test_Ingestion_Design:
                 db_database=os.environ.get("TEST_SOURCE_DATABASE"),
                 db_host=os.environ.get("TEST_SOURCE_HOST"),
                 db_port=os.environ.get("TEST_SOURCE_PORT"),
-                db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+                db_password=os.environ.get("TEST_SOURCE_PASSWORD"),
+            )
 
             assert isinstance(result, list)
             expected_keys = {
@@ -43,7 +46,7 @@ class Test_Ingestion_Design:
                 "last_updated",
                 "design_name",
                 "file_location",
-                "file_name"
+                "file_name",
             }
             assert all(set(item.keys()) == expected_keys for item in result)
 
@@ -66,15 +69,16 @@ class Test_Ingestion_Design:
                 db_database=os.environ.get("TEST_SOURCE_DATABASE"),
                 db_host=os.environ.get("TEST_SOURCE_HOST"),
                 db_port=os.environ.get("TEST_SOURCE_PORT"),
-                db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+                db_password=os.environ.get("TEST_SOURCE_PASSWORD"),
+            )
 
             for item in result:
-                assert isinstance(item['design_id'], int)
-                assert isinstance(item['created_at'], datetime.date)
-                assert isinstance(item['last_updated'], datetime.date)
-                assert isinstance(item['design_name'], str)
-                assert isinstance(item['file_location'], str)
-                assert isinstance(item['file_name'], str)
+                assert isinstance(item["design_id"], int)
+                assert isinstance(item["created_at"], datetime.date)
+                assert isinstance(item["last_updated"], datetime.date)
+                assert isinstance(item["design_name"], str)
+                assert isinstance(item["file_location"], str)
+                assert isinstance(item["file_name"], str)
 
     def test_get_design_add_calls_get_last_time(self):
         """
@@ -95,7 +99,8 @@ class Test_Ingestion_Design:
                 db_database=os.environ.get("TEST_SOURCE_DATABASE"),
                 db_host=os.environ.get("TEST_SOURCE_HOST"),
                 db_port=os.environ.get("TEST_SOURCE_PORT"),
-                db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+                db_password=os.environ.get("TEST_SOURCE_PASSWORD"),
+            )
 
             assert mock_get_last_time.call_count == 1
 
@@ -109,16 +114,18 @@ class Test_Ingestion_Design:
         `get_design_add` function with database connection variables and
         ensures that it raises an Exception with the expected error message.
         """
-        with patch('pg8000.native.Connection') as mock_connection:
+        with patch("pg8000.native.Connection") as mock_connection:
             mock_connection.side_effect = pg8000.exceptions.DatabaseError(
-                "Database error")
+                "Database error"
+            )
             with pytest.raises(Exception, match="Database error"):
                 get_design_add(
                     db_user=os.environ.get("TEST_SOURCE_USER"),
                     db_database=os.environ.get("TEST_SOURCE_DATABASE"),
                     db_host=os.environ.get("TEST_SOURCE_HOST"),
                     db_port=os.environ.get("TEST_SOURCE_PORT"),
-                    db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+                    db_password=os.environ.get("TEST_SOURCE_PASSWORD"),
+                )
 
     def test_missing_environment_variables(self):
         """
@@ -130,14 +137,15 @@ class Test_Ingestion_Design:
         some database connection variables and ensures that it raises a
         'MissingRequiredEnvironmentVariables' exception.
         """
-        with patch('os.environ', {}):
+        with patch("os.environ", {}):
             with pytest.raises(MissingRequiredEnvironmentVariables):
                 get_design_add(
                     db_user=os.environ.get("test_user"),
                     db_database=os.environ.get("test_database"),
-                    db_host=os.environ.get('test_host'),
+                    db_host=os.environ.get("test_host"),
                     db_port=os.environ.get("test_port"),
-                    db_password=os.environ.get("test_password"))
+                    db_password=os.environ.get("test_password"),
+                )
 
     def test_correct_data_returned_by_query(self):
         """
@@ -158,12 +166,20 @@ class Test_Ingestion_Design:
                 db_database=os.environ.get("TEST_SOURCE_DATABASE"),
                 db_host=os.environ.get("TEST_SOURCE_HOST"),
                 db_port=os.environ.get("TEST_SOURCE_PORT"),
-                db_password=os.environ.get("TEST_SOURCE_PASSWORD"))
+                db_password=os.environ.get("TEST_SOURCE_PASSWORD"),
+            )
 
             assert result == [
-                {'design_id': 2, 'created_at': datetime.datetime(
-                    2023, 8, 1, 12, 23, 35, 315112),
-                 'last_updated': datetime.datetime(
-                    2023, 8, 1, 12, 23, 35, 315112),
-                 'design_name': 'Invisible', 'file_location': 'concept',
-                 'file_name': 'invisible_tote'}]
+                {
+                    "design_id": 2,
+                    "created_at": datetime.datetime(
+                        2023, 8, 1, 12, 23, 35, 315112
+                    ),
+                    "last_updated": datetime.datetime(
+                        2023, 8, 1, 12, 23, 35, 315112
+                    ),
+                    "design_name": "Invisible",
+                    "file_location": "concept",
+                    "file_name": "invisible_tote",
+                }
+            ]
