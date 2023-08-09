@@ -27,7 +27,7 @@ resource "aws_cloudwatch_log_metric_filter" "remodelling_error_alert" {
 resource "aws_cloudwatch_log_metric_filter" "loading_error_alert" {
   name           = "alert_error_metric_filter"
   pattern        = "ERROR"
-  log_group_name = "aws/lambda/${aws_lambda_function.loading_lambda.function_name}"
+  log_group_name = "aws/lambda/loading-lambda"
 
 
   metric_transformation {
