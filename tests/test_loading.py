@@ -20,6 +20,13 @@ test_password = os.environ.get("TEST_TARGET_PASSWORD")
 @mock_s3
 @mock_logs
 def test_loading_lambda_calls_read_processed_csv(mocker):
+    """
+    Test the lambda_handler function to ensure it calls the read_processed_csv function.
+
+    This test uses the moto library to mock AWS S3 and CloudWatch Logs services.
+    It sets up mock S3 buckets and objects, then calls the lambda_handler function.
+    The test asserts that the read_processed_csv function was called as expected.
+    """
     conn = boto3.resource("s3", region_name="eu-west-2")
     conn.create_bucket(
         Bucket="kp-northcoders-processed-bucket",
@@ -78,6 +85,12 @@ def test_loading_lambda_calls_read_processed_csv(mocker):
 @mock_logs
 @mock_s3
 def test_loading_lambda_handler_logs_no_new_data(mocker):
+    """
+    Test the lambda_handler function's behavior when there is no new data.
+
+    This test checks whether the lambda_handler function logs a message for each table
+    indicating that no new data has been inserted into that table.
+    """
     client = boto3.client("logs", region_name="eu-west-2")
     client.create_log_group(logGroupName="/aws/lambda/loading-lambda")
     client.create_log_stream(
@@ -189,7 +202,12 @@ def test_loading_lambda_handler_logs_no_new_data(mocker):
 @mock_logs
 @mock_s3
 def test_loading_lambda_handler_logs_to_cloudwatch(mocker):
-    # Set up the mocked CloudWatch Logs environment
+    """
+    Test the lambda_handler function's behavior when logging to CloudWatch.
+
+    This test checks whether the lambda_handler function logs a message to CloudWatch
+    when data has been inserted into a table.
+    """
     client = boto3.client("logs", region_name="eu-west-2")
     client.create_log_group(logGroupName="/aws/lambda/loading-lambda")
     client.create_log_stream(
@@ -197,7 +215,6 @@ def test_loading_lambda_handler_logs_to_cloudwatch(mocker):
         logStreamName="lambda-log-stream",
     )
 
-    # Set up the mocked S3 bucket and objects
     conn = boto3.resource("s3", region_name="eu-west-2")
     conn.create_bucket(
         Bucket="kp-northcoders-processed-bucket",
@@ -234,7 +251,6 @@ def test_loading_lambda_handler_logs_to_cloudwatch(mocker):
 
     spy = mocker.spy(loading, "log_to_cloudwatch")
 
-    # Call the lambda_handler function
     with patch(
         "src.loading.loading.read_processed_csv"
     ) as mock_read_processed_csv, patch(
@@ -279,8 +295,6 @@ def test_loading_lambda_handler_logs_to_cloudwatch(mocker):
             test_password,
         )
 
-    # Check if the log_to_cloudwatch function was called
-    # with the expected arguments
     spy.assert_any_call(
         "Data has been inserted into the fact_sales_order table.",
         "/aws/lambda/loading-lambda",
@@ -290,6 +304,12 @@ def test_loading_lambda_handler_logs_to_cloudwatch(mocker):
 
 @mock_logs
 def test_loading_lambda_handler_raises_exception():
+    """
+    Test the lambda_handler function's behavior when encountering an exception.
+
+    This test checks whether calling lambda_handler with invalid parameters
+    raises an exception.
+    """
     with pytest.raises(Exception):
         lambda_handler(
             {},
