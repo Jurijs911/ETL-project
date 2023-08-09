@@ -2,6 +2,7 @@ from src.remodelling.filter_data_by_timestamp import filter_data
 import os
 import boto3
 from moto import mock_s3
+import pytest
 
 
 @mock_s3
@@ -190,3 +191,7 @@ class Test_Remodelling_Filter:
         assert result == expected
 
         os.remove("last_processed.txt")
+
+    def test_raises_exception(self):
+        with pytest.raises(Exception):
+            filter_data()

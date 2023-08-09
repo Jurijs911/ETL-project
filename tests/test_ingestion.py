@@ -6,6 +6,7 @@ import boto3
 from dotenv import load_dotenv
 from src.ingestion_lambda import ingestion
 import pytest
+from datetime import datetime
 
 
 load_dotenv()
@@ -286,14 +287,20 @@ def test_lambda_handler_calls_utils():
         assert txt_response == "2023-07-28 15:02:21.393482"
 
 
+@mock_logs
 @mock_s3
-@pytest.fixture
 def test_lambda_handler_logs(mocker):
-    # Set up the mocked S3 bucket and objects
+    # Set up the mocked S3 bucket, logs and objects
     conn = boto3.resource("s3", region_name="eu-west-2")
     conn.create_bucket(
         Bucket="kp-northcoders-ingestion-bucket",
         CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+    )
+    client = boto3.client("logs", region_name="eu-west-2")
+    client.create_log_group(logGroupName="/aws/lambda/ingestion-lambda")
+    client.create_log_stream(
+        logGroupName="/aws/lambda/ingestion-lambda",
+        logStreamName="lambda-log-stream",
     )
     #
     # table.txt objects
@@ -332,6 +339,24 @@ def test_lambda_handler_logs(mocker):
     conn.Object("kp-northcoders-ingestion-bucket", "staff/created_at.txt").put(
         Body="2020-07-30 15:20:49.962000"
     )
+
+    conn.Object("kp-northcoders-ingestion-bucket", "address.csv").put()
+
+    conn.Object("kp-northcoders-ingestion-bucket", "counterparty.csv").put()
+
+    conn.Object("kp-northcoders-ingestion-bucket", "currency.csv").put()
+
+    conn.Object("kp-northcoders-ingestion-bucket", "department.csv").put()
+
+    conn.Object("kp-northcoders-ingestion-bucket", "design.csv").put()
+
+    conn.Object("kp-northcoders-ingestion-bucket", "payment.csv").put()
+
+    conn.Object("kp-northcoders-ingestion-bucket", "purchase_order.csv").put()
+
+    conn.Object("kp-northcoders-ingestion-bucket", "sales_order.csv").put()
+
+    conn.Object("kp-northcoders-ingestion-bucket", "staff.csv").put()
 
     # Create a spy on the log_to_cloudwatch function
     spy = mocker.spy(ingestion, "log_to_cloudwatch")
@@ -390,14 +415,20 @@ def test_lambda_handler_logs(mocker):
     )
 
 
+@mock_logs
 @mock_s3
-@pytest.fixture
 def test_lambda_handler_logs_no_data(mocker):
     # Set up the mocked S3 bucket and objects
     conn = boto3.resource("s3", region_name="eu-west-2")
     conn.create_bucket(
         Bucket="kp-northcoders-ingestion-bucket",
         CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+    )
+    client = boto3.client("logs", region_name="eu-west-2")
+    client.create_log_group(logGroupName="/aws/lambda/ingestion-lambda")
+    client.create_log_stream(
+        logGroupName="/aws/lambda/ingestion-lambda",
+        logStreamName="lambda-log-stream",
     )
     #
     # table.txt objects
@@ -506,3 +537,103 @@ def test_lambda_handler_raises_exception():
             test_port,
             test_password,
         )
+
+
+@mock_s3
+def test_ingestion_lambda_handler_timestamp():
+    # Set up mock S3 bucket
+    conn = boto3.resource("s3", region_name="eu-west-2")
+    conn.create_bucket(
+        Bucket="kp-northcoders-ingestion-bucket",
+        CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+    )
+    #
+    # table.txt objects
+    conn.Object(
+        "kp-northcoders-ingestion-bucket", "address/created_at.txt"
+    ).put(Body="2023-07-29 15:20:49.962000")
+
+    conn.Object(
+        "kp-northcoders-ingestion-bucket", "counterparty/created_at.txt"
+    ).put(Body="2023-07-30 15:20:49.962000")
+
+    conn.Object(
+        "kp-northcoders-ingestion-bucket", "currency/created_at.txt"
+    ).put(Body="2020-07-30 15:20:49.962000")
+
+    conn.Object(
+        "kp-northcoders-ingestion-bucket", "department/created_at.txt"
+    ).put(Body="2020-07-30 15:20:49.962000")
+
+    conn.Object(
+        "kp-northcoders-ingestion-bucket", "design/created_at.txt"
+    ).put(Body="2020-07-30 15:20:49.962000")
+
+    conn.Object(
+        "kp-northcoders-ingestion-bucket", "payment/created_at.txt"
+    ).put(Body="2020-07-30 15:20:49.962000")
+
+    conn.Object(
+        "kp-northcoders-ingestion-bucket", "purchase_order/created_at.txt"
+    ).put(Body="2020-07-30 15:20:49.962000")
+
+    conn.Object(
+        "kp-northcoders-ingestion-bucket", "sales_order/created_at.txt"
+    ).put(Body="2020-07-30 15:20:49.962000")
+
+    conn.Object("kp-northcoders-ingestion-bucket", "staff/created_at.txt").put(
+        Body="2020-07-30 15:20:49.962000"
+    )
+    conn.Object("kp-northcoders-ingestion-bucket", "address.csv").put()
+
+    conn.Object("kp-northcoders-ingestion-bucket", "counterparty.csv").put()
+
+    conn.Object("kp-northcoders-ingestion-bucket", "currency.csv").put()
+
+    conn.Object("kp-northcoders-ingestion-bucket", "department.csv").put()
+
+    conn.Object("kp-northcoders-ingestion-bucket", "design.csv").put()
+
+    conn.Object("kp-northcoders-ingestion-bucket", "payment.csv").put()
+
+    conn.Object("kp-northcoders-ingestion-bucket", "purchase_order.csv").put()
+
+    conn.Object("kp-northcoders-ingestion-bucket", "sales_order.csv").put()
+
+    conn.Object("kp-northcoders-ingestion-bucket", "staff.csv").put()
+    # Call the function to test
+    lambda_handler(
+        {},
+        {},
+        test_user,
+        test_database,
+        test_host,
+        test_port,
+        test_password,
+    )
+
+    # Assert that the object was uploaded to S3
+    body = (
+        conn.Object(
+            "kp-northcoders-ingestion-bucket", "trigger/last_ingestion.txt"
+        )
+        .get()["Body"]
+        .read()
+        .decode("utf-8")
+    )
+
+    timestamp = datetime.strptime(body.strip(), "%Y-%m-%d %H:%M:%S.%f")
+
+    # Define the acceptable range in seconds
+    acceptable_range = 1
+
+    # Get the current time and remove the milliseconds
+    now = datetime.now().replace(microsecond=0)
+
+    # Calculate the difference between the two dates
+    difference = abs((timestamp - now).total_seconds())
+
+    # Check if the difference is within the acceptable range
+    assert difference <= acceptable_range, \
+        f"Difference {difference} is greater \
+            than acceptable range {acceptable_range}"
