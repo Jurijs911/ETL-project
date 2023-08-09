@@ -12,6 +12,7 @@ class InputValidationError(Exception):
     Custom Exception class to handle input validation errors during data
     manipulation.
     """
+
     pass
 
 
@@ -102,9 +103,9 @@ def format_dim_design(design_data):
 
         formatted_design = {
             "design_id": design[0],
-            "design_name": design[3],
-            "file_location": design[4],
-            "file_name": design[5],
+            "design_name": design[2],
+            "file_location": design[3],
+            "file_name": design[4],
         }
         formatted_data.append(formatted_design)
     return formatted_data
