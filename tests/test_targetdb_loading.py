@@ -57,7 +57,7 @@ def reset_database(conn):
         counterparty_id int4 NOT NULL,
         counterparty_legal_name varchar NOT NULL,
         counterparty_legal_address_line_1 varchar NOT NULL,
-        counterparty_legal_address_line2 varchar NULL,
+        counterparty_legal_address_line_2 varchar NULL,
         counterparty_legal_district varchar NULL,
         counterparty_legal_city varchar NOT NULL,
         counterparty_legal_postal_code varchar NOT NULL,
