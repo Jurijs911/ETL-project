@@ -8,6 +8,14 @@ from moto import mock_s3
 @mock_s3
 class Test_read_ingestion_csv:
     def test_reads_correct_data_for_one_table(self):
+        """
+        Test if the read_ingestion_csv function correctly reads data.
+
+        The test sets up a mock S3 bucket, uploads CSV data for one
+        table (currency), and calls the read_ingestion_csv function.
+        It then checks if the data read from the bucket matches the
+        expected data for the currency table.
+        """
         s3_client = boto3.client("s3", region_name="eu-west-2")
         s3_client.create_bucket(
             Bucket="ingested-bucket",
@@ -54,6 +62,15 @@ class Test_read_ingestion_csv:
             os.remove("currency.csv")
 
     def test_reads_correct_data_for_mutliple_tables(self):
+        """
+        Test if the read_ingestion_csv function correctly reads data for
+        multiple tables.
+
+        The test sets up a mock S3 bucket, uploads CSV data for multiple
+        tables (currency and staff), and calls the read_ingestion_csv function.
+        It then checks if the data read from the bucket matches the expected
+        data for the currency and staff tables.
+        """
         s3_client = boto3.client("s3", region_name="eu-west-2")
         s3_client.create_bucket(
             Bucket="ingested-bucket",

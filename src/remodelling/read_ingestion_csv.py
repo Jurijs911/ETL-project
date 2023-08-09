@@ -1,9 +1,9 @@
 """
 Retrieves data from csv file and returns it for use in manipulation utils
 
-Iterate over objects in bucket
-For each object retrieve its value
-Store the value in a dictionary under either 'update' or 'add'
+Iterates over each object in bucket.
+For each object, it retrieves its value.
+Stores the value in a dictionary under either 'update' or 'add'.
 Grouped by the table name
 {
     'design': [{'department_id': data, 'department_name': data etc.}]
@@ -34,6 +34,28 @@ def iterate_bucket_items(bucket):
 
 
 def read_ingestion_csv(bucket_name="kp-northcoders-ingestion-bucket"):
+    """
+    Retrieves data from CSV files in an S3 bucket and returns it for use in
+    manipulation util functions.
+
+    The function iterates over objects in the specified bucket and retrieves
+    their data. The data is grouped by table name and stored in a dictionary.
+
+    :param bucket_name:
+    Name of the S3 bucket. Default is 'kp-northcoders-ingestion-bucket'.
+
+    :return:
+    Dictionary containing ingested data grouped by table name.
+             e.g. {
+                    'sales_order': [...],
+                    'design': [...],
+                    'currency': [...],
+                    'staff': [...],
+                    'counterparty': [...],
+                    'address': [...],
+                    'department': [...],
+                }
+    """
     s3_client = boto3.client("s3")
 
     ingested_data = {

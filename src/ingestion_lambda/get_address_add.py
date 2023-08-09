@@ -10,11 +10,14 @@ secret = get_secret()
 
 class MissingRequiredEnvironmentVariables (Exception):
     """
-        Is produced when attempts to connect to DB
-        with variables which do not exist
+    Raised when attempted to connect to the database
+    with missing or incomplete environment variables.
     """
 
     def __init__(self, db_user, db_database, db_host, db_port, db_password):
+        """
+        Initialises the MissingRequiredEnvironmentVariables exception.
+        """
         self.user = db_user
         self.database = db_database
         self.host = db_host
@@ -29,6 +32,31 @@ def get_address_add(
     db_port=secret["port"],
     db_password=secret["password"],
 ):
+    """
+    Establishes a connection to the database and retrieves address data
+    created or updated after the last search interval.
+
+    Args:
+        db_user:
+        Database username. Defaults to the value obtained from the secret.
+        db_database:
+        Database name. Defaults to the value obtained from the secret.
+        db_host:
+        Database host address. Defaults to the value obtained from the secret.
+        db_port:
+        Database port number. Defaults to the value obtained from the secret.
+        db_password:
+        Database password. Defaults to the value obtained from the secret.
+
+    Raises:
+        MissingRequiredEnvironmentVariables:
+        If any required database connection parameters are missing.
+
+    Returns:
+        list:
+        A list of dictionaries representing the address data created or updated
+    """
+
     """
     CONNECTION
     """
@@ -63,12 +91,8 @@ def get_address_add(
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
-    #
-    # Set schema search order
     conn.run('SET search_path TO "kp-test-source", public;')
 
-    #
-    # Query table
     query = "SELECT * FROM address WHERE \
         created_at > :search_interval OR last_updated > :search_interval;"
     params = {"search_interval": search_interval}

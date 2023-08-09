@@ -7,6 +7,16 @@ import pytest
 @mock_s3
 class Test_add_csv:
     def test_uploads_csv_to_object_in_bucket(self):
+        """
+        Test case for the 'upload_csv' function to check that it correctly
+        uploads CSV data to a specified object in the S3 bucket.
+
+        It creates an S3 bucket - 'test_bucket', then defines test data
+        representing two currency entries and uploads the 'currency.csv' file
+        with the initial test data to the 'test_bucket'. The 'upload_csv'
+        function uploads additional test data to the 'currency.csv' file in
+        the bucket.
+        """
         conn = boto3.client("s3", region_name="eu-west-2")
 
         conn.create_bucket(
@@ -46,6 +56,16 @@ class Test_add_csv:
         assert "2|USD|2022-12-12|2022-12-12" in response
 
     def test_does_not_overwite_previous_csv_file(self):
+        """
+        Test case for the 'upload_csv' function to check that it does not
+        overwrite the previous CSV file in the S3 bucket and appends new data
+        to the existing file.
+
+        It creates an S3 bucket - 'test_bucket', then defines test data
+        representing two currency entries and uploads the 'currency.csv' file
+        with the new test data to the bucket. Checks if both the initial and
+        new data are present in the response.
+        """
         conn = boto3.client("s3", region_name="eu-west-2")
 
         conn.create_bucket(

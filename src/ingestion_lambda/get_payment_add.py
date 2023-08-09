@@ -10,11 +10,14 @@ secret = get_secret()
 
 class MissingRequiredEnvironmentVariables (Exception):
     """
-        Is produced when attempts to connect to DB
-        with variables which do not exist
+    Exception raised when attempts to connect to the database with missing
+    required variables.
     """
 
     def __init__(self, db_user, db_database, db_host, db_port, db_password):
+        """
+        Initialises the MissingRequiredEnvironmentVariables exception.
+        """
         self.user = db_user
         self.database = db_database
         self.host = db_host
@@ -29,6 +32,37 @@ def get_payment_add(
     db_port=secret["port"],
     db_password=secret["password"],
 ):
+    """
+    Connects to the database and retrieves payment data created or updated
+    since the last search interval.
+
+    This function establishes a connection to the PostgreSQL database using
+    the provided credentials. It determines the search interval by calling the
+    get_last_time function with the table name 'payment'. Then, it queries the
+    'payment' table to fetch all rows that have 'created_at' or 'last_updated'
+    timestamps greater than the search interval.
+
+    Args:
+    db_user:
+    The username for the database connection.
+    db_database:
+    The name of the database to connect to.
+    db_host:
+    The host address for the database connection.
+    db_port:
+    The port number for the database connection.
+    db_password:
+    The password for the database connection.
+
+    Raises:
+    MissingRequiredEnvironmentVariables:
+    If any of the required environment variables are missing.
+
+    Returns:
+    list:
+    A list of dictionaries, each representing a payment record.
+    """
+
     """
     CONNECTION
     """
@@ -62,12 +96,9 @@ def get_payment_add(
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
-    #
-    # Set schema search order
+
     conn.run('SET search_path TO "kp-test-source", public;')
 
-    #
-    # Query table
     query = "SELECT * FROM payment WHERE \
         created_at > :search_interval OR last_updated > :search_interval;"
     params = {"search_interval": search_interval}

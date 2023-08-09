@@ -27,7 +27,20 @@ log_stream_name = "lambda-log-stream"
 
 
 def log_to_cloudwatch(message, log_group_name, log_stream_name):
-    """Log a message to AWS CloudWatch Logs."""
+    """
+    Log a message to CloudWatch Logs.
+
+    Args:
+    message:
+    The message to be logged.
+
+    log_group_name:
+    The name of the CloudWatch Logs log group.
+    log_stream_name:
+
+    The name of the CloudWatch Logs log stream.
+    """
+
     if message:
         cloudwatch_logs.put_log_events(
             logGroupName=log_group_name,
@@ -53,12 +66,11 @@ def lambda_handler(
     """AWS Lambda function to process data and insert it into
     the respective dimension and fact tables.
 
-
-
     Raises:
-        Exception: If an error occurs during data processing or insertion,
-        the exception is logged to CloudWatch,
-        and a CloudWatch alarm is triggered to alert on the error.
+        Exception:
+        If an error occurs during data processing or insertion, the exception
+        is logged to CloudWatch, and a CloudWatch alarm is triggered to alert
+        on the error.
     """
 
     conn = create_connection(
@@ -119,5 +131,12 @@ def lambda_handler(
         log_to_cloudwatch(
             str(e), "/aws/lambda/loading-lambda", "lambda-log-stream"
         )
+        raise  # this triggers the CloudWatch alarm
 
-        raise
+    # except Exception as e:
+    #     import traceback
+    #     traceback.print_exc()
+    #     logger.error(f"An error occurred: {str(e)}")
+    #     log_to_cloudwatch(str(e), "/aws/lambda/loading-lambda",
+    #     "lambda-log-stream")
+    #     raise  # this triggers the CloudWatch alarm

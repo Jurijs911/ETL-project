@@ -10,11 +10,14 @@ secret = get_secret()
 
 class MissingRequiredEnvironmentVariables (Exception):
     """
-        Is produced when attempts to connect to DB
-        with variables which do not exist
+    Raised when attempts to connect to the database with variables which do
+    not exist.
     """
 
     def __init__(self, db_user, db_database, db_host, db_port, db_password):
+        """
+        Initialise the MissingRequiredEnvironmentVariables exception.
+        """
         self.user = db_user
         self.database = db_database
         self.host = db_host
@@ -29,6 +32,31 @@ def get_department_add(
     db_port=secret["port"],
     db_password=secret["password"],
 ):
+    """
+    Connects to the database and retrieves the data for the 'department' table
+    created in the last search interval.
+
+    Args:
+    db_user:
+    Database username. Defaults to the value from secret["username"].
+    db_database:
+    Database name. Defaults to the value from secret["dbname"].
+    db_host:
+    Database host. Defaults to the value from secret["host"].
+    db_port:
+    Database port. Defaults to the value from secret["port"].
+    db_password:
+    Database password. Defaults to the value from secret["password"].
+
+    Raises:
+    MissingRequiredEnvironmentVariables:
+    If any of the required environment variables is missing or empty.
+
+    Returns:
+    list:
+    A list of dictionaries containing department data.
+    """
+
     """
     CONNECTION
     """
@@ -62,12 +90,8 @@ def get_department_add(
     """
     QUERY DATA CREATED IN LAST SEARCH INTERVAL
     """
-    #
-    # Set schema search order
     conn.run('SET search_path TO "kp-test-source", public;')
 
-    #
-    # Query table
     query = "SELECT * FROM department WHERE \
         created_at > :search_interval OR last_updated > :search_interval;"
     params = {"search_interval": search_interval}

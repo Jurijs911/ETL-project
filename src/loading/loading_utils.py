@@ -10,8 +10,10 @@ class InputValidationError(Exception):
 
 
 def create_connection(db_user, db_database, db_host, db_port, db_password):
-    """Create a connection to the PostgreSQL database
-    using the passed connection variables."""
+    """
+    Create a connection to the PostgreSQL database
+    using the environment variables.
+    """
 
     conn = pg8000.native.Connection(
         user=db_user,
@@ -27,9 +29,16 @@ def get_loaded_data(conn, table_name):
     """
     Retrieve all data from the specified table after insertion.
 
-    :param conn: pg8000 connection
-    :param table_name: Name of the table to retrieve data from.
-    :return: A list of rows containing the loaded data.
+    Parameters:
+    conn: pg8000 connection
+    table_name: Name of the table to retrieve data from.
+
+    Returns:
+    A list of rows containing the loaded data.
+
+    Raises:
+    Exception:
+    If there is any issue with loading the data.
     """
     loaded_data = []
     try:
@@ -43,10 +52,13 @@ def get_loaded_data(conn, table_name):
 
 
 def is_valid_email(email):
-    """Check if the given email address is in a valid format.
+    """
+    Check if the given email address is in a valid format.
 
     Returns:
-        bool: True if the email address is valid, False otherwise."""
+        bool:
+        True if the email address is valid, False otherwise.
+    """
 
     import re
 
@@ -56,7 +68,7 @@ def is_valid_email(email):
 
 def insert_into_dim_design(conn, design_data):
     """
-     Insert data into the dim_design table.
+    Insert data into the dim_design table.
 
     Returns:
         list: A list of rows containing the loaded data after insertion.
@@ -108,7 +120,7 @@ def insert_into_dim_design(conn, design_data):
 
 def insert_into_dim_currency(conn, currency_data):
     """
-     Insert data into the dim_currency table.
+    Insert data into the dim_currency table.
 
     Returns:
         list: A list of rows containing the loaded data after insertion.

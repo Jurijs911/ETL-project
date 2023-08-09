@@ -12,7 +12,14 @@ import pytest
 
 
 class Test_Format_Fact_Sales_Order:
+    """
+    Test cases for the format_fact_sales_order function.
+    """
     def test_formats_data_correctly(self):
+        """
+        Test if the function formats sales data correctly to match the
+        'fact_sales_order' table schema.
+        """
         sample_sales_data = [
             [
                 "2",
@@ -53,6 +60,10 @@ class Test_Format_Fact_Sales_Order:
         assert formatted_data == expected_sales_data
 
     def test_raises_exception_when_input_is_wrong_type(self):
+        """
+        Test if the function raises an InputValidationError when input data
+        has the wrong data types.
+        """
         sample_sales_data = [
             [
                 "2",
@@ -76,6 +87,10 @@ class Test_Format_Fact_Sales_Order:
     def test_raises_exception_when_input_has_id_that_cannot_convert_to_integer(
         self,
     ):
+        """
+        Test if the function raises an InputValidationError when input data
+        contains an ID that cannot be converted to an integer.
+        """
         sample_sales_data = [
             [
                 "2",
@@ -99,6 +114,10 @@ class Test_Format_Fact_Sales_Order:
     def test_raises_exception_when_input_is_wrong_length(
         self,
     ):
+        """
+        Test if the function raises an InputValidationError when input data
+        has the wrong length.
+        """
         sample_sales_data = [
             [
                 "2",
@@ -115,7 +134,14 @@ class Test_Format_Fact_Sales_Order:
 
 
 class Test_Format_Dim_Design:
+    """
+    Test cases for the format_dim_design function.
+    """
     def test_formats_data_correctly(self):
+        """
+        Test if the function formats design data correctly to match the
+        'dim_design' table schema.
+        """
         sample_design_data = [
             [
                 "1",
@@ -141,6 +167,10 @@ class Test_Format_Dim_Design:
         assert formatted_design == expected_design_data
 
     def test_raises_exception_when_input_is_wrong_type(self):
+        """
+        Test if the function raises an InputValidationError when input data
+        has the wrong data types.
+        """
         sample_design_data = [
             [
                 "1",
@@ -158,6 +188,10 @@ class Test_Format_Dim_Design:
     def test_raises_exception_when_input_has_id_that_cannot_convert_to_integer(
         self,
     ):
+        """
+        Test if the function raises an InputValidationError when input data
+        contains an ID that cannot be converted to an integer.
+        """
         sample_design_data = [
             [
                 "letters",
@@ -175,6 +209,10 @@ class Test_Format_Dim_Design:
     def test_raises_exception_when_input_is_wrong_length(
         self,
     ):
+        """
+        Test if the function raises an InputValidationError when input data
+        has the wrong length.
+        """
         sample_design_data = [
             [
                 "letters",
@@ -187,7 +225,14 @@ class Test_Format_Dim_Design:
 
 
 class Test_Format_Dim_Staff:
+    """
+    Test cases for the format_dim_staff function.
+    """
     def test_format_dim_staff(self):
+        """
+        Test if the function formats staff data correctly to match the
+        'dim_staff' table schema.
+        """
         sample_staff_data = [
             [
                 "1",
@@ -228,6 +273,10 @@ class Test_Format_Dim_Staff:
         assert formatted_staff == expected_staff_data
 
     def test_raises_exception_when_input_is_wrong_type(self):
+        """
+        Test if the function raises an InputValidationError when input data
+        has the wrong data types.
+        """
         sample_staff_data = [
             [
                 "1",
@@ -256,6 +305,10 @@ class Test_Format_Dim_Staff:
     def test_raises_exception_when_input_has_id_that_cannot_convert_to_integer(
         self,
     ):
+        """
+        Test if the function raises an InputValidationError when input data
+        contains an ID that cannot be converted to an integer.
+        """
         sample_staff_data = [
             [
                 "1",
@@ -284,6 +337,10 @@ class Test_Format_Dim_Staff:
     def test_raises_exception_when_input_is_wrong_length(
         self,
     ):
+        """
+        Test if the function raises an InputValidationError when input data
+        has the wrong length.
+        """
         sample_staff_data = [
             [
                 "1",
@@ -308,7 +365,14 @@ class Test_Format_Dim_Staff:
 
 
 class Test_Format_Dim_Location:
+    """
+    Test cases for the format_dim_location function.
+    """
     def test_format_dim_location(self):
+        """
+        Test if the function formats location data correctly to match the
+        'dim_location' table schema.
+        """
         sample_address = [
             [
                 "1",
@@ -342,6 +406,10 @@ class Test_Format_Dim_Location:
         assert formatted_location == expected_location_data
 
     def test_raises_exception_when_input_is_wrong_type(self):
+        """
+        Test if the function raises an InputValidationError when input data
+        has the wrong data types.
+        """
         sample_address = [
             [
                 1,
@@ -363,6 +431,10 @@ class Test_Format_Dim_Location:
     def test_raises_exception_when_input_has_id_that_cannot_convert_to_integer(
         self,
     ):
+        """
+        Test if the function raises an InputValidationError when input data
+        contains an ID that cannot be converted to an integer.
+        """
         sample_address = [
             [
                 "letter",
@@ -384,6 +456,10 @@ class Test_Format_Dim_Location:
     def test_raises_exception_when_input_is_wrong_length(
         self,
     ):
+        """
+        Test if the function raises an InputValidationError when input data
+        has the wrong length.
+        """
         sample_address = [
             [
                 "greater manchester",
@@ -400,7 +476,14 @@ class Test_Format_Dim_Location:
 
 
 class Test_Format_Dim_Date:
+    """
+    Test cases for the format_dim_date function.
+    """
     def test_format_dim_date(self):
+        """
+        Test if the function formats date data correctly to match the
+        'dim_date' table schema.
+        """
         sample_date_data = "2023-01-01"
 
         formatted_date = format_dim_date(sample_date_data)
@@ -419,6 +502,10 @@ class Test_Format_Dim_Date:
         assert formatted_date == expected_date_data
 
     def test_raises_exception_when_input_is_wrong_type(self):
+        """
+        Test if the function raises an InputValidationError when input data
+        has the wrong data types.
+        """
         sample_date_data = 1
 
         with pytest.raises(InputValidationError):
@@ -427,6 +514,10 @@ class Test_Format_Dim_Date:
     def test_raises_exception_when_input_is_invalid_date(
         self,
     ):
+        """
+        Test if the function raises an InputValidationError when input data
+        contains an invalid date.
+        """
         sample_date_data = "2023-16-51"
 
         with pytest.raises(InputValidationError):
@@ -434,7 +525,14 @@ class Test_Format_Dim_Date:
 
 
 class Test_Format_Dim_Currency:
+    """
+    Test cases for the format_dim_currency function.
+    """
     def test_format_dim_currency(self):
+        """
+        Test if the function formats currency data correctly to match the
+        'dim_currency' table schema.
+        """
         sample_currency_data = [
             [
                 "1",
@@ -457,6 +555,10 @@ class Test_Format_Dim_Currency:
         assert formatted_currency == expected_currency_data
 
     def test_raises_exception_when_input_is_wrong_type(self):
+        """
+        Test if the function raises an InputValidationError when input data
+        has the wrong data types.
+        """
         sample_currency_data = [
             [
                 1,
@@ -472,6 +574,10 @@ class Test_Format_Dim_Currency:
     def test_raises_exception_when_input_has_id_that_cannot_convert_to_integer(
         self,
     ):
+        """
+        Test if the function raises an InputValidationError when input data
+        contains an ID that cannot be converted to an integer.
+        """
         sample_currency_data = [
             [
                 "letters",
@@ -487,6 +593,10 @@ class Test_Format_Dim_Currency:
     def test_raises_exception_when_input_is_wrong_length(
         self,
     ):
+        """
+        Test if the function raises an InputValidationError when input data
+        has the wrong length.
+        """
         sample_currency_data = [
             [
                 "1",
@@ -500,6 +610,10 @@ class Test_Format_Dim_Currency:
     def test_raises_exception_when_input_currency_code_is_invalid(
         self,
     ):
+        """
+        Test if the function raises an InputValidationError when input data
+        contains an invalid currency code.
+        """
         sample_currency_data = [
             [
                 "1",
@@ -514,7 +628,14 @@ class Test_Format_Dim_Currency:
 
 
 class Test_Format_Dim_Counterparty:
+    """
+    Test cases for the format_dim_counterparty function.
+    """
     def test_format_dim_counterparty(self):
+        """
+        Test if the function formats counterparty data correctly to match the
+        'dim_counterparty' table schema.
+        """
         sample_counterparty_data = [
             [
                 "1",
@@ -563,6 +684,10 @@ class Test_Format_Dim_Counterparty:
         assert formatted_counterparty_data == expected_counterparty_data
 
     def test_raises_exception_when_input_is_wrong_type(self):
+        """
+        Test if the function raises an InputValidationError when input data
+        has the wrong data types.
+        """
         sample_counterparty_data = [
             [
                 1,
@@ -596,6 +721,10 @@ class Test_Format_Dim_Counterparty:
     def test_raises_exception_when_input_has_id_that_cannot_convert_to_integer(
         self,
     ):
+        """
+        Test if the function raises an InputValidationError when input data
+        contains an ID that cannot be converted to an integer.
+        """
         sample_counterparty_data = [
             [
                 "1",
@@ -629,6 +758,10 @@ class Test_Format_Dim_Counterparty:
     def test_raises_exception_when_input_is_wrong_length(
         self,
     ):
+        """
+        Test if the function raises an InputValidationError when input data
+        has the wrong length.
+        """
         sample_counterparty_data = [
             [
                 "1",

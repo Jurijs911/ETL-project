@@ -5,6 +5,28 @@ from botocore.exceptions import ClientError
 
 
 def upload_csv(data, table_name, bucket_name):
+    """
+    Upload a CSV-formatted data to an Amazon S3 bucket.
+
+    This function takes a list of dictionaries containing data, a table name,
+    and an Amazon S3 bucket name. It downloads the existing CSV data from the
+    S3 bucket, merges it with the provided data, and then uploads the updated
+    CSV file back to the S3 bucket.
+
+    Args:
+        data:
+        List of dictionaries containing data to be added to the CSV.
+
+        table_name:
+        Name of the table, used as the CSV file name.
+
+        bucket_name:
+        Name of the Amazon S3 bucket.
+
+    Raises:
+        ClientError:
+        If there's an issue while uploading the CSV file.
+    """
     s3_client = boto3.client("s3")
     try:
         downloaded_csv = (

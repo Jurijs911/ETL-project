@@ -1,4 +1,4 @@
-from find_most_recent_time \
+from src.ingestion_lambda.find_most_recent_time \
     import find_most_recent_time
 import datetime
 
@@ -23,6 +23,9 @@ test_data = [
 
 
 def test_find_most_recent_time_should_return_valid_date_from_list():
-
+    """
+    Test the 'find_most_recent_time' function to ensure it returns the correct
+    and most recent date from the provided test_data.
+    """
     returned_time = find_most_recent_time(test_data)
     assert returned_time == '2022-11-03 14:20:49.962000'
